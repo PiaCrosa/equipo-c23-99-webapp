@@ -1,4 +1,4 @@
-package c23_99_m_webapp.backend.enumerator;
+package c23_99_m_webapp.backend.models.enums;
 
 public enum Role {
 

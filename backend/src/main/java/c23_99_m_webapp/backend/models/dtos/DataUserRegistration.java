@@ -1,4 +1,4 @@
-package c23_99_m_webapp.backend.dto;
+package c23_99_m_webapp.backend.models.dto;
 
 import c23_99_m_webapp.backend.enumerator.Role;
 import jakarta.validation.constraints.Email;

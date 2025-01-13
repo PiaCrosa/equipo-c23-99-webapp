@@ -1,6 +1,6 @@
 package c23_99_m_webapp.backend.models;
 
-import c23_99_m_webapp.backend.enumerator.Role;
+import c23_99_m_webapp.backend.models.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
