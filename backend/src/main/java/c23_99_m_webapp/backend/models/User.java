@@ -1,5 +1,6 @@
 package c23_99_m_webapp.backend.models;
 
+import c23_99_m_webapp.backend.models.dtos.DataUserRegistration;
 import c23_99_m_webapp.backend.models.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,25 +25,33 @@ import java.util.List;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
-    private String name;
+    private String dni;
+    private String fullName;
     private String email;
     private String password;
-    private Boolean activo;
+    private Boolean active;
+
+    @ManyToOne
+    private Institution institution;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Role role = Role.TEACHER;
+
+    public User(DataUserRegistration dataUserRegistration, Institution institution) {
+        this.dni = dataUserRegistration.dni();
+        this.fullName = dataUserRegistration.full_name();
+        this.email = dataUserRegistration.email();
+        this.password = new BCryptPasswordEncoder().encode(dataUserRegistration.password());
+        this.active = true;
+        this.role = dataUserRegistration.role();
+        this.institution = institution;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
 
-        // Añadir roles adicionales según el perfil del usuario
         switch (role) {
-            case SUPERADMIN:
-                authorities.add(new SimpleGrantedAuthority("ROLE_SUPERADMIN"));
-                break;
             case ADMIN:
                 authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
                 break;

@@ -1,19 +1,25 @@
-package c23_99_m_webapp.backend.models.dto;
+package c23_99_m_webapp.backend.models.dtos;
 
-import c23_99_m_webapp.backend.enumerator.Role;
+
+import c23_99_m_webapp.backend.models.enums.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record DataUserRegistration(
+
         @NotBlank
-        String name,
+        String dni,
+        @NotBlank
+        String full_name,
         @NotBlank
         @Email
         String email,
         @NotBlank
         String password,
-        @NotNull
-        Role role
+        @NotBlank
+        String password2,
+        Role role,
+        String institution_cue
 ) {
 }

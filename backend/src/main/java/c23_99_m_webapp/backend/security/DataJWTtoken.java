@@ -1,4 +1,6 @@
 package c23_99_m_webapp.backend.security;
 
-public record DataJWTtoken(String jwtToken, String name) {
+import c23_99_m_webapp.backend.models.enums.Role;
+
+public record DataJWTtoken(String jwtToken, String name, Role role) {
 }

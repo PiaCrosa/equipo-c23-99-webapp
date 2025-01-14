@@ -21,7 +21,7 @@ public class TokenService {
         try {
             Algorithm algorithm = Algorithm.HMAC256(apiSecret);
             return JWT.create()
-                    .withIssuer("API Reservation Devices School")
+                    .withIssuer("API Reservation Resources School")
                     .withSubject(user.getEmail())
                     .withExpiresAt(dateExpiration())
                     .sign(algorithm);
@@ -35,7 +35,7 @@ public class TokenService {
         try {
             Algorithm algorithm = Algorithm.HMAC256(apiSecret);
             return JWT.require(algorithm)
-                    .withIssuer("API Reservation Devices School")
+                    .withIssuer("API Reservation Resources School")
                     .build()
                     .verify(tokenJWT)
                     .getSubject();
@@ -45,7 +45,7 @@ public class TokenService {
     }
 
     private Instant dateExpiration() {
-        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+        return LocalDateTime.now().plusMinutes(30).toInstant(ZoneOffset.of("-03:00"));
     }
 }
 

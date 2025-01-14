@@ -1,6 +1,6 @@
 package c23_99_m_webapp.backend.controllers;
 
-import c23_99_m_webapp.backend.models.Dtos.ReservationDto;
+import c23_99_m_webapp.backend.models.dtos.ReservationDto;
 import c23_99_m_webapp.backend.models.Reservation;
 import c23_99_m_webapp.backend.services.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;

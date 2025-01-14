@@ -25,14 +25,11 @@ public class AuthenticationController {
 
     @PostMapping
     public ResponseEntity<DataJWTtoken> authenticateUser(@RequestBody DataAuthenticationUser dataAuthenticationUser) {
+
         Authentication authenticationToken = new UsernamePasswordAuthenticationToken(dataAuthenticationUser.email(), dataAuthenticationUser.password());
-        System.out.println("******authenticationToken***" + authenticationToken);
         Authentication userAuthenticated = authenticationManager.authenticate(authenticationToken);
-        System.out.println("*********usuarioAutenticado*******"+ userAuthenticated);
         String tokenJWT = tokenService.generateToken((User) userAuthenticated.getPrincipal());
-        System.out.println("**********tokenJWT" + tokenJWT);
-        DataJWTtoken response = new DataJWTtoken(tokenJWT, ((User) userAuthenticated.getPrincipal()).getName());
-        System.out.println("******response "+ response);
+        DataJWTtoken response = new DataJWTtoken(tokenJWT, ((User) userAuthenticated.getPrincipal()).getFullName(),((User) userAuthenticated.getPrincipal()).getRole());
         return ResponseEntity.ok(response);
     }
 
