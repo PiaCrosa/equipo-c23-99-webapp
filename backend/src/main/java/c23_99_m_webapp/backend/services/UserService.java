@@ -1,6 +1,6 @@
 package c23_99_m_webapp.backend.services;
 
-import c23_99_m_webapp.backend.errors.MyException;
+import c23_99_m_webapp.backend.exceptions.MyException;
 import c23_99_m_webapp.backend.models.Institution;
 import c23_99_m_webapp.backend.models.User;
 import c23_99_m_webapp.backend.models.dtos.DataListUsers;

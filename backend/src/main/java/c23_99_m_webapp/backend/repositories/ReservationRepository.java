@@ -2,6 +2,7 @@ package c23_99_m_webapp.backend.repositories;
 
 
 import c23_99_m_webapp.backend.models.Reservation;
+import c23_99_m_webapp.backend.models.Resource;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -13,4 +14,5 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long> {
 
 //    @Query("SELECT r FROM Reservations p WHERE r.deleted = true")
 //    List<Reservation> findAllDeleted();
+    boolean existsByResource(Resource resource);
 }

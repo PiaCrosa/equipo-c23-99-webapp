@@ -30,8 +30,9 @@ public class Institution {
     private String website;
     @OneToMany(mappedBy = "institution")
     private List<User> users;
-    //@OneToOne
-    //private Inventory inventory;
+    @OneToOne
+    @JoinColumn(name = "inventario_id", referencedColumnName = "id")
+    private Inventory inventory;
 
     public Institution(DataRegistrationInstitution dataInstitutionRegistration) {
         this.cue = dataInstitutionRegistration.cue();
