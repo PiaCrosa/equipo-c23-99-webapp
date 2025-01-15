@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/institution")
 @RequiredArgsConstructor
@@ -34,19 +36,43 @@ public class InstitutionController {
                     institution.getPhone()
             );
             URI url = uriComponentsBuilder.path("/institution/{cue}").buildAndExpand(institution.getCue()).toUri();
-            return ResponseEntity.created(url).body(dataAnswerInstitution);
+            return ResponseEntity.created(url).body(Map.of(
+                    "status", "success",
+                    "message", "Institución registrada con éxito",
+                    "data", dataAnswerInstitution
+            ));
         } catch (MyException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of(
+                    "status", "error",
+                    "message", e.getMessage()
+            ));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error interno del servidor: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "status", "error",
+                    "message", "Error interno del servidor: " + e.getMessage()
+            ));
         }
     }
 
     @PutMapping("/update")
-    public ResponseEntity updateInstitution(@RequestBody @Valid DataRegistrationInstitution.DataUpdateInstitution dataUpdateInstitution) throws MyException {
-
-        DataListInstitution institution = institutionService.updateInstitution(dataUpdateInstitution);
-        return ResponseEntity.ok(institution);
+    public ResponseEntity<?> updateInstitution(@RequestBody @Valid DataRegistrationInstitution.DataUpdateInstitution dataUpdateInstitution) {
+        try {
+            DataListInstitution institution = institutionService.updateInstitution(dataUpdateInstitution);
+            return ResponseEntity.ok(Map.of(
+                    "status", "success",
+                    "message", "Institución actualizada con éxito",
+                    "data", institution
+            ));
+        } catch (MyException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "status", "error",
+                    "message", e.getMessage()
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "status", "error",
+                    "message", "Error interno del servidor: " + e.getMessage()
+            ));
+        }
     }
 }

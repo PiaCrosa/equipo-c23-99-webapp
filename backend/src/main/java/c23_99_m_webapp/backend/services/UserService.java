@@ -20,6 +20,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final InstitutionRepository institutionRepository;
+    
     @Transactional
     public User registerUser(DataRegistrationUser dataUserRegistration) throws MyException {
         Institution institutionEncontrada = null;
@@ -86,5 +87,10 @@ public class UserService {
     public DataListUsers returnDataUserByName(String fullName) {
         User user = userRepository.getReferenceByFullName(fullName);
         return new DataListUsers(user.getDni(),user.getFullName(),user.getEmail(),user.getInstitution().getName());
+    }
+
+    public void deleteUser(String dni) {
+        User user = userRepository.getReferenceByDni(dni);
+        userRepository.delete(user);
     }
 }
