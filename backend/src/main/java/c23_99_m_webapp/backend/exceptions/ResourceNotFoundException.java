@@ -1,4 +1,4 @@
-package c23_99_m_webapp.backend.errors;
+package c23_99_m_webapp.backend.exceptions;
 
 import org.springframework.http.HttpStatus;
 

@@ -1,6 +1,7 @@
 package c23_99_m_webapp.backend.models;
 
 import c23_99_m_webapp.backend.models.enums.ResourceCategory;
+import c23_99_m_webapp.backend.models.enums.ResourceStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,7 +24,8 @@ public class Resource {
     @Enumerated(EnumType.STRING)
     private ResourceCategory category;
 
-    private Boolean available;
+    @Enumerated(EnumType.STRING)
+    private ResourceStatus status;
 
     @OneToMany(mappedBy = "resource")
     private List<Reservation> reservations;

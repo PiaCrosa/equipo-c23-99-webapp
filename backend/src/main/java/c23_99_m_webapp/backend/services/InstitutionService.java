@@ -1,6 +1,6 @@
 package c23_99_m_webapp.backend.services;
 
-import c23_99_m_webapp.backend.errors.MyException;
+import c23_99_m_webapp.backend.exceptions.MyException;
 import c23_99_m_webapp.backend.models.Institution;
 import c23_99_m_webapp.backend.models.User;
 import c23_99_m_webapp.backend.models.dtos.DataInstitutionRegistration;
@@ -10,7 +10,6 @@ import c23_99_m_webapp.backend.repositories.InstitutionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 @Service

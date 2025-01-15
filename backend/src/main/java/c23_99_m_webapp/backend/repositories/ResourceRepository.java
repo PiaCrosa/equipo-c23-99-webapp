@@ -8,5 +8,4 @@ import java.util.Optional;
 
 @Repository
 public interface ResourceRepository extends JpaRepository<Resource, Long> {
-    Optional<Resource> findByIdAndAvailable (Long id, Boolean active); //TODO: modificar available por active
 }
