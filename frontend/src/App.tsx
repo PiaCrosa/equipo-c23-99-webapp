@@ -1,15 +1,21 @@
-import './App.css'
+// src/App.tsx
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import LandingPage from './components/LandingPage';
+import Register from './components/Register';
+import Login from './components/Login';
+import './App.css';
 
-function App() {
-	return (
-		<>
-			<div className='bg-blue-500 h-screen'>
-				<h1 className='text-3xl font-bold text-white'>
-					¡Componente Principal con Tailwind!
-				</h1>
-			</div>
-		</>
-	)
-}
+const App: React.FC = () => {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </Router>
+  );
+};
 
-export default App
+export default App;

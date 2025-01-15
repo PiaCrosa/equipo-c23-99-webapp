@@ -1,0 +1,29 @@
+// src/components/LandingPage.tsx
+import React from 'react';
+import logo from '../assets/img/logo-box.svg';
+import Button from './Button';
+
+const mainContainer = "flex flex-col items-center justify-center h-screen bg-zinc-50";
+const buttonsContainer = "flex flex-col justify-center bg-sky-500 px-20 py-10 rounded-[20px]"
+
+const LandingPage: React.FC = () => {
+  return (
+    <div className={mainContainer}>
+
+        <div className='flex align-middle'>
+            <img src={logo} alt="logo box" className='h-[70px] fill-sky-500' />
+            <h1 className="font-sans font-medium text-6xl mb-8 text-sky-500">Class<span className='text-orange-400 italic'>Kit</span></h1>
+        </div>
+
+        <div className={buttonsContainer}>
+
+          <Button to={'/register'}>Registrarse</Button>
+          <Button to={'/login'}>Login</Button>
+
+        </div>
+
+    </div>
+  );
+};
+
+export default LandingPage;
