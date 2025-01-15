@@ -33,6 +33,9 @@ public class Reservation {
 
     //para borrado logico
 //    private boolean deleted = false;
+    @ManyToOne
+    @JoinColumn(name = "resource_id")
+    private Resource resource;
 
     public Reservation(){
 
