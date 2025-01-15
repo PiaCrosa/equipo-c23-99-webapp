@@ -11,6 +11,7 @@ import java.util.List;
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation,Long> {
 
-//    @Query("SELECT r FROM Reservations p WHERE r.deleted = true")
-//    List<Reservation> findAllDeleted();
+    @Query("SELECT r FROM Reservation r WHERE r.deleted = true")
+    List<Reservation> findAllDeleted();
+
 }

@@ -1,47 +1,51 @@
 package c23_99_m_webapp.backend.models;
 
 import c23_99_m_webapp.backend.models.enums.ReservationStatus;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
+@Setter
+@Getter
 @AllArgsConstructor
-
 @Data
 @Entity
 @Table(name="reservations")
 public class Reservation {
+//agregar hora de inicio y hora fin
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonFormat
     private Long id;
 
-    @JsonFormat
     private Integer countElement;
 
-   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime startDate;
+//    @ManyToOne
+//    @JoinColumn(name = "users")
+//    private User user;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private LocalTime startHour;
+    private LocalTime endHour;
 
-    @JsonFormat
     @Enumerated(EnumType.STRING)
     private ReservationStatus reservationStatus;
 
-    //para borrado logico
-//    private boolean deleted = false;
+    private boolean deleted = false;
 
     public Reservation(){
 
     }
 
-    public Reservation(Integer countElement, LocalDateTime startDate, LocalDateTime endDate, ReservationStatus reservationStatus) {
+    public Reservation(Integer countElement, LocalDate startDate, LocalDate endDate,LocalTime startHour, LocalTime endHour, ReservationStatus reservationStatus) {
         this.countElement = countElement;
+//        this.user = user;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.startHour = startHour;
+        this.endHour = endHour;
         this.reservationStatus = reservationStatus;
     }
 
@@ -64,54 +68,10 @@ public class Reservation {
                 break;
         }
     }
-//por problemas con Lombok, los getters y setters estan manuales
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Integer getCountElement() {
-        return countElement;
-    }
-
-    public void setCountElement(Integer countElement) {
-        this.countElement = countElement;
-    }
-
-    public LocalDateTime getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDateTime startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDateTime getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDateTime endDate) {
-        this.endDate = endDate;
-    }
-
-    public ReservationStatus getReservationStatus() {
-        return reservationStatus;
-    }
-
-    public void setReservationStatus(ReservationStatus reservationStatus) {
-        this.reservationStatus = reservationStatus;
-    }
-
-//    public boolean isDeleted() {
-//        return deleted;
-//    }
-//
-//    public void setDeleted(boolean deleted) {
-//        this.deleted = deleted;
+    //    public void setUser(User user) {
+//        this.user = user;
 //    }
 }
-//private User user; // establecer relación, ya que el usuario (docente) va a realizar las reservas
+//relacion con inventario
 //private Device device;

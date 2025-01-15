@@ -44,8 +44,9 @@ public class TokenService {
         }
     }
 
+    //se cambio .plusMinutes a .plusHours para extender el tiempo del token
     private Instant dateExpiration() {
-        return LocalDateTime.now().plusMinutes(30).toInstant(ZoneOffset.of("-03:00"));
+        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }
 }
 
