@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Setter
 @Getter
@@ -14,21 +13,21 @@ import java.time.LocalTime;
 @Entity
 @Table(name="reservations")
 public class Reservation {
-//agregar hora de inicio y hora fin
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Integer countElement;
 
-//    @ManyToOne
-//    @JoinColumn(name = "users")
-//    private User user;
+    @ManyToOne
+    @JoinColumn(name = "users")
+    private User user;
 
     private LocalDate startDate;
     private LocalDate endDate;
-    private LocalTime startHour;
-    private LocalTime endHour;
+    private String startHour;
+    private String endHour;
 
     @Enumerated(EnumType.STRING)
     private ReservationStatus reservationStatus;
@@ -39,7 +38,7 @@ public class Reservation {
 
     }
 
-    public Reservation(Integer countElement, LocalDate startDate, LocalDate endDate,LocalTime startHour, LocalTime endHour, ReservationStatus reservationStatus) {
+    public Reservation(Integer countElement, LocalDate startDate, LocalDate endDate,String startHour, String endHour, ReservationStatus reservationStatus) {
         this.countElement = countElement;
 //        this.user = user;
         this.startDate = startDate;
@@ -68,10 +67,6 @@ public class Reservation {
                 break;
         }
     }
-
-    //    public void setUser(User user) {
-//        this.user = user;
-//    }
 }
 //relacion con inventario
 //private Device device;

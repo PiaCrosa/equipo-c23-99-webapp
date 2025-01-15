@@ -4,14 +4,12 @@ import c23_99_m_webapp.backend.models.User;
 import c23_99_m_webapp.backend.models.enums.ReservationStatus;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public record ReservationDto (
 
         @NotNull
         Integer countElement,
-//        @NotNull
-//        User user,
+
         @NotNull
         LocalDate startDate,
 
@@ -19,13 +17,16 @@ public record ReservationDto (
         LocalDate endDate,
 
         @NotNull
-        LocalTime starHour,
+        String starHour,
 
         @NotNull
-        LocalTime endHour,
+        String endHour,
 
         @NotNull
-        ReservationStatus reservationStatus
+        ReservationStatus reservationStatus,
+
+        @NotNull
+        User user
 ){
 
 }

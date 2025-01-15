@@ -7,11 +7,12 @@ import c23_99_m_webapp.backend.repositories.ReservationRepository;
 import c23_99_m_webapp.backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,8 +26,8 @@ public class ReservationService {
 
     public ReservationDto createReservation(ReservationDto reservationDto) {
 
-//        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        User user = userRepository.findByEmail(userDetails.getUsername());
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userRepository.findByEmail(userDetails.getUsername());
 
         Reservation reservation = new Reservation();
         reservation.setCountElement(reservationDto.countElement());
@@ -35,16 +36,14 @@ public class ReservationService {
         reservation.setStartHour(reservationDto.starHour());
         reservation.setEndHour(reservationDto.endHour());
         reservation.setReservationStatus(reservationDto.reservationStatus());
+        reservation.setUser(reservationDto.user());
 
-        // Guardar la reserva en la base de datos
         reservationRepository.save(reservation);
         return reservationDto;
     }
 
-
-
 //    //METODO CREATE CON RELACION A USER
-//    public ResponseEntity<Reservation> createReservation(ReservationDto reservationDto, String userDni) throws MyException {
+//    public Reservation createReservation(ReservationDto reservationDto, String userDni) throws MyException {
 //
 //        Optional<User> userOptional = userRepository.findById(userDni);
 //        if (userOptional.isEmpty()) {
@@ -62,7 +61,7 @@ public class ReservationService {
 //
 //        // Guardar la reserva en la base de datos
 //        reservationRepository.save(reservation);
-//        return ResponseEntity.ok(reservation);
+//        return reservation;
 //    }
 
     public List<ReservationDto> getReservations() {
@@ -82,7 +81,8 @@ public class ReservationService {
                 reservation.getEndDate(),
                 reservation.getStartHour(),
                 reservation.getEndHour(),
-                reservation.getReservationStatus());
+                reservation.getReservationStatus(),
+                reservation.getUser());
     }
 
     public Optional<ReservationDto> updateById(Long id, ReservationDto updatedReservationDto) {

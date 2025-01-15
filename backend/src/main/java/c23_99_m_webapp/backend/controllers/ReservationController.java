@@ -22,8 +22,13 @@ public class ReservationController {
     private ReservationService reservationService;
 
     @PostMapping("/create")
-    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationDto reservationDto){
-       return ResponseEntity.ok().body(reservationService.createReservation(reservationDto));
+    public ResponseEntity<ReservationDto> createReservation(@RequestBody ReservationDto reservationDto){
+        try {
+            ReservationDto createdReservation = reservationService.createReservation(reservationDto);
+            return new ResponseEntity<>(createdReservation, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     //ENDPOINT CREATE CON RELACION A USER
