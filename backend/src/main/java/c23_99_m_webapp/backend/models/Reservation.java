@@ -1,19 +1,18 @@
 package c23_99_m_webapp.backend.models;
 
 import c23_99_m_webapp.backend.models.enums.ReservationStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-@Setter
-@Getter
 @AllArgsConstructor
+
 @Data
 @Entity
 @Table(name="reservations")
 public class Reservation {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,7 +31,11 @@ public class Reservation {
     @Enumerated(EnumType.STRING)
     private ReservationStatus reservationStatus;
 
-    private boolean deleted = false;
+    //para borrado logico
+//    private boolean deleted = false;
+    @ManyToOne
+    @JoinColumn(name = "resource_id")
+    private Resource resource;
 
     public Reservation(){
 
