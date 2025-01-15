@@ -1,4 +1,4 @@
-package c23_99_m_webapp.backend.models.dtos;
+package c23_99_m_webapp.backend.models.Dtos;
 
 import c23_99_m_webapp.backend.models.enums.ReservationStatus;
 import lombok.AllArgsConstructor;
