@@ -2,9 +2,9 @@ package c23_99_m_webapp.backend.controllers;
 
 import c23_99_m_webapp.backend.errors.MyException;
 import c23_99_m_webapp.backend.models.User;
-import c23_99_m_webapp.backend.models.Dtos.DataAnswerUser;
-import c23_99_m_webapp.backend.models.Dtos.DataListUsers;
-import c23_99_m_webapp.backend.models.Dtos.DataRegistrationUser;
+import c23_99_m_webapp.backend.models.dtos.DataAnswerUser;
+import c23_99_m_webapp.backend.models.dtos.DataListUsers;
+import c23_99_m_webapp.backend.models.dtos.DataRegistrationUser;
 import c23_99_m_webapp.backend.services.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
