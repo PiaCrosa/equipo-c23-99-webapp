@@ -2,15 +2,11 @@ package c23_99_m_webapp.backend.controllers;
 
 import c23_99_m_webapp.backend.errors.MyException;
 import c23_99_m_webapp.backend.models.Institution;
-import c23_99_m_webapp.backend.models.User;
-import c23_99_m_webapp.backend.models.dtos.DataAnswerInstitution;
-import c23_99_m_webapp.backend.models.dtos.DataInstitutionRegistration;
-import c23_99_m_webapp.backend.models.dtos.DataUserRegistration;
+import c23_99_m_webapp.backend.models.dtos.*;
 import c23_99_m_webapp.backend.services.InstitutionService;
-import c23_99_m_webapp.backend.services.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,13 +16,14 @@ import java.net.URI;
 @RestController
 @RequestMapping("/institution")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearer-key")
 public class InstitutionController {
 
     private final InstitutionService institutionService;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerInstitution(
-            @Valid @RequestBody DataInstitutionRegistration dataInstitutionRegistration,
+            @Valid @RequestBody DataRegistrationInstitution dataInstitutionRegistration,
             UriComponentsBuilder uriComponentsBuilder) {
         try {
             Institution institution = institutionService.registerInstitution(dataInstitutionRegistration);
@@ -44,5 +41,12 @@ public class InstitutionController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error interno del servidor: " + e.getMessage());
         }
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity updateInstitution(@RequestBody @Valid DataRegistrationInstitution.DataUpdateInstitution dataUpdateInstitution) throws MyException {
+
+        DataListInstitution institution = institutionService.updateInstitution(dataUpdateInstitution);
+        return ResponseEntity.ok(institution);
     }
 }
