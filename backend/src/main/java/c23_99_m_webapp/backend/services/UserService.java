@@ -3,7 +3,6 @@ package c23_99_m_webapp.backend.services;
 import c23_99_m_webapp.backend.errors.MyException;
 import c23_99_m_webapp.backend.models.Institution;
 import c23_99_m_webapp.backend.models.User;
-import c23_99_m_webapp.backend.models.dtos.DataAnswerUser;
 import c23_99_m_webapp.backend.models.dtos.DataListUsers;
 import c23_99_m_webapp.backend.models.dtos.DataRegistrationUser;
 import c23_99_m_webapp.backend.repositories.InstitutionRepository;
@@ -20,6 +19,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final InstitutionRepository institutionRepository;
+    
     @Transactional
     public User registerUser(DataRegistrationUser dataUserRegistration) throws MyException {
         Institution institutionEncontrada = null;
@@ -86,5 +86,10 @@ public class UserService {
     public DataListUsers returnDataUserByName(String fullName) {
         User user = userRepository.getReferenceByFullName(fullName);
         return new DataListUsers(user.getDni(),user.getFullName(),user.getEmail(),user.getInstitution().getName());
+    }
+
+    public void deleteUser(String dni) {
+        User user = userRepository.getReferenceByDni(dni);
+        userRepository.delete(user);
     }
 }
