@@ -1,10 +1,9 @@
-// src/components/LandingPage.tsx
 import React from 'react';
 import logo from '../assets/img/logo-box.svg';
-import Button from './Button';
+import RedirectButton from '../components/RedirectButton';
 
 const mainContainer = "flex flex-col items-center justify-center h-screen bg-zinc-50";
-const buttonsContainer = "flex flex-col justify-center bg-sky-500 px-20 py-10 rounded-[20px]"
+const buttonsContainer = "flex flex-col justify-center bg-sky-500 px-20 py-10 rounded-[5px]";
 
 const LandingPage: React.FC = () => {
   return (
@@ -17,8 +16,8 @@ const LandingPage: React.FC = () => {
 
         <div className={buttonsContainer}>
 
-          <Button to={'/register'}>Registrarse</Button>
-          <Button to={'/login'}>Login</Button>
+          <RedirectButton to={'/register'}>Registrarse</RedirectButton>
+          <RedirectButton to={'/login'}>Login</RedirectButton>
 
         </div>
 
