@@ -1,14 +1,14 @@
 package c23_99_m_webapp.backend.models;
 
+import c23_99_m_webapp.backend.models.dtos.ReservationDto;
 import c23_99_m_webapp.backend.models.enums.ReservationStatus;
-import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @AllArgsConstructor
-
 @Data
 @Entity
 @Table(name="reservations")
@@ -18,11 +18,6 @@ public class Reservation {
     private Long id;
 
     private Integer countElement;
-
-    @ManyToOne
-    @JoinColumn(name = "users")
-    private User user;
-
     private LocalDate startDate;
     private LocalDate endDate;
     private String startHour;
@@ -31,24 +26,25 @@ public class Reservation {
     @Enumerated(EnumType.STRING)
     private ReservationStatus reservationStatus;
 
-    //para borrado logico
-//    private boolean deleted = false;
+    @ManyToOne
+    private User user;
+
     @ManyToOne
     @JoinColumn(name = "resource_id")
     private Resource resource;
 
+    private boolean deleted = false;
+
     public Reservation(){
 
     }
-
-    public Reservation(Integer countElement, LocalDate startDate, LocalDate endDate,String startHour, String endHour, ReservationStatus reservationStatus) {
-        this.countElement = countElement;
-//        this.user = user;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.startHour = startHour;
-        this.endHour = endHour;
-        this.reservationStatus = reservationStatus;
+    public Reservation(ReservationDto reservationDto
+                       ) {
+        this.countElement = reservationDto.countElement();
+        this.startDate = reservationDto.startDate();
+        this.endDate = reservationDto.endDate();
+        this.startHour = reservationDto.starHour();
+        this.endHour = reservationDto.endHour();
     }
 
     public void handleReservationStatus() {
@@ -71,5 +67,3 @@ public class Reservation {
         }
     }
 }
-//relacion con inventario
-//private Device device;
