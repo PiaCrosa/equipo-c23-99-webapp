@@ -1,6 +1,6 @@
 package c23_99_m_webapp.backend.models;
 
-import c23_99_m_webapp.backend.models.dtos.DataUserRegistration;
+import c23_99_m_webapp.backend.models.dtos.DataRegistrationUser;
 import c23_99_m_webapp.backend.models.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -37,7 +37,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role = Role.TEACHER;
 
-    public User(DataUserRegistration dataUserRegistration, Institution institution) {
+    public User(DataRegistrationUser dataUserRegistration, Institution institution) {
         this.dni = dataUserRegistration.dni();
         this.fullName = dataUserRegistration.full_name();
         this.email = dataUserRegistration.email();
@@ -93,5 +93,28 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
+    }
+
+    public void updateData(DataRegistrationUser.DataUpdateUser dataUserUpdate) {
+        if(dataUserUpdate.dni() != null ){
+            this.dni = dataUserUpdate.dni();
+        }
+        if(dataUserUpdate.full_name() != null ){
+            this.fullName = dataUserUpdate.full_name();
+        }
+        if(dataUserUpdate.email() != null ){
+            this.email = dataUserUpdate.email();
+        }
+        if(dataUserUpdate.password() != null ){
+            this.password = new BCryptPasswordEncoder().encode(dataUserUpdate.password());
+        }
+    }
+
+    public void deactivateUser() {
+        this.active = false;
+    }
+
+    public void activateUser() {
+        this.active = true;
     }
 }
