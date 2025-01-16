@@ -1,39 +1,64 @@
 package c23_99_m_webapp.backend.controllers;
 
 import c23_99_m_webapp.backend.errors.MyException;
-import c23_99_m_webapp.backend.models.User;
+import c23_99_m_webapp.backend.models.dtos.DataAnswerReservation;
 import c23_99_m_webapp.backend.models.dtos.DataAnswerUser;
 import c23_99_m_webapp.backend.models.dtos.DataUserRegistration;
 import c23_99_m_webapp.backend.models.dtos.ReservationDto;
+import c23_99_m_webapp.backend.models.enums.ReservationStatus;
+import c23_99_m_webapp.backend.repositories.UserRepository;
+import c23_99_m_webapp.backend.security.DataJWTtoken;
 import c23_99_m_webapp.backend.services.ReservationService;
 import c23_99_m_webapp.backend.services.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/reservations")
 @SecurityRequirement(name = "bearer-key")
+@RequiredArgsConstructor
 public class ReservationController {
 
     @Autowired
-    private ReservationService reservationService;
+    ReservationService reservationService;
 
     @Autowired
-    private UserService userService;
+    UserService userService;
 
-    //ENDPOINT CREATE CON RELACION A USER // crea las relaciones pero aun aparecen nulos los campos tanto en postman como en swagger
-    @PostMapping("/create/{dni}")
-    public ReservationDto createReservation(@Valid @RequestBody ReservationDto reservationDto, @PathVariable String dni) throws MyException {
-        return reservationService.createdReservation(reservationDto,dni);
+    //ENDPOINT CREATE CON RELACION A USER
+    @PostMapping("/create")
+    public ResponseEntity<?> createReservation(@Valid @RequestBody ReservationDto reservationDto) throws MyException {
+
+        try {
+            ReservationDto reservationDto1 = reservationService.createdReservation(reservationDto);
+            //DEBERIA mostrar el nombre del user que hizo la reserva, la fecha de la reserva, el recurso seleccionado y el estado
+            DataAnswerReservation dataAnswerReservation = new DataAnswerReservation(reservationDto1.startDate(),reservationDto1.starHour(),
+                    reservationDto1.resourceid(),
+                    ReservationStatus.valueOf(""));
+
+            return ResponseEntity.ok(Map.of("status",
+                    "success", "message",
+                    "Reserva creada con éxito","data",
+                    dataAnswerReservation));
+
+        } catch (MyException e) {
+            return ResponseEntity.badRequest().body(Map.of("status",
+                    "error", "message", e.getMessage()));
+        } catch (Exception e){
+            return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("status",
+                    "error", "message",
+                    "Error al crear la reserva."));
+        }
     }
 
     @GetMapping("/allreservations")
