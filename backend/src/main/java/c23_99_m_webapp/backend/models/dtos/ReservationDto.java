@@ -1,31 +1,21 @@
 package c23_99_m_webapp.backend.models.dtos;
 
-import c23_99_m_webapp.backend.models.enums.ReservationStatus;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
-import java.time.LocalDateTime;
+import jakarta.validation.constraints.NotNull;
 
-@Data
-@AllArgsConstructor
-public class ReservationDto {
+import java.time.LocalDate;
 
-    private Long id;
-    private Integer countElement;
+public record ReservationDto (
 
-    //private User user;
-    //private Device device;
+        @NotNull
+        Integer countElement,
+        @NotNull
+        LocalDate startDate, //refactorizar
+        @NotNull
+        String starHour,
+        @NotNull
+        String endHour,
+        Long resourceid
 
-    private ReservationStatus reservationStatus;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
-
-    public ReservationDto() {
-    }
-    public ReservationDto(Integer countElement, ReservationStatus reservationStatus, LocalDateTime startDate, LocalDateTime endDate) {
-        this.countElement = countElement;
-        this.reservationStatus = reservationStatus;
-        this.startDate = startDate;
-        this.endDate = endDate;
-    }
+){
 }
