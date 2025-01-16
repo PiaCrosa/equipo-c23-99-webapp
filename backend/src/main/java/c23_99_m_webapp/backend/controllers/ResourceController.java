@@ -2,6 +2,7 @@ package c23_99_m_webapp.backend.controllers;
 
 import c23_99_m_webapp.backend.models.dtos.ResourceDTO;
 import c23_99_m_webapp.backend.models.dtos.ResourceStatusUpdateDTO;
+import c23_99_m_webapp.backend.models.enums.ResourceStatus;
 import c23_99_m_webapp.backend.services.ResourceService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -55,6 +56,12 @@ public class ResourceController {
             @RequestBody ResourceStatusUpdateDTO statusUpdateDTO) {
         ResourceDTO updatedResource = resourceService.updateResourceStatus(id, statusUpdateDTO.status());
         return ResponseEntity.ok(updatedResource);
+    }
+
+    @GetMapping("/by-status")
+    public ResponseEntity<List<ResourceDTO>> getResourcesByStatus(@RequestParam ResourceStatus status) {
+        List<ResourceDTO> resources = resourceService.getResourcesByStatus(status);
+        return ResponseEntity.ok(resources);
     }
 
 

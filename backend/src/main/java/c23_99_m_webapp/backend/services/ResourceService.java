@@ -79,5 +79,10 @@ public class ResourceService {
 
     }
 
+    public List<ResourceDTO> getResourcesByStatus(ResourceStatus status){
+        List<Resource> resourcesByStatus = resourceRepository.findAllByStatus(status);
+        return resourcesByStatus.stream().map(ResourceMapper::toDTO).collect(Collectors.toList());
+    }
+
 
 }
