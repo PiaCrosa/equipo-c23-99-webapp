@@ -1,18 +1,18 @@
 package c23_99_m_webapp.backend.models;
 
-import c23_99_m_webapp.backend.models.dtos.DataAnswerReservation;
 import c23_99_m_webapp.backend.models.dtos.ReservationDto;
 import c23_99_m_webapp.backend.models.enums.ReservationStatus;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDate;
 
 @AllArgsConstructor
-@Data
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
-@Table(name="reservations")
+@Table(name = "reservations")
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +20,6 @@ public class Reservation {
 
     private Integer countElement;
     private LocalDate startDate;
-//    private LocalDate endDate;
     private String startHour;
     private String endHour;
 
@@ -35,12 +34,8 @@ public class Reservation {
     private Resource resource;
 
     private boolean deleted = false;
-
-    public Reservation(){
-
-    }
-    public Reservation(ReservationDto reservationDto, DataAnswerReservation dataAnswerReservation
-                       ) {
+    
+    public Reservation(ReservationDto reservationDto) {
         this.countElement = reservationDto.countElement();
         this.startDate = reservationDto.startDate();
         this.startHour = reservationDto.starHour();
