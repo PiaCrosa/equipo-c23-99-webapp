@@ -2,6 +2,7 @@ package c23_99_m_webapp.backend.controllers;
 
 import c23_99_m_webapp.backend.models.dtos.ResourceDTO;
 import c23_99_m_webapp.backend.services.ResourceService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.flywaydb.core.api.output.RepairOutput;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/resource")
+@SecurityRequirement(name = "bearer-key")
 public class ResourceController {
 
     ResourceService resourceService;
