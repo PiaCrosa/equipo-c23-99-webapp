@@ -12,7 +12,7 @@ public class ResourceMapper {
         resource.setName(dto.name());
         resource.setDescription(dto.description());
         resource.setCategory(dto.category());
-        resource.setAvailable(dto.available());
+        resource.setStatus(dto.status());
         return resource;
     }
 
@@ -26,7 +26,7 @@ public class ResourceMapper {
                 resource.getName(),
                 resource.getDescription(),
                 resource.getCategory(),
-                resource.getAvailable()
+                resource.getStatus()
         );
     }
 }

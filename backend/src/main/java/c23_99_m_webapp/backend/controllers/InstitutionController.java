@@ -1,10 +1,11 @@
 package c23_99_m_webapp.backend.controllers;
 
-import c23_99_m_webapp.backend.errors.MyException;
+import c23_99_m_webapp.backend.exceptions.MyException;
 import c23_99_m_webapp.backend.models.Institution;
 import c23_99_m_webapp.backend.models.dtos.*;
 import c23_99_m_webapp.backend.services.InstitutionService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import c23_99_m_webapp.backend.models.dtos.DataAnswerInstitution;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
