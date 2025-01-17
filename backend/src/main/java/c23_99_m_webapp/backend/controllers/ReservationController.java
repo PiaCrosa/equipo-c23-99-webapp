@@ -1,13 +1,9 @@
 package c23_99_m_webapp.backend.controllers;
 
-import c23_99_m_webapp.backend.errors.MyException;
+import c23_99_m_webapp.backend.exceptions.MyException;
 import c23_99_m_webapp.backend.models.dtos.DataAnswerReservation;
-import c23_99_m_webapp.backend.models.dtos.DataAnswerUser;
-import c23_99_m_webapp.backend.models.dtos.DataUserRegistration;
 import c23_99_m_webapp.backend.models.dtos.ReservationDto;
 import c23_99_m_webapp.backend.models.enums.ReservationStatus;
-import c23_99_m_webapp.backend.repositories.UserRepository;
-import c23_99_m_webapp.backend.security.DataJWTtoken;
 import c23_99_m_webapp.backend.services.ReservationService;
 import c23_99_m_webapp.backend.services.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -16,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,9 +46,6 @@ public class ReservationController {
                     "Reserva creada con éxito","data",
                     dataAnswerReservation));
 
-        } catch (MyException e) {
-            return ResponseEntity.badRequest().body(Map.of("status",
-                    "error", "message", e.getMessage()));
         } catch (Exception e){
             return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("status",
                     "error", "message",
