@@ -3,6 +3,7 @@ package c23_99_m_webapp.backend.controllers;
 import c23_99_m_webapp.backend.exceptions.MyException;
 import c23_99_m_webapp.backend.models.dtos.DataAnswerReservation;
 import c23_99_m_webapp.backend.models.dtos.ReservationDto;
+import c23_99_m_webapp.backend.models.enums.ReservationShiftStatus;
 import c23_99_m_webapp.backend.models.enums.ReservationStatus;
 import c23_99_m_webapp.backend.services.ReservationService;
 import c23_99_m_webapp.backend.services.UserService;
@@ -35,16 +36,12 @@ public class ReservationController {
     public ResponseEntity<?> createReservation(@Valid @RequestBody ReservationDto reservationDto) throws MyException {
 
         try {
-            ReservationDto reservationDto1 = reservationService.createdReservation(reservationDto);
-            //DEBERIA mostrar el nombre del user que hizo la reserva, la fecha de la reserva, el recurso seleccionado y el estado
-            DataAnswerReservation dataAnswerReservation = new DataAnswerReservation(reservationDto1.startDate(),reservationDto1.starHour(),
-                    reservationDto1.resourceid(),
-                    ReservationStatus.valueOf(""));
+            DataAnswerReservation reservationDto1 = reservationService.createdReservation(reservationDto);
 
             return ResponseEntity.ok(Map.of("status",
                     "success", "message",
                     "Reserva creada con éxito","data",
-                    dataAnswerReservation));
+                    reservationDto1));
 
         } catch (Exception e){
             return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("status",
