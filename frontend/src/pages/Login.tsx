@@ -6,22 +6,13 @@ import { useState } from 'react';
 const mainContainer = "flex flex-col items-center justify-center h-screen bg-zinc-50";
 const elementConteiner = "flex flex-col sm h-1/2 items-center justify-center border-2 border-sky-500 bg-zinc-50 px-20 py-10 rounded-[5px] text-sky-500 font-normal text-base";
 const inputContainer = "flex flex-col";
-const inputElement = "sm h-11 px-4 mb-8 border-2 border-sky-500 rounded-[5px] text-zinc-600 font-normal ";
+const inputElement = "sm h-11 px-4 mb-8 border-2 border-sky-500 rounded-[5px] text-zinc-600 font-normal";
 
 const Login: React.FC = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  /* const [error, setError] = useState('');
   
-  const handleError = (e) => {
-    e.preventDefaul()
-
-    if (email === '' || password === '') {
-      setError(true);
-    }
-  } */
-
   //Lógica verificación - Quitar con endpoint de backend o refuncionalizar.
   let credential: string = '';
   const checkLogin = () => {
@@ -32,8 +23,11 @@ const Login: React.FC = () => {
     } if (email === 'profe@gmail.com' && password === '321') {
       // redirigir a user
       return credential = 'user';
+    } if (email === '' || password === '') {
+      // ventana modal campos obligatorios
+      return credential = 'empty';
     } else {
-      // redirige a pantalla de error
+      // ventana modal de usuario y contraseña incorrecta 
       return credential = 'error'
     }
   };
@@ -80,3 +74,4 @@ const Login: React.FC = () => {
 };
 
 export default Login;
+

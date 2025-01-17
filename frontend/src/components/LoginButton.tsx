@@ -13,7 +13,6 @@ const LoginButton: React.FC<ButtonProps> = ({ to, children }) => {
         <Link to={to}>
             <button className={buttonStyles}>
                 {children}
-                
             </button>
         </Link>
     )
