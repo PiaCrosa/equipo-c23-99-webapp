@@ -38,13 +38,14 @@ public class ReservationService {
 
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userRepository.findByEmail(userDetails.getUsername());
-
+        System.out.println(user.getFullName());
         if (user == null || !user.getActive()) {
             throw new MyException("User  not found.");
         }
 
         Optional<Resource> resource = resourceRepository.findById(reservationDto.resourceid());
 
+        System.out.println(resource);
         if (resource.isEmpty()) {
             throw new MyException("Resource not found");
         }
