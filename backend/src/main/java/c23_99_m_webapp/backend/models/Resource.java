@@ -33,6 +33,7 @@ public class Resource {
     @ManyToOne
     private Inventory inventory;
 
+
 //private Integer quantity;
 //    private String status;
 //    private LocalDate incorporationDate;

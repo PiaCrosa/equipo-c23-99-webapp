@@ -31,7 +31,6 @@ public class Institution {
     @OneToMany(mappedBy = "institution")
     private List<User> users;
     @OneToOne
-    @JoinColumn(name = "inventario_id", referencedColumnName = "id")
     private Inventory inventory;
 
     public Institution(DataRegistrationInstitution dataInstitutionRegistration) {

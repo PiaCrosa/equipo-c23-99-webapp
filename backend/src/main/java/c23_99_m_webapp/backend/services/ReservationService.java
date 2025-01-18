@@ -37,13 +37,12 @@ public class ReservationService {
 
 //   METODO CREATE CON RELACION A USER
 public DataAnswerReservation createdReservation(ReservationDto reservationDto) throws MyException {
-
-    UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    User user = userRepository.findByEmail(userDetails.getUsername());
-    System.out.println(user.getFullName());
-    if (user == null || !user.getActive()) {
-        throw new MyException("User  not found.");
-    }
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userRepository.findByEmail(userDetails.getUsername());
+        System.out.println(user.getFullName());
+        if (user == null || !user.getActive()) {
+            throw new MyException("User  not found.");
+        }
 
     Optional<Resource> resourceOptional = resourceRepository.findById(reservationDto.resourceid());
     Resource resource = resourceOptional.get();
