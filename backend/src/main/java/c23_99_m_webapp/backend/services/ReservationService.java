@@ -4,7 +4,9 @@ import c23_99_m_webapp.backend.exceptions.MyException;
 import c23_99_m_webapp.backend.models.Reservation;
 import c23_99_m_webapp.backend.models.Resource;
 import c23_99_m_webapp.backend.models.User;;
+import c23_99_m_webapp.backend.models.dtos.DataAnswerReservation;
 import c23_99_m_webapp.backend.models.dtos.ReservationDto;
+import c23_99_m_webapp.backend.models.enums.ReservationShiftStatus;
 import c23_99_m_webapp.backend.models.enums.ReservationStatus;
 import c23_99_m_webapp.backend.repositories.ReservationRepository;
 import c23_99_m_webapp.backend.repositories.ResourceRepository;
@@ -34,8 +36,7 @@ public class ReservationService {
     ResourceRepository resourceRepository;
 
 //   METODO CREATE CON RELACION A USER
-    public ReservationDto createdReservation(ReservationDto reservationDto) throws MyException {
-
+public DataAnswerReservation createdReservation(ReservationDto reservationDto) throws MyException {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userRepository.findByEmail(userDetails.getUsername());
         System.out.println(user.getFullName());
@@ -43,26 +44,30 @@ public class ReservationService {
             throw new MyException("User  not found.");
         }
 
-        Optional<Resource> resource = resourceRepository.findById(reservationDto.resourceid());
+    Optional<Resource> resourceOptional = resourceRepository.findById(reservationDto.resourceid());
+    Resource resource = resourceOptional.get();
 
-        System.out.println(resource);
-        if (resource.isEmpty()) {
-            throw new MyException("Resource not found");
-        }
-            Reservation reservation = new Reservation();
-            reservation.setCountElement(reservationDto.countElement());
-            reservation.setStartDate(reservationDto.startDate());
-            reservation.setStartHour(reservationDto.starHour());
-            reservation.setEndHour(reservationDto.endHour());
-            reservation.setReservationStatus(ReservationStatus.CONFIRMED);
-            reservation.setUser(user);
-            reservation.setResource(resource.get());
+    System.out.println(resource);
+    Reservation reservation = new Reservation();
+    reservation.setCountElement(reservationDto.countElement());
+    reservation.setStartDate(reservationDto.startDate());
+    reservation.setStartHour(reservationDto.starHour());
+    reservation.setReservationStatus(ReservationStatus.CONFIRMED);
+    reservation.setDeleted(false);
+    reservation.setUser(user);
+    reservation.setResource(resource);
 
-            reservation = reservationRepository.save(reservation);
+    reservation = reservationRepository.save(reservation);
 
-            return convertToDto(reservation);
-    }
+    DataAnswerReservation data = new DataAnswerReservation(
+            reservation.getStartDate(),
+            reservation.getStartHour(),
+            reservation.getResource().getId(),
+            reservation.getReservationStatus()
+    );
 
+    return data;
+}
     public List<ReservationDto> getReservations () {
         return reservationRepository.findAll().stream()
                 .map(this::convertToDto)
@@ -80,8 +85,7 @@ public class ReservationService {
                 reservation.getCountElement(),
                 reservation.getStartDate(),
                 reservation.getStartHour(),
-                reservation.getEndHour(),
-                reservation.getId()
+                reservation.getResource().getId()
         );
     }
     public Optional<ReservationDto> updateById (Long id, ReservationDto updatedReservationDto){
@@ -90,8 +94,7 @@ public class ReservationService {
             reservation.setCountElement(updatedReservationDto.countElement());
             reservation.setStartDate(updatedReservationDto.startDate());
             reservation.setStartHour(updatedReservationDto.starHour());
-            reservation.setEndHour(updatedReservationDto.endHour());
-            reservation.setReservationStatus(ReservationStatus.valueOf(""));
+            reservation.setReservationStatus(ReservationStatus.CONFIRMED);
 
             Reservation updatedReservation = reservationRepository.save(reservation);
             return convertToDto(updatedReservation);

@@ -1,6 +1,7 @@
 package c23_99_m_webapp.backend.models;
 
 import c23_99_m_webapp.backend.models.dtos.ReservationDto;
+import c23_99_m_webapp.backend.models.enums.ReservationShiftStatus;
 import c23_99_m_webapp.backend.models.enums.ReservationStatus;
 
 import jakarta.persistence.*;
@@ -21,7 +22,9 @@ public class Reservation {
     private Integer countElement;
     private LocalDate startDate;
     private String startHour;
-    private String endHour;
+
+//    @Enumerated(EnumType.STRING)
+//    private ReservationShiftStatus reservationShiftStatus;
 
     @Enumerated(EnumType.STRING)
     private ReservationStatus reservationStatus;
@@ -39,7 +42,6 @@ public class Reservation {
         this.countElement = reservationDto.countElement();
         this.startDate = reservationDto.startDate();
         this.startHour = reservationDto.starHour();
-        this.endHour = reservationDto.endHour();
     }
 
     public void handleReservationStatus() {

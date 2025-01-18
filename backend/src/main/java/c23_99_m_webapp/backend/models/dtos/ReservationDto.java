@@ -13,8 +13,6 @@ public record ReservationDto (
         LocalDate startDate, //refactorizar
         @NotNull
         String starHour,
-        @NotNull
-        String endHour,
         Long resourceid
 
 ){
