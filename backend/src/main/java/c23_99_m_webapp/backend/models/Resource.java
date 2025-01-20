@@ -32,6 +32,7 @@ public class Resource {
 
     private Long inventoryId;
 
+
 //private Integer quantity;
 //    private String status;
 //    private LocalDate incorporationDate;
