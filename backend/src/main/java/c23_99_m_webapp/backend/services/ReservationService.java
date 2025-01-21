@@ -3,7 +3,7 @@ package c23_99_m_webapp.backend.services;
 import c23_99_m_webapp.backend.exceptions.MyException;
 import c23_99_m_webapp.backend.models.Reservation;
 import c23_99_m_webapp.backend.models.Resource;
-import c23_99_m_webapp.backend.models.User;;
+import c23_99_m_webapp.backend.models.User;
 import c23_99_m_webapp.backend.models.dtos.DataAnswerReservation;
 import c23_99_m_webapp.backend.models.dtos.ReservationDto;
 import c23_99_m_webapp.backend.models.enums.ReservationShiftStatus;
