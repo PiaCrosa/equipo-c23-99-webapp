@@ -28,10 +28,6 @@ public class InventoryService {
     public final ResourceService resourceService;
     public final UserService userService;
 
-
-
-
-
     public InventoryService(InventoryRepository inventoryRepository,ResourceService resourceService,
                             UserService userService){
         this.inventoryRepository = inventoryRepository;
