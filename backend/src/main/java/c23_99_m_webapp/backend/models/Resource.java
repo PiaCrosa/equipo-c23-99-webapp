@@ -30,7 +30,10 @@ public class Resource {
     @OneToMany(mappedBy = "resource")
     private List<Reservation> reservations;
 
-    private Long inventoryId;
+    @ManyToOne
+    private Inventory inventory;
+
+    //private Long inventoryId;
 
 
 //private Integer quantity;
