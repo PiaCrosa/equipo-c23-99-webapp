@@ -20,6 +20,7 @@ public class InstitutionService {
 
     private final UserService userService;
     private final InstitutionRepository institutionRepository;
+    private final EmailService emailService;
 
     @Transactional
     public Institution registerInstitution(DataRegistrationInstitution dataInstitutionRegistration) throws MyException {
@@ -46,11 +47,18 @@ public class InstitutionService {
         User user;
         try {
             user = userService.registerUser(registration);
+            emailService.getEmailAdmin(
+                    user.getEmail(),
+                    user.getFullName(),
+                    registration.password(),
+                    institution.getName()
+            );
+
+
+            institution.setUsers(List.of(user));
         } catch (MyException e) {
             throw new MyException("Error al registrar el usuario administrador: " + e.getMessage());
         }
-
-        institution.setUsers(List.of(user));
 
         return institutionRepository.save(institution);
     }
@@ -73,7 +81,6 @@ public class InstitutionService {
         return new DataListInstitution(
                 institution.getCue(),
                 institution.getName(),
-                institution.getTypeInstitution(),
                 institution.getEducationalLevel(),
                 institution.getAddress(),
                 institution.getEmail(),
