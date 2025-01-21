@@ -2,6 +2,7 @@ package c23_99_m_webapp.backend.services;
 
 import c23_99_m_webapp.backend.exceptions.MyException;
 import c23_99_m_webapp.backend.models.Institution;
+import c23_99_m_webapp.backend.models.Inventory;
 import c23_99_m_webapp.backend.models.User;
 import c23_99_m_webapp.backend.models.dtos.DataListInstitution;
 import c23_99_m_webapp.backend.models.dtos.DataRegistrationInstitution;
@@ -21,6 +22,7 @@ public class InstitutionService {
     private final UserService userService;
     private final InstitutionRepository institutionRepository;
     private final EmailService emailService;
+    private final InventoryService inventoryService;
 
     @Transactional
     public Institution registerInstitution(DataRegistrationInstitution dataInstitutionRegistration) throws MyException {
@@ -31,6 +33,8 @@ public class InstitutionService {
         }
 
         Institution institution = new Institution(dataInstitutionRegistration);
+        Inventory inventory = inventoryService.createInventory();
+        institution.setInventory(inventory);
 
         institutionRepository.save(institution);
 
