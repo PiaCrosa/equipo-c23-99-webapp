@@ -11,8 +11,8 @@ public record DataAnswerReservation(
 
         //User user,
         LocalDate date,
-        String hour,
-        //ReservationShiftStatus reservationShiftStatus,
+        ReservationShiftStatus reservationShiftStatus,
+        String selectedTimeSlot,
         Long resourceid,
         ReservationStatus reservationStatus
 
