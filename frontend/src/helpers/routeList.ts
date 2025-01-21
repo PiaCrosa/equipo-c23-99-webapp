@@ -1,5 +1,5 @@
 import { Route } from './Route'
-import { AdminDashboard } from '../pages/AdminDashboard'
+import { AdminDashboard } from '../pages/AdminDashboard/AdminDashboard'
 import { TeacherDashboard } from '../pages/TeacherDashboard'
 import { Users } from '../pages/Users/Users';
 import { Inventory } from '../pages/Inventory/Inventory';
