@@ -5,6 +5,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class EmailService {
 
@@ -14,7 +15,7 @@ public class EmailService {
     public void getEmailAdmin(String email, String fullName, String password, String institutionName) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(email);
-        mailMessage.setSubject("Registro de Administrador - " + institutionName);
+        mailMessage.setSubject("\uD83C\uDFEB ClassKit\n\n" + "Registro de Administrador - Escuela: " + institutionName);
         mailMessage.setText(String.format(
                 "Hola %s,\n\nTe has registrado exitosamente como Administrador para la institución %s.\n\n" +
                         "Tus credenciales son:\nUsuario: %s\nContraseña: %s\n\nSaludos,\nEl Equipo.",
@@ -25,7 +26,7 @@ public class EmailService {
     public void getEmailTeacher(String email, String fullName, String password, String institutionName) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(email);
-        mailMessage.setSubject("Registro de Docente - " + institutionName);
+        mailMessage.setSubject("\uD83C\uDFEB ClassKit\n\n" + "Registro de Docente - Escuela: " + institutionName);
         mailMessage.setText(String.format(
                 "Hola %s,\n\nTe has registrado exitosamente como Docente para la institución %s.\n\n" +
                         "Tus credenciales son:\nUsuario: %s\nContraseña: %s\n\nPor favor, cambia tu contraseña después de iniciar sesión.\n\nSaludos,\nEl Equipo.",
@@ -36,13 +37,11 @@ public class EmailService {
     public void getEmailTeacherUpdate(String email, String fullName, String password, String institutionName) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(email);
-        mailMessage.setSubject("Modificación de datos del Docente - " + institutionName);
+        mailMessage.setSubject("\uD83C\uDFEB ClassKit\n\n" + "Modificación de datos del Docente - ClassKit - Escuela: " + institutionName);
         mailMessage.setText(String.format(
                 "Hola %s,\n\nTe datos se han actualizado exitosamente %s.\n\n" +
                         "Tus nuevas credenciales son:\nUsuario: %s\nContraseña: %s\n\nSaludos,\nEl Equipo.",
                 fullName, institutionName, email, password));
         javaMailSender.send(mailMessage);
     }
-
-
 }
