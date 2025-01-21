@@ -1,8 +1,24 @@
-import React from 'react'
-import { useGetCurrentRoute } from '../../../helpers/useGetCurrentRoute';
+import React, { useState } from 'react'
+import { useGetCurrentRoute } from '../../../helpers/useGetCurrentRoute'
+import { Route } from '../../../helpers/Route';
+
 
 const NavbarCurrentRoute = () => {
-  const currentRoute = useGetCurrentRoute();
+  const getCurrentRoute = useGetCurrentRoute;
+  const [
+    currentRoute,
+    setCurrentRoute,
+  ] = useState<Route | undefined>();
+
+  const handleCurrentUpdateRoute = (
+    route: Route | undefined,
+  ) => {
+    setCurrentRoute(route);
+  }
+
+  getCurrentRoute({
+    onUpdateCurrentRoute: handleCurrentUpdateRoute
+  });
 
   return (
     <React.Fragment>

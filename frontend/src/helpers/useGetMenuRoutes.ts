@@ -1,27 +1,32 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Route } from './Route';
-import { routeList } from './routes';
+import { routeList } from './routeList';
 import { RouteType } from './RolesType';
 
 interface UseGetMenuRoutesProps {
-  menuType: RouteType,
+  menuType?: RouteType,
+  onUpdateRoutes: (routes: Route[]) => void;
 }
 
-const useGetMenuRoutes = ({ menuType }: UseGetMenuRoutesProps) => {
+const UseGetMenuRoutes = (
+  { menuType = 'teacher', onUpdateRoutes }: UseGetMenuRoutesProps
+) => {
   const location = useLocation();
-  const [routes, setRoutes] = useState<Route[]>([]);
+  const [prevRoutes, setPrevRoutes] = useState<Route[]>([]);
 
   useEffect(() => {
     const routesToShow = routeList.filter(
       route => route.routeType == menuType && route.isShownInMenu
     );
-    setRoutes(routesToShow);
-  }, [location.pathname, menuType]);
-
-  return routes;
+    const isDifferent = JSON.stringify(routesToShow) !== JSON.stringify(prevRoutes);
+    if (isDifferent) {
+      onUpdateRoutes(routesToShow);
+      setPrevRoutes(routesToShow);
+    }
+  }, [location.pathname, menuType, onUpdateRoutes, prevRoutes]);
 }
 
 export {
-  useGetMenuRoutes,
+  UseGetMenuRoutes,
 }

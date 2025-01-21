@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 
-
 const AdminDashboard: React.FC = () => {
   const [institutionName, setInstitutionName] = useState('');
   

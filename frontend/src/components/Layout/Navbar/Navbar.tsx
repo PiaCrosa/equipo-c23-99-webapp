@@ -21,7 +21,10 @@ const Navbar: React.FC = () => {
 
   return (
     <nav
-      className={clsx(navbarClasses, experimentalClasses)}
+      className={clsx(
+        navbarClasses,
+        // experimentalClasses
+      )}
     >
       {/* TITLE */}
       <NavbarLogoAndTitle />

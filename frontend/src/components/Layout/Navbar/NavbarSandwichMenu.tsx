@@ -1,36 +1,42 @@
-import React, { useEffect, useState } from 'react';
-import { routeList } from '../../../helpers/routes';
-import { useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Route } from '../../../helpers/Route';
-import { useNavigateCustom } from '../../../helpers/useNavigate';
+import { UseGetMenuRoutesForRoleUser } from '../../../helpers/useGetMenuRoutesForRoleUser';
+import { UseGetMenuRoutes } from '../../../helpers/useGetMenuRoutes';
 
 interface NavbarSandwichMenuProps {
   onToggleMenu: (value: false) => void;
 }
 
+const optionClasses = `
+  border-b border-gray-400 text-black py-3 text-center
+`
+
 const NavbarSandwichMenu = (
-  {
-    onToggleMenu,
-  }: NavbarSandwichMenuProps
+  { onToggleMenu }: NavbarSandwichMenuProps
 ) => {
-  const location = useLocation();
-  const navigateTo = useNavigateCustom();
+  const navigate = useNavigate();
+  const getMenuRoutesForRoleUser = UseGetMenuRoutesForRoleUser;
+  const getMenuRoutes = UseGetMenuRoutes;
 
-  const [routes, setRoutes] = useState<Route[]>([]);
+  const [roleRoutes, setRoleRoutes] = useState<Route[]>([]);
+  const [loggedRoutes, setLoggedRoutes] = useState<Route[]>([]);
 
-  useEffect(() => {
-    const currentRouteRolType = routeList.find(
-      route => route.path == location.pathname
-    )?.routeType || 'anyone';
-    const routesToShow = routeList.filter(
-      route => route.routeType == currentRouteRolType && route.isShownInMenu
-    );
-    setRoutes(routesToShow);
-  }, [location.pathname]);
+  const handleRoleRoutesUpdate = (newRoutes: Route[]) => {
+    setRoleRoutes(newRoutes);
+  }
+  const handleLoggedRoutesUpdate = (newRoutes: Route[]) => {
+    setLoggedRoutes(newRoutes);
+  }
 
+  getMenuRoutesForRoleUser({ onUpdateRoutes: handleRoleRoutesUpdate });
+  getMenuRoutes({ menuType: 'logged', onUpdateRoutes: handleLoggedRoutesUpdate })
 
   const onClickCloseMenu = () => {
     onToggleMenu(false);
+  }
+  const onClickRoute = (path: string) => {
+    navigate(path);
   }
 
   return (
@@ -67,24 +73,27 @@ const NavbarSandwichMenu = (
 
           {/* ROUTE OPTION DIV */}
           {
-            routes.map(
-              route => {
-                return <div
+            roleRoutes.concat(...loggedRoutes).map(route => {
+              return (
+                <div
                   key={route.path}
-                  className='
-                    border-b border-gray-400 text-black py-3 text-center
-                  '
-                  onClick={() => navigateTo(route.path)}
+                  className={optionClasses}
+                  onClick={() => onClickRoute(route.path)}
                 >
-                  <a
-                    className='block'
-                  >
+                  <a className='block'>
                     {route.name}
                   </a>
                 </div>
-              }
-            )
+              )
+            })
           }
+          <div
+            className={optionClasses}
+          >
+            <a className='block'>
+              Salir
+            </a>
+          </div>
 
         </div>
       </div>

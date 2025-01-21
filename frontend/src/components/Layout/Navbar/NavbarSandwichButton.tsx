@@ -5,9 +5,7 @@ interface NavbarSandwichButtonProps {
 }
 
 const NavbarSandwichButton = (
-  {
-    onToggleMenu,
-  }: NavbarSandwichButtonProps
+  { onToggleMenu }: NavbarSandwichButtonProps
 ) => {
   const onClickOpenMenu = () => {
     onToggleMenu(true);

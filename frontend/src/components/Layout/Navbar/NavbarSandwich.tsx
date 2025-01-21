@@ -5,7 +5,7 @@ import { NavbarSandwichMenu } from './NavbarSandwichMenu';
 const NavbarSandwich = () => {
   const [isMenuOpened, setIsMenuOpened] = useState(false);
 
-  const toggleMenu = (value: boolean) => {
+  const handletoggleMenu = (value: boolean) => {
     setIsMenuOpened(value);
   }
 
@@ -13,8 +13,8 @@ const NavbarSandwich = () => {
     <React.Fragment>
       {
         !isMenuOpened
-          ? <NavbarSandwichButton onToggleMenu={(value) => toggleMenu(value)} />
-          : <NavbarSandwichMenu onToggleMenu={(value) => toggleMenu(value)} />
+          ? <NavbarSandwichButton onToggleMenu={(value) => handletoggleMenu(value)} />
+          : <NavbarSandwichMenu onToggleMenu={(value) => handletoggleMenu(value)} />
       }
     </React.Fragment>
   )

@@ -1,22 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { routeList } from './routes';
+import { routeList } from './routeList';
 import { Route } from './Route';
 
-const useGetCurrentRoute = () => {
+interface UseGetCurrentRouteProps {
+  onUpdateCurrentRoute: (route: Route | undefined) => void;
+}
+
+const useGetCurrentRoute = ({ onUpdateCurrentRoute }: UseGetCurrentRouteProps) => {
   const location = useLocation();
-  const [
-    currentRoute,
-    setCurrentRoute,
-  ] = useState<Route>();
 
   useEffect(() => {
-    setCurrentRoute(
-      routeList.find(route => route.path == location.pathname)
-    );
-  }, [location.pathname]);
+    const foundRoute = routeList.find(route => route.path == location.pathname);
+    onUpdateCurrentRoute(foundRoute);
+  }, [location.pathname, onUpdateCurrentRoute]);
 
-  return currentRoute;
 }
 
 export {
