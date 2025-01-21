@@ -4,9 +4,12 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import Register from './pages/Register';
 import Login from './pages/Login';
-import AdminDashboard from './pages/AdminDashboard';
 
 import './App.css';
+import { Layout } from './components/Layout';
+import { routeList } from './helpers/routeList';
+
+const pathRoutes = routeList;
 
 const App: React.FC = () => {
   return (
@@ -15,7 +18,45 @@ const App: React.FC = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/admin" element={<AdminDashboard />} />
+
+        <Route element={<Layout />}>
+          {/* ADMIN ROUTES */}
+          <Route>
+            {
+              pathRoutes.filter(
+                route => route.routeType === 'admin'
+              ).map(route => {
+                return (
+                  <Route
+                    key={route.path}
+                    path={route.path}
+                    element={<route.element />}
+                  />
+                )
+              })
+            }
+          </Route>
+
+          {/* TEACHER ROUTES */}
+          <Route>
+            {
+              pathRoutes.filter(
+                route => route.routeType === 'teacher'
+              ).map(route => {
+                return (
+                  <Route
+                    key={route.path}
+                    path={route.path}
+                    element={<route.element />}
+                  />
+                )
+              })
+            }
+          </Route>
+        </Route>
+
+
+
       </Routes>
     </Router>
   );
