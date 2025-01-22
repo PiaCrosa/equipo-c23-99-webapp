@@ -1,20 +1,30 @@
 package c23_99_m_webapp.backend.mappers;
 
+import c23_99_m_webapp.backend.models.Inventory;
 import c23_99_m_webapp.backend.models.Resource;
-import c23_99_m_webapp.backend.models.dtos.ResourceCreateDTO;
 import c23_99_m_webapp.backend.models.dtos.ResourceViewDTO;
-import lombok.experimental.UtilityClass;
+import c23_99_m_webapp.backend.repositories.InventoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-@UtilityClass
+@Component
 public class ResourceViewMapper {
+
+    private static InventoryRepository inventoryRepository;
+
+    @Autowired
+    public void setInventoryRepository(InventoryRepository inventoryRepository) {
+        ResourceViewMapper.inventoryRepository = inventoryRepository;
+    }
+
     public static Resource toEntity(ResourceViewDTO dto){
         Resource resource = new Resource();
-
+        Inventory inventory = inventoryRepository.getReferenceById(dto.inventoryId());
         resource.setName(dto.name());
         resource.setDescription(dto.description());
         resource.setCategory(dto.category());
         resource.setStatus(dto.status());
-        resource.setInventoryId(dto.inventoryId());
+        resource.setInventory(inventory);
         return resource;
     }
 
@@ -29,7 +39,7 @@ public class ResourceViewMapper {
                 resource.getDescription(),
                 resource.getCategory(),
                 resource.getStatus(),
-                resource.getInventoryId()
+                resource.getInventory().getId()
         );
     }
 }

@@ -13,6 +13,7 @@ import java.util.List;
 @Entity
 @Table(name = "resources")
 public class Resource {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,7 +31,10 @@ public class Resource {
     @OneToMany(mappedBy = "resource")
     private List<Reservation> reservations;
 
-    private Long inventoryId;
+    @ManyToOne
+    private Inventory inventory;
+
+    //private Long inventoryId;
 
 
 //private Integer quantity;
