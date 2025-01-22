@@ -16,9 +16,9 @@ public class Inventory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "inventory", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "inventory")
     private List<Resource> resources;
 
-    @OneToOne(mappedBy = "inventory", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "inventory")
     private Institution institution;
 }
