@@ -30,8 +30,8 @@ public class Resource {
     @OneToMany(mappedBy = "resource")
     private List<Reservation> reservations;
 
-    @ManyToOne
-    private Inventory inventory;
+    private Long inventoryId;
+
 
 //private Integer quantity;
 //    private String status;

@@ -1,41 +1,52 @@
 package c23_99_m_webapp.backend.controllers;
 
-import c23_99_m_webapp.backend.errors.MyException;
-import c23_99_m_webapp.backend.models.Reservation;
+import c23_99_m_webapp.backend.exceptions.MyException;
+import c23_99_m_webapp.backend.models.dtos.DataAnswerReservation;
 import c23_99_m_webapp.backend.models.dtos.ReservationDto;
 import c23_99_m_webapp.backend.services.ReservationService;
+import c23_99_m_webapp.backend.services.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/reservations")
 @SecurityRequirement(name = "bearer-key")
+@RequiredArgsConstructor
 public class ReservationController {
 
     @Autowired
-    private ReservationService reservationService;
+    ReservationService reservationService;
 
-    @PostMapping("/create")
-    public ResponseEntity<ReservationDto> createReservation(@RequestBody ReservationDto reservationDto){
-        try {
-            ReservationDto createdReservation = reservationService.createReservation(reservationDto);
-            return new ResponseEntity<>(createdReservation, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+    @Autowired
+    UserService userService;
 
     //ENDPOINT CREATE CON RELACION A USER
-//    @PostMapping("/create/{dni}")
-//    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationDto, @PathVariable String dni) throws MyException {
-//        return reservationService.createReservation(reservationDto, dni);
-//    }
+    @PostMapping("/create")
+    public ResponseEntity<?> createReservation(@Valid @RequestBody ReservationDto reservationDto) throws MyException {
+
+        try {
+            DataAnswerReservation reservationDto1 = reservationService.createdReservation(reservationDto);
+
+            return ResponseEntity.ok(Map.of("status",
+                    "success", "message",
+                    "Reserva creada con éxito","data",
+                    reservationDto1));
+
+        } catch (Exception e){
+            return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("status",
+                    "error", "message",
+                    "Error al crear la reserva."));
+        }
+    }
 
     @GetMapping("/allreservations")
     public ResponseEntity<List<ReservationDto>> getAllReservations() {
@@ -68,3 +79,14 @@ public class ReservationController {
         reservationService.restoreReservation(id);
     }
 }
+
+
+//    @PostMapping("/create") //da error
+//    public ResponseEntity<ReservationDto> createReservation(@Valid @RequestBody ReservationDto reservationDto) {
+//        try {
+//            ReservationDto createdReservation = reservationService.createReservation(reservationDto);
+//            return ResponseEntity.status(HttpStatus.CREATED).body(createdReservation);
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+//        }
+//    }

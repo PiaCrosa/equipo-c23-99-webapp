@@ -1,75 +1,69 @@
 package c23_99_m_webapp.backend.models;
 
+import c23_99_m_webapp.backend.models.dtos.ReservationDto;
+import c23_99_m_webapp.backend.models.enums.ReservationShiftStatus;
 import c23_99_m_webapp.backend.models.enums.ReservationStatus;
-import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @AllArgsConstructor
-
-@Data
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
-@Table(name="reservations")
+@Table(name = "reservations")
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Integer countElement;
-
-    @ManyToOne
-    @JoinColumn(name = "users")
-    private User user;
-
     private LocalDate startDate;
-    private LocalDate endDate;
     private String startHour;
-    private String endHour;
+
+//    @Enumerated(EnumType.STRING)
+//    private ReservationShiftStatus reservationShiftStatus;
 
     @Enumerated(EnumType.STRING)
     private ReservationStatus reservationStatus;
 
-    //para borrado logico
-//    private boolean deleted = false;
+    @ManyToOne
+    private User user;
+
     @ManyToOne
     @JoinColumn(name = "resource_id")
     private Resource resource;
 
-    public Reservation(){
-
-    }
-
-    public Reservation(Integer countElement, LocalDate startDate, LocalDate endDate,String startHour, String endHour, ReservationStatus reservationStatus) {
-        this.countElement = countElement;
-//        this.user = user;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.startHour = startHour;
-        this.endHour = endHour;
-        this.reservationStatus = reservationStatus;
+    private boolean deleted = false;
+    
+    public Reservation(ReservationDto reservationDto) {
+        this.countElement = reservationDto.countElement();
+        this.startDate = reservationDto.startDate();
+        this.startHour = reservationDto.starHour();
     }
 
     public void handleReservationStatus() {
         switch (this.reservationStatus) {
-            case PENDING:
-                System.out.println("La reservación está pendiente.");
-                break;
+//            case PENDING:
+//                System.out.println("La reservación está pendiente.");
+//                break;
             case CANCELLED:
                 System.out.println("La reservación ha sido cancelada.");
                 break;
             case CONFIRMED:
                 System.out.println("La reservación ha sido confirmada.");
                 break;
-            case REJECTED:
-                System.out.println("La reservación ha sido rechazada.");
+            case FINISHED:
+                System.out.println("La reservación ha sido finalizada.");
                 break;
+//            case REJECTED:
+//                System.out.println("La reservación ha sido rechazada.");
+//                break;
             default:
                 System.out.println("Estado de reservación desconocido.");
                 break;
         }
     }
 }
-//relacion con inventario
-//private Device device;
