@@ -10,8 +10,6 @@ public record DataRegistrationInstitution(
         String cue,
         @NotBlank
         String name,
-        @NotBlank
-        String type_institution,
         @NotNull
         EducationalLevel educational_level,
         @NotBlank
@@ -38,7 +36,6 @@ public record DataRegistrationInstitution(
                 @NotBlank
                 String cue,
                 String name,
-                String type_institution,
                 EducationalLevel educational_level,
                 String address,
                 String email,
