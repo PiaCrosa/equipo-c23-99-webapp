@@ -1,17 +1,18 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { RegisterResponse, RegisterFormData } from '../context/register';
+import { RegisterResponse } from '../context/register';
 import { getErrorMessage } from '../utils/error';
+import { UserRegister } from '../models/UserRegister';
 
 const registerRequest = async (
-  formData: RegisterFormData,
+  userRegisterInFormData: UserRegister,
 ): Promise<RegisterResponse> => {
   try {
     const response = await axios.post<RegisterResponse>(
       'http://localhost:8080/register',
-      formData,
+      { ...userRegisterInFormData },
     );
- 
+
     Swal.fire({
       icon: 'success',
       title: 'Registro exitoso',

@@ -1,78 +1,59 @@
-export const validateForm = (formData: {
-    /* fullName: string;
-    dni: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-    cue: string;
-    institution: string;
-    educationLevel: string;
-    address: string;
-    phone: string;
-    website: string; */
-    cue: string;
-    name: string;
-    educational_level: string;
-    address: string;
-    email: string;
-    phone: string;
-    website: string;
-    dniAdmin: string;
-    full_name_admin: string;
-    email_admin: string;
-    password_admin: string;
-    password2_admin: string;
-  }): string | null => {
-    // const { fullName, dni, email, password, confirmPassword, cue, institution, educationLevel, address, phone, website } = formData;
-    const { cue, name, educational_level, address, email, phone, website, dniAdmin, full_name_admin, email_admin, password_admin, password2_admin } = formData;
-    if (!full_name_admin.trim()) {
-      return 'El nombre completo es obligatorio';
-    }
-  
-    if (!dniAdmin.trim() || dniAdmin.length !== 8 || !/^\d+$/.test(dniAdmin)) {
-      return 'El DNI es obligatorio y debe tener 8 caracteres numéricos';
-    }
-  
-    if (!email.trim() || !/\S+@\S+\.\S+/.test(email)) {
-      return 'El email es obligatorio y debe tener un formato válido';
-    }
+import { UserRegister } from '../models/UserRegister';
 
-    if (!email_admin.trim() || !/\S+@\S+\.\S+/.test(email)) {
-      return 'El email es obligatorio y debe tener un formato válido';
-    }
-  
-    if (!password_admin.trim() || password_admin.length < 8 || !/[A-Za-z]/.test(password_admin) || !/\d/.test(password_admin) || !/[!@#$%^&*]/.test(password_admin)) {
-      return 'La contraseña es obligatoria y debe tener al menos 8 caracteres, incluyendo letras, números y caracteres especiales';
-    }
-  
-    if (password_admin !== password2_admin) {
-      return 'Las contraseñas no coinciden';
-    }
-  
-    if (!cue.trim() || !/^\d+$/.test(cue)) {
-      return 'El CUE es obligatorio y debe contener solo números';
-    }
-  
-    if (!name.trim()) {
-      return 'La institución es obligatoria';
-    }
-  
-    if (!educational_level.trim()) {
-      return 'El nivel educativo es obligatorio';
-    }
-  
-    if (!address.trim()) {
-      return 'La dirección es obligatoria';
-    }
-  
-    if (!phone.trim() || !/^\d+$/.test(phone)) {
-      return 'El teléfono es obligatorio y debe contener solo números';
-    }
-  
-    if (website.trim() && !/^https?:\/\/[^\s$.?#].[^\s]*$/.test(website)) {
-      return 'El sitio web debe tener un formato válido';
-    }
-  
-    return null;
-  };
-  
+export const validateForm = (
+  {
+    address, cue, dniAdmin, educational_level,
+    email, email_admin, full_name_admin, name,
+    phone, website, password2_admin, password_admin,
+  }: UserRegister,
+): string | null => {
+  if (!full_name_admin.trim()) {
+    return 'El nombre completo es obligatorio';
+  }
+
+  if (!dniAdmin.trim() || dniAdmin.length !== 8 || !/^\d+$/.test(dniAdmin)) {
+    return 'El DNI es obligatorio y debe tener 8 caracteres numéricos';
+  }
+
+  if (!email.trim() || !/\S+@\S+\.\S+/.test(email)) {
+    return 'El email es obligatorio y debe tener un formato válido';
+  }
+
+  if (!email_admin.trim() || !/\S+@\S+\.\S+/.test(email)) {
+    return 'El email es obligatorio y debe tener un formato válido';
+  }
+
+  if (!password_admin || !password_admin.trim() || password_admin.length < 8 || !/[A-Za-z]/.test(password_admin) || !/\d/.test(password_admin) || !/[!@#$%^&*]/.test(password_admin)) {
+    return 'La contraseña es obligatoria y debe tener al menos 8 caracteres, incluyendo letras, números y caracteres especiales';
+  }
+
+  if (password_admin !== password2_admin) {
+    return 'Las contraseñas no coinciden';
+  }
+
+  if (!cue.trim() || !/^\d+$/.test(cue)) {
+    return 'El CUE es obligatorio y debe contener solo números';
+  }
+
+  if (!name.trim()) {
+    return 'La institución es obligatoria';
+  }
+
+  if (!educational_level.trim()) {
+    return 'El nivel educativo es obligatorio';
+  }
+
+  if (!address.trim()) {
+    return 'La dirección es obligatoria';
+  }
+
+  if (!phone.trim() || !/^\d+$/.test(phone)) {
+    return 'El teléfono es obligatorio y debe contener solo números';
+  }
+
+  if (website.trim() && !/^https?:\/\/[^\s$.?#].[^\s]*$/.test(website)) {
+    return 'El sitio web debe tener un formato válido';
+  }
+
+  return null;
+};
