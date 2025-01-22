@@ -11,16 +11,14 @@ import java.util.List;
 @Entity
 @Table(name = "inventory")
 public class Inventory {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany
-    @JoinColumn(name = "inventoryId", referencedColumnName = "id")
+    @OneToMany(mappedBy = "inventory")
     private List<Resource> resources;
 
-    @OneToOne(mappedBy = "inventory", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "inventory")
     private Institution institution;
-
-
 }

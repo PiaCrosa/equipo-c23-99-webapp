@@ -6,7 +6,6 @@ import c23_99_m_webapp.backend.models.Resource;
 import c23_99_m_webapp.backend.models.User;
 import c23_99_m_webapp.backend.models.dtos.DataAnswerReservation;
 import c23_99_m_webapp.backend.models.dtos.ReservationDto;
-import c23_99_m_webapp.backend.models.dtos.ResourceDTO;
 import c23_99_m_webapp.backend.models.enums.ReservationShiftStatus;
 import c23_99_m_webapp.backend.models.enums.ReservationStatus;
 import c23_99_m_webapp.backend.repositories.ReservationRepository;
