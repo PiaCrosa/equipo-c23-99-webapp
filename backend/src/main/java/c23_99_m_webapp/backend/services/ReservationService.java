@@ -7,6 +7,8 @@ import c23_99_m_webapp.backend.models.User;
 import c23_99_m_webapp.backend.models.dtos.DataAnswerReservation;
 import c23_99_m_webapp.backend.models.dtos.ReservationDto;
 import c23_99_m_webapp.backend.models.enums.ReservationStatus;
+import c23_99_m_webapp.backend.models.enums.ResourceCategory;
+import c23_99_m_webapp.backend.models.enums.ResourceStatus;
 import c23_99_m_webapp.backend.repositories.ReservationRepository;
 import c23_99_m_webapp.backend.repositories.ResourceRepository;
 import c23_99_m_webapp.backend.repositories.UserRepository;
@@ -38,15 +40,25 @@ public class ReservationService {
 
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userRepository.findByEmail(userDetails.getUsername());
-        System.out.println(user.getFullName());
+
         if (user == null || !user.getActive()) {
-            throw new MyException("User  not found.");
+            throw new MyException("Usuario no encontrado.");
         }
-        // validar estado del recurso
+
         Optional<Resource> resourceOptional = resourceRepository.findById(reservationDto.resourceid());
+        if (resourceOptional.isEmpty()) {
+            throw new MyException("Material no encontrado.");
+        }
+
         Resource resource = resourceOptional.get();
 
-        System.out.println(resource);
+        if (resource.getStatus() == ResourceStatus.IN_USE){
+            throw new MyException("El material solicitado está en uso.");
+
+        } else if (resource.getStatus() == ResourceStatus.UNDER_REPAIR) {
+            throw  new MyException("El material solicitado se encuentra en reparación.");
+        }
+
         Reservation reservation = new Reservation();
         reservation.setCountElement(reservationDto.countElement());
         reservation.setStartDate(reservationDto.startDate());
@@ -90,14 +102,6 @@ public class ReservationService {
                 reservation.getResource().getId()
         );
     }
-
-//    METODO DISPONIBILIDAD DE RECURSO
-//    private void checkAvaiableResource(Resource resource){
-//        if(!reservationRepository.existsByResource(resource)){
-//            throw new RuntimeException("El material solicitado no está disponible.");
-//        }
-//    }
-
     public Optional<ReservationDto> updateById (Long id, ReservationDto updatedReservationDto){
         return reservationRepository.findById(id).map(reservation -> {
 
