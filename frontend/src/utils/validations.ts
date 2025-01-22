@@ -6,7 +6,6 @@ export const validateForm = (formData: {
     confirmPassword: string;
     cue: string;
     institution: string;
-    institutionType: string;
     educationLevel: string;
     address: string;
     phone: string;
@@ -40,10 +39,6 @@ export const validateForm = (formData: {
   
     if (!institution.trim()) {
       return 'La institución es obligatoria';
-    }
-  
-    if (!institutionType.trim()) {
-      return 'El tipo de institución es obligatorio';
     }
   
     if (!educationLevel.trim()) {

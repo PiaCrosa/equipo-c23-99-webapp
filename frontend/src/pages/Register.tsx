@@ -76,7 +76,6 @@ const Register: React.FC = () => {
           <input type="password" name="confirmPassword" placeholder="Confirmar Contraseña" className={inputField} onChange={handleChange} />
           <input type="text" name="cue" placeholder="CUE" className={inputField} onChange={handleChange} />
           <input type="text" name="institution" placeholder="Institución" className={inputField} onChange={handleChange} />
-          <input type="text" name="institutionType" placeholder="Tipo de institución" className={inputField} onChange={handleChange} />
           <input type="text" name="educationLevel" placeholder="Nivel educativo" className={inputField} onChange={handleChange} />
           <input type="text" name="address" placeholder="Dirección" className={inputField} onChange={handleChange} />
           <input type="text" name="phone" placeholder="Teléfono" className={inputField} onChange={handleChange} />
