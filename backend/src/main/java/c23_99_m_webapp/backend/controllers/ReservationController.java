@@ -9,10 +9,14 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -79,6 +83,16 @@ public class ReservationController {
         reservationService.restoreReservation(id);
     }
 
-
-    // TODO búsqueda de reserva por fecha
+    @GetMapping("/forDate/{date}")
+    public ResponseEntity<?> listForDate(@PageableDefault (size = 5)LocalDate starDate, Pageable date){
+        try{
+            Page<LocalDate> reservationDtoPage = reservationService.findReservationForDate(starDate,date);
+            return ResponseEntity.ok(Map.of("status", "success",
+                    "message", "Filtrado realizado con éxito.",
+                    "data", date));
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("status", "error",
+                    "message", "Error interno al obtener la lista de reservas."));
+        }
+    }
 }

@@ -7,21 +7,22 @@ import c23_99_m_webapp.backend.models.User;
 import c23_99_m_webapp.backend.models.dtos.DataAnswerReservation;
 import c23_99_m_webapp.backend.models.dtos.ReservationDto;
 import c23_99_m_webapp.backend.models.enums.ReservationStatus;
-import c23_99_m_webapp.backend.models.enums.ResourceCategory;
 import c23_99_m_webapp.backend.models.enums.ResourceStatus;
 import c23_99_m_webapp.backend.repositories.ReservationRepository;
 import c23_99_m_webapp.backend.repositories.ResourceRepository;
 import c23_99_m_webapp.backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 
 @Service
 public class ReservationService {
@@ -136,5 +137,11 @@ public class ReservationService {
             reservation.setDeleted(false);
             reservationRepository.save(reservation);
         }
+    }
+
+    public Page<LocalDate> findReservationForDate(LocalDate startDate, Pageable pageable) {
+        Page<Reservation> reservations = (Page<Reservation>) reservationRepository.findReservationByStartDate(startDate, pageable);
+         return reservations.map(Reservation::getStartDate);
+
     }
 }
