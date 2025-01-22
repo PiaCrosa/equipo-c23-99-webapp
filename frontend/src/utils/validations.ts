@@ -1,5 +1,5 @@
 export const validateForm = (formData: {
-    fullName: string;
+    /* fullName: string;
     dni: string;
     email: string;
     password: string;
@@ -9,27 +9,43 @@ export const validateForm = (formData: {
     educationLevel: string;
     address: string;
     phone: string;
+    website: string; */
+    cue: string;
+    name: string;
+    educational_level: string;
+    address: string;
+    email: string;
+    phone: string;
     website: string;
+    dniAdmin: string;
+    full_name_admin: string;
+    email_admin: string;
+    password_admin: string;
+    password2_admin: string;
   }): string | null => {
-    const { fullName, dni, email, password, confirmPassword, cue, institution, educationLevel, address, phone, website } = formData;
-  
-    if (!fullName.trim()) {
+    // const { fullName, dni, email, password, confirmPassword, cue, institution, educationLevel, address, phone, website } = formData;
+    const { cue, name, educational_level, address, email, phone, website, dniAdmin, full_name_admin, email_admin, password_admin, password2_admin } = formData;
+    if (!full_name_admin.trim()) {
       return 'El nombre completo es obligatorio';
     }
   
-    if (!dni.trim() || dni.length !== 8 || !/^\d+$/.test(dni)) {
+    if (!dniAdmin.trim() || dniAdmin.length !== 8 || !/^\d+$/.test(dniAdmin)) {
       return 'El DNI es obligatorio y debe tener 8 caracteres numéricos';
     }
   
     if (!email.trim() || !/\S+@\S+\.\S+/.test(email)) {
       return 'El email es obligatorio y debe tener un formato válido';
     }
+
+    if (!email_admin.trim() || !/\S+@\S+\.\S+/.test(email)) {
+      return 'El email es obligatorio y debe tener un formato válido';
+    }
   
-    if (!password.trim() || password.length < 8 || !/[A-Za-z]/.test(password) || !/\d/.test(password) || !/[!@#$%^&*]/.test(password)) {
+    if (!password_admin.trim() || password_admin.length < 8 || !/[A-Za-z]/.test(password_admin) || !/\d/.test(password_admin) || !/[!@#$%^&*]/.test(password_admin)) {
       return 'La contraseña es obligatoria y debe tener al menos 8 caracteres, incluyendo letras, números y caracteres especiales';
     }
   
-    if (password !== confirmPassword) {
+    if (password_admin !== password2_admin) {
       return 'Las contraseñas no coinciden';
     }
   
@@ -37,11 +53,11 @@ export const validateForm = (formData: {
       return 'El CUE es obligatorio y debe contener solo números';
     }
   
-    if (!institution.trim()) {
+    if (!name.trim()) {
       return 'La institución es obligatoria';
     }
   
-    if (!educationLevel.trim()) {
+    if (!educational_level.trim()) {
       return 'El nivel educativo es obligatorio';
     }
   

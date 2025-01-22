@@ -19,7 +19,7 @@ const leftTextSimple =
 
 const Register: React.FC = () => {
 	const [formData, setFormData] = useState({
-		fullName: '',
+		/* fullName: '',
 		dni: '',
 		email: '',
 		password: '',
@@ -29,7 +29,20 @@ const Register: React.FC = () => {
 		educationLevel: '',
 		address: '',
 		phone: '',
-		website: '',
+		website: '', */
+
+		cue: "123",
+		name: "pedro",
+		educational_level: "PRIMARY",
+		address: "calle",
+		email: "pedro@gmail.com",
+		phone: "321321",
+		website: "https://www.lkjl.com",
+		dniAdmin: "32654789",
+		full_name_admin: "pedro tal",
+		email_admin: "pedrotal@gmail.com",
+		password_admin: "Pedro123#",
+		password2_admin: "Pedro123#"
 	});
 
 	const navigate = useNavigate();
@@ -46,9 +59,12 @@ const Register: React.FC = () => {
         alert(errorMessage);
     } else {
         try {
+			console.log(formData);
             await registerRequest(formData);
             alert('Administrador registrado con éxito');
-            navigate('/login');
+            // navigate('/login');
+			navigate('/register');
+			
         } catch (error) {
             console.error('Error al registrarse:', error);
             alert('Hubo un problema con el registro. Inténtalo de nuevo más tarde.');

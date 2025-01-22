@@ -11,7 +11,7 @@ const registerRequest = async (
       'http://localhost:8080/register',
       formData,
     );
-
+ 
     Swal.fire({
       icon: 'success',
       title: 'Registro exitoso',
