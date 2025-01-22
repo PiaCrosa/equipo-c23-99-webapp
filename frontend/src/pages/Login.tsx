@@ -1,4 +1,4 @@
-import logo from '../assets/img/logo-box.svg';
+import logo from '/logo-box.svg';
 import React, { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -26,23 +26,18 @@ const Login: React.FC = () => {
 
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
-		if (!email || !password) {
-			return;
-		}
 
 		try {
 			const loginData = { email, password };
 			const { role } = await loginUser(loginData);
-			const urlDashboard = findPathByRouteType(routeList, role);
+			const urlDashboard = findPathByRouteType(routeList, role.toLowerCase());
 			if (urlDashboard) {
 				navigate(urlDashboard);
 			} else {
 				console.error('No se encontró una ruta para el rol:', role);
-				// redireccion aqui
 			}
 		} catch (error) {
-			console.error('Error during login:', error);
-			// Handle login errors here (show modal or error message)
+			console.error(error);
 		}
 	};
 

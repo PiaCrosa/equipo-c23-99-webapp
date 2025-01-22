@@ -8,7 +8,7 @@ export interface UserCredentials {
 export interface AuthContextType {
 	user: LoginResponse | null;
 	isLoggedIn: boolean;
-	loginUser: (userData: UserCredentials) => void;
+	loginUser: (userData: UserCredentials) => Promise<LoginResponse>;
 	logout: () => void;
 }
 

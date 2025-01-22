@@ -3,6 +3,7 @@ import { createContext, useState, useContext, useEffect } from 'react';
 import { AuthContextType, LoginResponse, UserCredentials } from './user';
 import loginRequest from '../services/loginRequest';
 
+// contexto para manejar el estado del usuario
 const AuthProvider = createContext<AuthContextType | null>(null);
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
@@ -25,7 +26,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 		}
 	}, [user]);
 
-	const loginUser = async (userData: UserCredentials) => {
+	const loginUser = async (
+		userData: UserCredentials,
+	): Promise<LoginResponse> => {
 		try {
 			const response = await loginRequest(userData);
 
@@ -34,12 +37,14 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 				setIsLoggedIn(true);
 				localStorage.setItem('user', JSON.stringify(response));
 				localStorage.setItem('timestamp', new Date().getTime().toString());
-				return;
+				return response;
 			} else {
-				console.error('Login failed');
+				console.error('No se recibió respuesta válida del servidor.');
+				throw new Error('No se recibió respuesta válida del servidor.');
 			}
 		} catch (error) {
-			console.error('Error during login:', error);
+			console.error(error || 'Error desconocido durante el inicio de sesión.');
+			throw error;
 		}
 	};
 
@@ -57,4 +62,10 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 	);
 }
 
-export const useAuthProvider = () => useContext(AuthProvider);
+export const useAuthProvider = () => {
+	const context = useContext(AuthProvider);
+	if (!context) {
+		throw new Error('useAuthProvider debe usarse dentro de un AuthProvider');
+	}
+	return context;
+};
