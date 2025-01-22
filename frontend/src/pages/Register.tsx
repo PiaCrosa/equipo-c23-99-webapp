@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { validateForm } from '../utils/validations';
 import logo from '/logo-box.svg';
+import '../App.css';
 
 const registerContainer =
 	'flex items-center justify-center gap-20 bg-zinc-50 px-4 pt-16';
@@ -32,7 +33,7 @@ const Register: React.FC = () => {
 
 	const navigate = useNavigate();
 
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
 		const { name, value } = e.target;
 		setFormData({ ...formData, [name]: value });
 	};
@@ -137,13 +138,22 @@ const Register: React.FC = () => {
 						className={inputField}
 						onChange={handleChange}
 					/>
-					<input
-						type='text'
-						name='educationLevel'
-						placeholder='Nivel educativo'
-						className={inputField}
-						onChange={handleChange}
-					/>
+          <select
+            name="educationLevel"
+            className={inputField}
+            onChange={handleChange}
+            value={formData.educationLevel}
+            required
+          >
+            <option value="" disabled>
+              Selecciona nivel educativo
+            </option>
+            <option value="PRIMARY">Primario</option>
+            <option value="SECONDARY">Secundario</option>
+            <option value="TERTIARY">Terciario</option>
+            <option value="UNIVERSITY">Universitario</option>
+          </select>
+
 					<input
 						type='text'
 						name='address'
