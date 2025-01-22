@@ -3,8 +3,6 @@ package c23_99_m_webapp.backend.controllers;
 import c23_99_m_webapp.backend.exceptions.MyException;
 import c23_99_m_webapp.backend.models.dtos.DataAnswerReservation;
 import c23_99_m_webapp.backend.models.dtos.ReservationDto;
-import c23_99_m_webapp.backend.models.enums.ReservationShiftStatus;
-import c23_99_m_webapp.backend.models.enums.ReservationStatus;
 import c23_99_m_webapp.backend.services.ReservationService;
 import c23_99_m_webapp.backend.services.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -31,7 +29,7 @@ public class ReservationController {
     @Autowired
     UserService userService;
 
-    //ENDPOINT CREATE CON RELACION A USER
+    // ENDPOINT CREATE CON RELACION A USER
     @PostMapping("/create")
     public ResponseEntity<?> createReservation(@Valid @RequestBody ReservationDto reservationDto) throws MyException {
 
@@ -81,14 +79,3 @@ public class ReservationController {
         reservationService.restoreReservation(id);
     }
 }
-
-
-//    @PostMapping("/create") //da error
-//    public ResponseEntity<ReservationDto> createReservation(@Valid @RequestBody ReservationDto reservationDto) {
-//        try {
-//            ReservationDto createdReservation = reservationService.createReservation(reservationDto);
-//            return ResponseEntity.status(HttpStatus.CREATED).body(createdReservation);
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-//        }
-//    }

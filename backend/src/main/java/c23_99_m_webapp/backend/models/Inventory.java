@@ -15,7 +15,8 @@ public class Inventory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "inventory")
+    @OneToMany
+    @JoinColumn(name = "inventoryId", referencedColumnName = "id")
     private List<Resource> resources;
 
     @OneToOne(mappedBy = "inventory", cascade = CascadeType.ALL)
