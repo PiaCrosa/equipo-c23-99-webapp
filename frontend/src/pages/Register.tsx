@@ -5,6 +5,7 @@ import Footer from '../components/Footer';
 import { validateForm } from '../utils/validations';
 import logo from '/logo-box.svg';
 import '../App.css';
+import registerRequest from '../services/registerRequest';
 
 const registerContainer =
 	'flex items-center justify-center gap-20 bg-zinc-50 px-4 pt-16';
@@ -18,7 +19,7 @@ const leftTextSimple =
 
 const Register: React.FC = () => {
 	const [formData, setFormData] = useState({
-		fullName: '',
+		/* fullName: '',
 		dni: '',
 		email: '',
 		password: '',
@@ -28,7 +29,20 @@ const Register: React.FC = () => {
 		educationLevel: '',
 		address: '',
 		phone: '',
-		website: '',
+		website: '', */
+
+		cue: "123",
+		name: "pedro",
+		educational_level: "PRIMARY",
+		address: "calle",
+		email: "pedro@gmail.com",
+		phone: "321321",
+		website: "https://www.lkjl.com",
+		dniAdmin: "32654789",
+		full_name_admin: "pedro tal",
+		email_admin: "pedrotal@gmail.com",
+		password_admin: "Pedro123#",
+		password2_admin: "Pedro123#"
 	});
 
 	const navigate = useNavigate();
@@ -38,18 +52,25 @@ const Register: React.FC = () => {
 		setFormData({ ...formData, [name]: value });
 	};
 
-	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-
-		const errorMessage = validateForm(formData);
-		if (errorMessage) {
-			alert(errorMessage);
-		} else {
-			console.log('Datos del formulario:', formData);
-			alert('Administrador registrado');
-			navigate('/login');
-		}
-	};
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const errorMessage = validateForm(formData);
+    if (errorMessage) {
+        alert(errorMessage);
+    } else {
+        try {
+			console.log(formData);
+            await registerRequest(formData);
+            alert('Administrador registrado con éxito');
+            // navigate('/login');
+			navigate('/register');
+			
+        } catch (error) {
+            console.error('Error al registrarse:', error);
+            alert('Hubo un problema con el registro. Inténtalo de nuevo más tarde.');
+        }
+    }
+};
 
 	return (
 		<div>
