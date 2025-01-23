@@ -5,6 +5,8 @@ import Footer from '../components/Footer';
 import { validateForm } from '../utils/validations';
 import logo from '/logo-box.svg';
 import '../App.css';
+import registerRequest from '../services/registerRequest';
+import { UserRegister } from '../models/UserRegister';
 
 const registerContainer =
 	'flex items-center justify-center gap-20 bg-zinc-50 px-4 pt-16';
@@ -16,39 +18,55 @@ const leftText = 'text-sky-500 font-sans text-5xl pb-4';
 const leftTextSimple =
 	'text-sky-500 font-sans text-xl pb-4 text-justify leading-relaxed';
 
+
 const Register: React.FC = () => {
-	const [formData, setFormData] = useState({
-		fullName: '',
-		dni: '',
-		email: '',
-		password: '',
-		confirmPassword: '',
-		cue: '',
-		institution: '',
-		educationLevel: '',
-		address: '',
-		phone: '',
-		website: '',
-	});
+	const initialFormData: UserRegister = {
+		cue: "123",
+		name: "pedro",
+		educational_level: "PRIMARY",
+		address: "calle",
+		email: "pedro@gmail.com",
+		phone: "321321",
+		website: "https://www.lkjl.com",
+		dniAdmin: "32654789",
+		full_name_admin: "pedro tal",
+		email_admin: "pedrotal@gmail.com",
+		password_admin: "Pedro123#",
+		password2_admin: "Pedro123#"
+	}
+
+	const [formData, setFormData] = useState(initialFormData);
 
 	const navigate = useNavigate();
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
 		const { name, value } = e.target;
-		setFormData({ ...formData, [name]: value });
+		setFormData(prevFormData => {
+			prevFormData[name as keyof UserRegister] = value;
+			return { ...formData, [name]: value }
+		});
 	};
 
-	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-
 		const errorMessage = validateForm(formData);
+
 		if (errorMessage) {
 			alert(errorMessage);
-		} else {
-			console.log('Datos del formulario:', formData);
-			alert('Administrador registrado');
-			navigate('/login');
+			return;
 		}
+
+		try {
+			await registerRequest(formData);
+			alert('Administrador registrado con éxito');
+			navigate('/login');
+			// navigate('/register');
+
+		} catch (error) {
+			console.error('Error al registrarse:', error);
+			alert('Hubo un problema con el registro. Inténtalo de nuevo más tarde.');
+		}
+
 	};
 
 	return (
@@ -88,15 +106,53 @@ const Register: React.FC = () => {
 					</h2>
 					<input
 						type='text'
-						name='fullName'
+						name='full_name_admin'
 						placeholder='Nombre completo'
 						className={inputField}
 						onChange={handleChange}
 					/>
 					<input
 						type='text'
-						name='dni'
+						name='dniAdmin'
 						placeholder='DNI'
+						className={inputField}
+						onChange={handleChange}
+					/>
+					<input
+						type='email'
+						name='email_admin'
+						placeholder='Email'
+						className={inputField}
+						onChange={handleChange}
+					/>
+					<input
+						type='password'
+						name='password_admin'
+						placeholder='Contraseña'
+						className={inputField}
+						onChange={handleChange}
+					/>
+					<input
+						type='password'
+						name='password2_admin'
+						placeholder='Confirmar Contraseña'
+						className={inputField}
+						onChange={handleChange}
+					/>
+					<h2 className='text-2xl font-medium mb-6 text-sky-500'>
+						Datos de Institución
+					</h2>
+					<input
+						type='text'
+						name='name'
+						placeholder='Institución'
+						className={inputField}
+						onChange={handleChange}
+					/>
+					<input
+						type='text'
+						name='cue'
+						placeholder='CUE'
 						className={inputField}
 						onChange={handleChange}
 					/>
@@ -107,52 +163,21 @@ const Register: React.FC = () => {
 						className={inputField}
 						onChange={handleChange}
 					/>
-					<input
-						type='password'
-						name='password'
-						placeholder='Contraseña'
+					<select
+						name="educational_level"
 						className={inputField}
 						onChange={handleChange}
-					/>
-					<input
-						type='password'
-						name='confirmPassword'
-						placeholder='Confirmar Contraseña'
-						className={inputField}
-						onChange={handleChange}
-					/>
-          <h2 className='text-2xl font-medium mb-6 text-sky-500'>
-						Datos de Institución
-					</h2>
-					<input
-						type='text'
-						name='cue'
-						placeholder='CUE'
-						className={inputField}
-						onChange={handleChange}
-					/>
-					<input
-						type='text'
-						name='institution'
-						placeholder='Institución'
-						className={inputField}
-						onChange={handleChange}
-					/>
-          <select
-            name="educationLevel"
-            className={inputField}
-            onChange={handleChange}
-            value={formData.educationLevel}
-            required
-          >
-            <option value="" disabled>
-              Selecciona nivel educativo
-            </option>
-            <option value="PRIMARY">Primario</option>
-            <option value="SECONDARY">Secundario</option>
-            <option value="TERTIARY">Terciario</option>
-            <option value="UNIVERSITY">Universitario</option>
-          </select>
+						value={formData.educational_level}
+						required
+					>
+						<option value="" disabled>
+							Selecciona nivel educativo
+						</option>
+						<option value="PRIMARY">Primario</option>
+						<option value="SECONDARY">Secundario</option>
+						<option value="TERTIARY">Terciario</option>
+						<option value="UNIVERSITY">Universitario</option>
+					</select>
 
 					<input
 						type='text'
@@ -181,11 +206,11 @@ const Register: React.FC = () => {
 				</form>
 			</div>
 
-        <Footer />
-      </div>
-      
+			<Footer />
+		</div>
 
-  );
+
+	);
 };
 
 export default Register;
