@@ -120,7 +120,7 @@ const Register: React.FC = () => {
 					/>
 					<input
 						type='email'
-						name='email'
+						name='email_admin'
 						placeholder='Email'
 						className={inputField}
 						onChange={handleChange}
@@ -144,15 +144,22 @@ const Register: React.FC = () => {
 					</h2>
 					<input
 						type='text'
+						name='name'
+						placeholder='Institución'
+						className={inputField}
+						onChange={handleChange}
+					/>
+					<input
+						type='text'
 						name='cue'
 						placeholder='CUE'
 						className={inputField}
 						onChange={handleChange}
 					/>
 					<input
-						type='text'
-						name='name'
-						placeholder='Institución'
+						type='email'
+						name='email'
+						placeholder='Email'
 						className={inputField}
 						onChange={handleChange}
 					/>

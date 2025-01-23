@@ -9,7 +9,7 @@ const registerRequest = async (
 ): Promise<RegisterResponse> => {
   try {
     const response = await axios.post<RegisterResponse>(
-      'http://localhost:8080/register',
+      'http://localhost:8080/institution/register',
       { ...userRegisterInFormData },
     );
 
