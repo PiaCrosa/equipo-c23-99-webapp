@@ -1,6 +1,7 @@
 package c23_99_m_webapp.backend.services;
 
 import c23_99_m_webapp.backend.exceptions.ResourceNotFoundException;
+import c23_99_m_webapp.backend.exceptions.ResourceUnavailableException;
 import c23_99_m_webapp.backend.mappers.ResourceCreateMapper;
 import c23_99_m_webapp.backend.mappers.ResourceViewMapper;
 import c23_99_m_webapp.backend.models.dtos.ResourceCreateDTO;
@@ -87,7 +88,7 @@ public class ResourceService {
     }
 
 
-    public ResourceViewDTO updateResourceStatus(Long id, ResourceStatus status){
+    public ResourceViewDTO updateAndReturnResourceStatus(Long id, ResourceStatus status){
         Resource resource = resourceRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró el recurso con Id: " + id));
 
@@ -101,6 +102,22 @@ public class ResourceService {
     public List<ResourceViewDTO> getResourcesByStatus(ResourceStatus status){
         List<Resource> resourcesByStatus = resourceRepository.findAllByStatus(status);
         return resourcesByStatus.stream().map(ResourceViewMapper::toDTO).collect(Collectors.toList());
+    }
+
+    public void validateResourceAvailability(Long resourceId) {
+        Resource resource = resourceRepository.findById(resourceId)
+                .orElseThrow(() -> new ResourceNotFoundException("Recurso no encontrado con ID: " + resourceId));
+
+        if (!resource.getStatus().equals(ResourceStatus.AVAILABLE)) {
+            throw new ResourceUnavailableException("El recurso no está disponible para reservar.");
+        }
+    }
+
+    public void updateResourceStatus(Long resourceId, ResourceStatus status) {
+        Resource resource = resourceRepository.findById(resourceId)
+                .orElseThrow(() -> new ResourceNotFoundException("Recurso no encontrado con ID: " + resourceId));
+        resource.setStatus(status);
+        resourceRepository.save(resource);
     }
 
 

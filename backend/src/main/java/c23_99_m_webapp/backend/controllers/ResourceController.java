@@ -54,7 +54,7 @@ public class ResourceController {
     public ResponseEntity<ResourceViewDTO> updateResourceStatus(
             @PathVariable Long id,
             @RequestBody ResourceStatusUpdateDTO statusUpdateDTO) {
-        ResourceViewDTO updatedResource = resourceService.updateResourceStatus(id, statusUpdateDTO.status());
+        ResourceViewDTO updatedResource = resourceService.updateAndReturnResourceStatus(id, statusUpdateDTO.status());
         return ResponseEntity.ok(updatedResource);
     }
 

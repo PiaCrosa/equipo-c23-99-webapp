@@ -58,7 +58,7 @@ public class ReservationService {
         reservation.setDeleted(false);
         reservation.setUser(user);
         reservation.setResource(resource);
-
+//actualizar estado del recurso a "IN_USE"
         reservation = reservationRepository.save(reservation);
 
         DataAnswerReservation data = new DataAnswerReservation(
