@@ -35,6 +35,7 @@ const registerRequest = async (
       icon: 'error',
       title: 'Error al registrarse',
       text: errorMessage,
+      
     });
 
     throw new Error(errorMessage);
