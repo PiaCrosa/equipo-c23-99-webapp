@@ -3,6 +3,7 @@ import Swal from 'sweetalert2';
 import { LoginResponse, UserCredentials } from '../context/user';
 import { getErrorMessage } from '../utils/error';
 import { PORT_SERVER } from '.';
+import '../App.css';
 
 const loginRequest = async (
 	loginData: UserCredentials,
@@ -19,6 +20,12 @@ const loginRequest = async (
 			text: `Bienvenido, ${response.data.name}!`,
 			timer: 3000,
 			showConfirmButton: false,
+			customClass: {
+				popup: 'swal-popup-success',
+				title: 'swal-title-success',
+				confirmButton: 'swal-confirm-button-success',
+				icon: 'swal-icon-success'
+			},
 		});
 
 		return response.data;
@@ -35,6 +42,12 @@ const loginRequest = async (
 			icon: 'error',
 			title: 'Error al iniciar sesión',
 			text: errorMessage,
+			customClass: {
+				popup: 'swal-popup-error',
+				title: 'swal-title-error',
+				confirmButton: 'swal-confirm-button-error',
+				icon: 'swal-icon-error'
+			},
 		});
 
 		throw new Error(errorMessage);
