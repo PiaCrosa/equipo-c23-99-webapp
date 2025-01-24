@@ -64,7 +64,7 @@ public class ReservationController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Optional<ReservationDto>> updateById(@PathVariable Long id, @RequestBody ReservationDto reservationDto) {
+    public ResponseEntity<Optional<ReservationDto>> updateById(@PathVariable Long id, @RequestBody ReservationDto reservationDto) throws MyException {
         return ResponseEntity.status(HttpStatus.OK).body(reservationService.updateById(id, reservationDto));
     }
 
