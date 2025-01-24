@@ -9,6 +9,7 @@ import { SearchDevices } from '../pages/SearchDevices/SearchDevices';
 import { CheckReservations } from '../pages/CheckReservations/CheckReservations';
 import { NewReservation } from '../pages/NewReservation/NewReservation';
 import { MyProfile } from '../pages/MyProfile/MyProfile';
+import { EditAdmin } from '../pages/EditAdmin/EditAdmin';
 
 const routeList: Route[] = [
 	{
@@ -17,6 +18,13 @@ const routeList: Route[] = [
 		routeType: 'admin',
 		isShownInMenu: true,
 		element: AdminDashboard,
+	},
+	{
+		path: '/edit-admin-profile',
+		name: 'editar admin',
+		routeType: 'admin',
+		isShownInMenu: false,
+		element: EditAdmin,
 	},
 	{
 		path: '/users',

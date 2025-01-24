@@ -1,26 +1,40 @@
 import React, { useEffect, useState } from 'react';
+import { AdminHomeTitle } from './AdminHomeTitle';
+import { AdminHomeData } from './AdminHomeData';
+import AdminHomeButton from './AdminHomeButton';
+import { useNavigate } from 'react-router-dom';
 
 const AdminDashboard: React.FC = () => {
-  const [institutionName, setInstitutionName] = useState('');
-  
-  useEffect(() => {
-    setInstitutionName('Nombre de la institución');
-  }, []);
+	const navigate = useNavigate();
+	const [AdminInfo, setAdminInfo] = useState({
+		full_name_admin: 'julito',
+		dniAdmin: '96104483',
+		email_admin: 'julioandresrivas@gmail.com',
+		password_admin: 'Jarg*0901',
+	});
 
-  return (
-    <React.Fragment>
-      <div className='
-        py-4 px-2 text-center text-sky-500
-        sm:py-6
-      '>
-        <span>
-          {institutionName}
-        </span>
-      </div>
-    </React.Fragment>
-  )
-}
+	const [institutionInfo, setInstitutionInfo] = useState({
+		cue: '20000000',
+		name: 'La Escuelita',
+		educational_level: 'Primario',
+		address: 'san martin 455',
+		email: 'utn@gmail.com',
+		phone: '1234567890',
+		website: 'http://utn.com',
+	});
 
-export {
-  AdminDashboard
+	useEffect(() => {}, []);
+
+	return (
+		<React.Fragment>
+			<AdminHomeTitle>{institutionInfo.name}</AdminHomeTitle>
+			<AdminHomeData admin={AdminInfo} institution={institutionInfo} />
+			<AdminHomeButton
+				onClick={() => navigate('/edit-admin-profile')}
+				text='Editar Perfil'
+			/>
+		</React.Fragment>
+	);
 };
+
+export { AdminDashboard };
