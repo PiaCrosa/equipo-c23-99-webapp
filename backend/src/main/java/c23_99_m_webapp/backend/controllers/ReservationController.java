@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -33,9 +34,8 @@ public class ReservationController {
     @Autowired
     UserService userService;
 
-    // ENDPOINT CREATE CON RELACION A USER
     @PostMapping("/create")
-    public ResponseEntity<?> createReservation(@Valid @RequestBody ReservationDto reservationDto) throws MyException {
+    public ResponseEntity<?> createReservation(@Valid @RequestBody ReservationDto reservationDto) {
 
         try {
             DataAnswerReservation reservationDto1 = reservationService.createdReservation(reservationDto);
@@ -53,14 +53,14 @@ public class ReservationController {
     }
 
     @GetMapping("/allreservations")
-    public ResponseEntity<List<ReservationDto>> getAllReservations() {
-        List<ReservationDto> reservationList = reservationService.getReservations();
-        return ResponseEntity.ok().body(reservationList);
+    public ResponseEntity<List<ReservationDto>> getAllReservations() throws MyException {
+            List<ReservationDto> reservationList = reservationService.getReservations();
+            return ResponseEntity.ok().body(reservationList);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<ReservationDto>> getReservationById(@PathVariable Long id) {
-        return ResponseEntity.ok().body(reservationService.findReservationById(id));
+    public ResponseEntity<Optional<ReservationDto>> getReservationById(@PathVariable Long id) throws MyException {
+            return ResponseEntity.ok().body(reservationService.findReservationById(id));
     }
 
     @PutMapping("/update/{id}")
@@ -69,7 +69,7 @@ public class ReservationController {
     }
 
     @PutMapping("/delete/{id}") //borrado logico
-    public void deleteReservation(@PathVariable Long id){
+    public void deleteReservation(@PathVariable Long id) throws MyException {
         reservationService.deleteReservationById(id);
     }
 
@@ -79,20 +79,38 @@ public class ReservationController {
     }
 
     @PutMapping("/restore/{id}")
-    public void restore(@PathVariable Long id){
+    public void restore(@PathVariable Long id) {
         reservationService.restoreReservation(id);
     }
 
+// filtrado por fechas con paginacion
     @GetMapping("/forDate/{date}")
-    public ResponseEntity<?> listForDate(@PageableDefault (size = 5)LocalDate starDate, Pageable date){
+    public ResponseEntity<?> listForDate(@PathVariable("date") LocalDate startDate,
+                                         @PageableDefault(size = 5) Pageable pageable){
         try{
-            Page<LocalDate> reservationDtoPage = reservationService.findReservationForDate(starDate,date);
+            Page<LocalDate> reservationDtoPage = reservationService.findByDate(startDate,pageable);
             return ResponseEntity.ok(Map.of("status", "success",
                     "message", "Filtrado realizado con éxito.",
-                    "data", date));
+                    "data", reservationDtoPage));
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("status", "error",
                     "message", "Error interno al obtener la lista de reservas."));
         }
     }
+
+    //  filtrado por fechas sin paginacion
+//    @GetMapping("/for_date/{date}")
+//    public ResponseEntity<?> listForDate(@RequestParam LocalDate starDate){
+//        try{
+//            List<Reservation> dataAnwerReservation = reservationService.findReservationByDate(starDate);
+//            return ResponseEntity.ok(Map.of(
+//                    "status", "success",
+//                    "message", "Filtrado realizado con éxito.",
+//                    "data", dataAnwerReservation));
+//        } catch (Exception e){
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+//                    "status", "error",
+//                    "message", "Error interno al obtener la lista de reservas." ));
+//        }
+//    }
 }

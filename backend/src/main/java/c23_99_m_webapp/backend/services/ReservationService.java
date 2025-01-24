@@ -36,7 +36,6 @@ public class ReservationService {
     @Autowired
     ResourceRepository resourceRepository;
 
-//  METODO CREATE CON RELACION A USER
     public DataAnswerReservation createdReservation(ReservationDto reservationDto) throws MyException {
 
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -47,8 +46,9 @@ public class ReservationService {
         }
 
         Optional<Resource> resourceOptional = resourceRepository.findById(reservationDto.resourceid());
+
         if (resourceOptional.isEmpty()) {
-            throw new MyException("Material no encontrado.");
+            throw new MyException("No se encuentra el material solicitado");
         }
 
         Resource resource = resourceOptional.get();
@@ -79,21 +79,28 @@ public class ReservationService {
                 reservation.getResource().getId(),
                 reservation.getReservationStatus()
         );
-
         return data;
     }
-    public List<ReservationDto> getReservations () {
-        return reservationRepository.findAll().stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+
+    public List<ReservationDto> getReservations() throws MyException {
+        try {
+            return reservationRepository.findAll().stream()
+                    .map(this::convertToDto)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new MyException("Error al obtener lista.");
+        }
     }
 
-    public Optional<ReservationDto> findReservationById (Long id){
-        return reservationRepository.findById(id)
-                .map(this::convertToDto);
+    public Optional<ReservationDto> findReservationById(Long id) throws MyException {
+            if (id == null) {
+                throw new MyException("El id no puede ser nulo.");
+            }
+            return reservationRepository.findById(id)
+                    .map(this::convertToDto);
     }
 
-    private ReservationDto convertToDto (Reservation reservation){
+    private ReservationDto convertToDto(Reservation reservation){
 
         return new ReservationDto(
                 reservation.getCountElement(),
@@ -103,34 +110,43 @@ public class ReservationService {
                 reservation.getResource().getId()
         );
     }
-    public Optional<ReservationDto> updateById (Long id, ReservationDto updatedReservationDto){
-        return reservationRepository.findById(id).map(reservation -> {
 
-            reservation.setCountElement(updatedReservationDto.countElement());
-            reservation.setStartDate(updatedReservationDto.startDate());
-            reservation.setReservationShiftStatus(updatedReservationDto.reservationShiftStatus());
-            reservation.setSelectedTimeSlot(updatedReservationDto.selectedTimeSlot());
-            reservation.setReservationStatus(ReservationStatus.CONFIRMED);
+    public Optional<ReservationDto> updateById(Long id, ReservationDto updatedReservationDto) throws MyException {
 
-            Reservation updatedReservation = reservationRepository.save(reservation);
-            return convertToDto(updatedReservation);
-        });
+        if (id == null){
+            throw new MyException("No se encuentra la reserva para actualizar");
+        }
+            return reservationRepository.findById(id).map(reservation -> {
+                reservation.setCountElement(updatedReservationDto.countElement());
+                reservation.setStartDate(updatedReservationDto.startDate());
+                reservation.setReservationShiftStatus(updatedReservationDto.reservationShiftStatus());
+                reservation.setSelectedTimeSlot(updatedReservationDto.selectedTimeSlot());
+                reservation.setReservationStatus(ReservationStatus.CONFIRMED);
+
+                Reservation updatedReservation = reservationRepository.save(reservation);
+                return convertToDto(updatedReservation);
+            });
     }
 
-    public void deleteReservationById (Long id){
+    public void deleteReservationById(Long id) throws MyException {
+
+        if (!reservationRepository.existsById(id)) {
+            throw new MyException("No se encuentra la reserva.");
+        }
+
         Reservation reservation = reservationRepository.findById(id).get();
         reservation.setDeleted(true);
         reservationRepository.save(reservation);
     }
 
-    public List<ReservationDto> getDeletedReservations () {
+    public List<ReservationDto> getDeletedReservations() {
         List<Reservation> deletedReservations = reservationRepository.findAllDeleted();
         return deletedReservations.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
-    public void restoreReservation (Long id){
+    public void restoreReservation(Long id){
         Reservation reservation = reservationRepository.findById(id).orElse(null);
         assert reservation != null;
         if (reservation.isDeleted()) {
@@ -139,9 +155,14 @@ public class ReservationService {
         }
     }
 
-    public Page<LocalDate> findReservationForDate(LocalDate startDate, Pageable pageable) {
-        Page<Reservation> reservations = (Page<Reservation>) reservationRepository.findReservationByStartDate(startDate, pageable);
-         return reservations.map(Reservation::getStartDate);
-
+    //filtrado por fechas con paginacion
+    public Page<LocalDate> findByDate(LocalDate startDate, Pageable pageable) {
+        Page<Reservation> reservations = reservationRepository.findReservationByDate(startDate, pageable);
+        return reservations.map(Reservation::getStartDate);
     }
+
+    //    //metodo filtrado comun sin paginacion
+//    public List<Reservation> findReservationByDate(LocalDate starDate) {
+//        return reservationRepository.findReservationByStartDate(starDate).stream().toList();
+//    }
 }
