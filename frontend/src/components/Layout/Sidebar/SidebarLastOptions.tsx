@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { UseGetMenuRoutes } from '../../../helpers/hooks/useGetMenuRoutes';
 import { Route } from '../../../helpers/Route';
+import { useNavigate } from 'react-router-dom';
 
 interface SidebarLastOptionsProps {
 	optionClasses: string;
 }
 const SidebarLastOptions = ({ optionClasses }: SidebarLastOptionsProps) => {
+	const navigate = useNavigate();
 	const getMenuRoutes = UseGetMenuRoutes;
 
 	const [routes, setRoutes] = useState<Route[]>([]);
@@ -16,12 +18,20 @@ const SidebarLastOptions = ({ optionClasses }: SidebarLastOptionsProps) => {
 
 	getMenuRoutes({ onUpdateRoutes: handleRoutesUpdate, menuType: 'logged' });
 
+	const onClickRoute = (path: string) => {
+		navigate(path);
+	};
+
 	return (
 		<React.Fragment>
 			<div>
 				{routes.map((route) => {
 					return (
-						<div key={route.path} className={optionClasses}>
+						<div 
+							key={route.path} 
+							className={optionClasses}
+							onClick={() => onClickRoute(route.path)}
+						>
 							{route.name}
 						</div>
 					);
