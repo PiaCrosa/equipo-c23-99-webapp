@@ -21,11 +21,14 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 			const now = new Date().getTime();
 			const timeElapsed = now - parseInt(storedTimestamp);
 
-			if (timeElapsed > 24 * 60 * 60 * 1000) {
+			if (timeElapsed > 2 * 60 * 60 * 1000 || !user) {
 				setUser(null);
 				setIsLoggedIn(false);
 				localStorage.removeItem('user');
 				localStorage.removeItem('timestamp');
+			}
+			if (user) {
+				setIsLoggedIn(true);
 			}
 		}
 	}, [user]);

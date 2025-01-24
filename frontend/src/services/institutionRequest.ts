@@ -1,27 +1,28 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { LoginResponse, UserCredentials } from '../context/user';
+import { InstitutionUpdate } from '../models/admin/InstitutionUpdate'; // Crea este tipo para la estructura
 import { getErrorMessage } from '../utils/error';
 import { PORT_SERVER } from '.';
 
-const loginRequest = async (
-	loginData: UserCredentials,
-): Promise<LoginResponse> => {
+export const updateInstitution = async (
+	institutionData: InstitutionUpdate,
+	token: string | undefined,
+): Promise<void> => {
 	try {
-		const response = await axios.post<LoginResponse>(
-			`${PORT_SERVER}/login`,
-			loginData,
-		);
+		await axios.put(`${PORT_SERVER}/institution/update`, institutionData, {
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
+			},
+		});
 
 		Swal.fire({
 			icon: 'success',
-			title: 'Inicio de sesión exitoso',
-			text: `Bienvenido, ${response.data.name}!`,
+			title: 'Actualización exitosa',
+			text: `La institución ${institutionData.name} ha sido actualizada.`,
 			timer: 3000,
 			showConfirmButton: false,
 		});
-
-		return response.data;
 	} catch (error: unknown) {
 		let errorMessage = 'Ocurrió un error desconocido.';
 
@@ -33,12 +34,10 @@ const loginRequest = async (
 
 		Swal.fire({
 			icon: 'error',
-			title: 'Error al iniciar sesión',
+			title: 'Error al actualizar',
 			text: errorMessage,
 		});
 
 		throw new Error(errorMessage);
 	}
 };
-
-export default loginRequest;

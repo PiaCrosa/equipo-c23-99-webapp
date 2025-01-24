@@ -21,7 +21,7 @@ const routeList: Route[] = [
 	},
 	{
 		path: '/edit-admin-profile',
-		name: 'editar admin',
+		name: 'Editar Admin',
 		routeType: 'admin',
 		isShownInMenu: false,
 		element: EditAdmin,

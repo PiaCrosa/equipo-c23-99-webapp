@@ -5,9 +5,6 @@ export interface AdminInfo {
 	dniAdmin: string;
 	email_admin: string;
 	password_admin: string;
-}
-
-export interface InstitutionInfo {
 	cue: string;
 	name: string;
 	educational_level: string;
@@ -23,6 +20,5 @@ export interface ButtonPropsAdminHome {
 }
 
 export interface PropsAdminHomeData {
-	admin: AdminInfo;
-	institution: InstitutionInfo;
+	adminFull: AdminInfo;
 }
