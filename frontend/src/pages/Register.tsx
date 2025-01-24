@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -7,6 +7,7 @@ import logo from '/logo-box.svg';
 import '../App.css';
 import registerRequest from '../services/registerRequest';
 import { UserRegister } from '../models/UserRegister';
+import { useAuthProvider } from '../context/AuthProvider';
 
 const registerContainer =
 	'flex items-center justify-center gap-20 bg-zinc-50 px-4 pt-16';
@@ -18,32 +19,40 @@ const leftText = 'text-sky-500 font-sans text-5xl pb-4';
 const leftTextSimple =
 	'text-sky-500 font-sans text-xl pb-4 text-justify leading-relaxed';
 
-
 const Register: React.FC = () => {
 	const initialFormData: UserRegister = {
-		cue: "123",
-		name: "pedro",
-		educational_level: "PRIMARY",
-		address: "calle",
-		email: "pedro@gmail.com",
-		phone: "321321",
-		website: "https://www.lkjl.com",
-		dniAdmin: "32654789",
-		full_name_admin: "pedro tal",
-		email_admin: "pedrotal@gmail.com",
-		password_admin: "Pedro123#",
-		password2_admin: "Pedro123#"
-	}
+		cue: '123',
+		name: 'pedro',
+		educational_level: 'PRIMARY',
+		address: 'calle',
+		email: 'pedro@gmail.com',
+		phone: '321321',
+		website: 'https://www.lkjl.com',
+		dniAdmin: '32654789',
+		full_name_admin: 'pedro tal',
+		email_admin: 'pedrotal@gmail.com',
+		password_admin: 'Pedro123#',
+		password2_admin: 'Pedro123#',
+	};
 
 	const [formData, setFormData] = useState(initialFormData);
 
 	const navigate = useNavigate();
+	const { isLoggedIn, user } = useAuthProvider();
 
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+	useEffect(() => {
+		if (isLoggedIn) {
+			navigate(`/${user?.role.toLowerCase()}-dashboard`);
+		}
+	}, [isLoggedIn, navigate, user?.role]);
+
+	const handleChange = (
+		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+	) => {
 		const { name, value } = e.target;
-		setFormData(prevFormData => {
+		setFormData((prevFormData) => {
 			prevFormData[name as keyof UserRegister] = value;
-			return { ...formData, [name]: value }
+			return { ...formData, [name]: value };
 		});
 	};
 
@@ -61,12 +70,10 @@ const Register: React.FC = () => {
 			alert('Administrador registrado con éxito');
 			navigate('/login');
 			// navigate('/register');
-
 		} catch (error) {
 			console.error('Error al registrarse:', error);
 			alert('Hubo un problema con el registro. Inténtalo de nuevo más tarde.');
 		}
-
 	};
 
 	return (
@@ -164,19 +171,18 @@ const Register: React.FC = () => {
 						onChange={handleChange}
 					/>
 					<select
-						name="educational_level"
+						name='educational_level'
 						className={inputField}
 						onChange={handleChange}
 						value={formData.educational_level}
-						required
-					>
-						<option value="" disabled>
+						required>
+						<option value='' disabled>
 							Selecciona nivel educativo
 						</option>
-						<option value="PRIMARY">Primario</option>
-						<option value="SECONDARY">Secundario</option>
-						<option value="TERTIARY">Terciario</option>
-						<option value="UNIVERSITY">Universitario</option>
+						<option value='PRIMARY'>Primario</option>
+						<option value='SECONDARY'>Secundario</option>
+						<option value='TERTIARY'>Terciario</option>
+						<option value='UNIVERSITY'>Universitario</option>
 					</select>
 
 					<input
@@ -208,8 +214,6 @@ const Register: React.FC = () => {
 
 			<Footer />
 		</div>
-
-
 	);
 };
 

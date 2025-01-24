@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { UseGetMenuRoutes } from '../../../helpers/hooks/useGetMenuRoutes';
 import { Route } from '../../../helpers/Route';
-import { useNavigate } from 'react-router-dom';
+import { useAuthProvider } from '../../../context/AuthProvider';
 
 interface SidebarLastOptionsProps {
 	optionClasses: string;
@@ -9,6 +9,7 @@ interface SidebarLastOptionsProps {
 const SidebarLastOptions = ({ optionClasses }: SidebarLastOptionsProps) => {
 	const navigate = useNavigate();
 	const getMenuRoutes = UseGetMenuRoutes;
+	const { logout } = useAuthProvider();
 
 	const [routes, setRoutes] = useState<Route[]>([]);
 
@@ -36,7 +37,9 @@ const SidebarLastOptions = ({ optionClasses }: SidebarLastOptionsProps) => {
 						</div>
 					);
 				})}
-				<div className={optionClasses}>Salir</div>
+				<div className={optionClasses} onClick={logout}>
+					Salir
+				</div>
 			</div>
 		</React.Fragment>
 	);
