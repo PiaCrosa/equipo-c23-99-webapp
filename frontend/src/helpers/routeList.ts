@@ -9,6 +9,7 @@ import { SearchDevices } from '../pages/SearchDevices/SearchDevices';
 import { CheckReservations } from '../pages/CheckReservations/CheckReservations';
 import { NewReservation } from '../pages/NewReservation/NewReservation';
 import { MyProfile } from '../pages/MyProfile/MyProfile';
+import { TermsAndConditions } from '../pages/TermsAndConditions/TermsAndConditions'
 
 const routeList: Route[] = [
 	{
@@ -102,7 +103,7 @@ const routeList: Route[] = [
 		name: 'Términos y Condiciones',
 		routeType: 'logged',
 		isShownInMenu: true,
-		element: MyProfile,
+		element: TermsAndConditions,
 	},
 ] as const;
 
