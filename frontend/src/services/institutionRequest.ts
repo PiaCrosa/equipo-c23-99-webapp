@@ -1,28 +1,28 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { RegisterResponse } from '../context/register';
+import { InstitutionUpdate } from '../models/admin/InstitutionUpdate'; // Crea este tipo para la estructura
 import { getErrorMessage } from '../utils/error';
-import { UserRegister } from '../models/UserRegister';
 import { PORT_SERVER } from '.';
 
-const registerRequest = async (
-	userRegisterInFormData: UserRegister,
-): Promise<RegisterResponse> => {
+export const updateInstitution = async (
+	institutionData: InstitutionUpdate,
+	token: string | undefined,
+): Promise<void> => {
 	try {
-		const response = await axios.post<RegisterResponse>(
-			`${PORT_SERVER}/institution/register`,
-			{ ...userRegisterInFormData },
-		);
+		await axios.put(`${PORT_SERVER}/institution/update`, institutionData, {
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
+			},
+		});
 
 		Swal.fire({
 			icon: 'success',
-			title: 'Registro exitoso',
-			text: `Bienvenido, ${response.data.name}!`,
+			title: 'Actualización exitosa',
+			text: `La institución ${institutionData.name} ha sido actualizada.`,
 			timer: 3000,
 			showConfirmButton: false,
 		});
-
-		return response.data;
 	} catch (error: unknown) {
 		let errorMessage = 'Ocurrió un error desconocido.';
 
@@ -34,12 +34,10 @@ const registerRequest = async (
 
 		Swal.fire({
 			icon: 'error',
-			title: 'Error al registrarse',
+			title: 'Error al actualizar',
 			text: errorMessage,
 		});
 
 		throw new Error(errorMessage);
 	}
 };
-
-export default registerRequest;
