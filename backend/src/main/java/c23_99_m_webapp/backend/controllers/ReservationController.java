@@ -1,7 +1,9 @@
 package c23_99_m_webapp.backend.controllers;
 
 import c23_99_m_webapp.backend.exceptions.MyException;
+import c23_99_m_webapp.backend.models.dtos.DataAnswerDateReservation;
 import c23_99_m_webapp.backend.models.dtos.DataAnswerReservation;
+import c23_99_m_webapp.backend.models.dtos.PageResponse;
 import c23_99_m_webapp.backend.models.dtos.ReservationDto;
 import c23_99_m_webapp.backend.services.ReservationService;
 import c23_99_m_webapp.backend.services.UserService;
@@ -19,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -54,6 +55,7 @@ public class ReservationController {
 
     @GetMapping("/allreservations")
     public ResponseEntity<List<ReservationDto>> getAllReservations() throws MyException {
+
             List<ReservationDto> reservationList = reservationService.getReservations();
             return ResponseEntity.ok().body(reservationList);
     }
@@ -86,31 +88,25 @@ public class ReservationController {
 // filtrado por fechas con paginacion
     @GetMapping("/forDate/{date}")
     public ResponseEntity<?> listForDate(@PathVariable("date") LocalDate startDate,
-                                         @PageableDefault(size = 5) Pageable pageable){
-        try{
-            Page<LocalDate> reservationDtoPage = reservationService.findByDate(startDate,pageable);
+                                         @PageableDefault(size = 5) Pageable pageable) {
+        try {
+            Page<DataAnswerDateReservation> reservationDtoPage = reservationService.findByDate(startDate, pageable);
+            PageResponse<DataAnswerDateReservation> response = new PageResponse<>(
+                    reservationDtoPage.getContent(), //->aca deberian verse los datos de la reserva
+                    reservationDtoPage.getTotalPages(),
+                    reservationDtoPage.getTotalElements(),
+                    reservationDtoPage.getSize(),
+                    reservationDtoPage.getNumber()
+            );
+
             return ResponseEntity.ok(Map.of("status", "success",
                     "message", "Filtrado realizado con éxito.",
-                    "data", reservationDtoPage));
-        } catch (Exception e){
+                    "data", response));
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("status", "error",
                     "message", "Error interno al obtener la lista de reservas."));
         }
     }
 
-    //  filtrado por fechas sin paginacion
-//    @GetMapping("/for_date/{date}")
-//    public ResponseEntity<?> listForDate(@RequestParam LocalDate starDate){
-//        try{
-//            List<Reservation> dataAnwerReservation = reservationService.findReservationByDate(starDate);
-//            return ResponseEntity.ok(Map.of(
-//                    "status", "success",
-//                    "message", "Filtrado realizado con éxito.",
-//                    "data", dataAnwerReservation));
-//        } catch (Exception e){
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
-//                    "status", "error",
-//                    "message", "Error interno al obtener la lista de reservas." ));
-//        }
-//    }
 }
+

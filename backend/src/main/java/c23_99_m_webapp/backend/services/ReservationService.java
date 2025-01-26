@@ -4,6 +4,7 @@ import c23_99_m_webapp.backend.exceptions.MyException;
 import c23_99_m_webapp.backend.models.Reservation;
 import c23_99_m_webapp.backend.models.Resource;
 import c23_99_m_webapp.backend.models.User;
+import c23_99_m_webapp.backend.models.dtos.DataAnswerDateReservation;
 import c23_99_m_webapp.backend.models.dtos.DataAnswerReservation;
 import c23_99_m_webapp.backend.models.dtos.ReservationDto;
 import c23_99_m_webapp.backend.models.enums.ReservationStatus;
@@ -156,13 +157,20 @@ public class ReservationService {
     }
 
     //filtrado por fechas con paginacion
-    public Page<LocalDate> findByDate(LocalDate startDate, Pageable pageable) {
-        Page<Reservation> reservations = reservationRepository.findReservationByDate(startDate, pageable);
-        return reservations.map(Reservation::getStartDate);
-    }
+    public Page<DataAnswerDateReservation> findByDate(LocalDate startDate, Pageable pageable) {
+        Page<Reservation> reservationPage = reservationRepository.findReservationByDate(startDate, pageable);
 
-    //    //metodo filtrado comun sin paginacion
-//    public List<Reservation> findReservationByDate(LocalDate starDate) {
-//        return reservationRepository.findReservationByStartDate(starDate).stream().toList();
-//    }
+        System.out.println("Total de reservas encontradas: " + reservationPage.getTotalElements());
+        return reservationPage.map(reservation -> {
+            DataAnswerDateReservation data = new DataAnswerDateReservation(
+                    reservation.getStartDate(),
+                    reservation.getReservationStatus(),
+                    reservation.getUser(),
+                    reservation.getResource().getId()
+
+            );
+            System.out.println("Data content: " + data); //este print no sale
+            return data;
+        });
+    }
 }

@@ -17,10 +17,6 @@ import java.util.List;
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation,Long> {
 
-//    buscar reservación por fecha sin paginacion
-//    @Query("SELECT r FROM Reservation r WHERE startDate = :startDate")
-//    List<Reservation> findReservationByStartDate(@Param("startDate") LocalDate startDate);
-
     //buscar reservacion por fecha con paginacion
     @Query("SELECT r FROM Reservation r WHERE startDate = :startDate")
     Page<Reservation> findReservationByDate(@Param("startDate") LocalDate startDate, Pageable pageable);
