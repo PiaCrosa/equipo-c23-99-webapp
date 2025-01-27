@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+
 @RestController
 @RequestMapping(value = "/reservations")
 @SecurityRequirement(name = "bearer-key")
@@ -56,13 +57,13 @@ public class ReservationController {
     @GetMapping("/allreservations")
     public ResponseEntity<List<ReservationDto>> getAllReservations() throws MyException {
 
-            List<ReservationDto> reservationList = reservationService.getReservations();
-            return ResponseEntity.ok().body(reservationList);
+        List<ReservationDto> reservationList = reservationService.getReservations();
+        return ResponseEntity.ok().body(reservationList);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Optional<ReservationDto>> getReservationById(@PathVariable Long id) throws MyException {
-            return ResponseEntity.ok().body(reservationService.findReservationById(id));
+        return ResponseEntity.ok().body(reservationService.findReservationById(id));
     }
 
     @PutMapping("/update/{id}")
@@ -85,7 +86,7 @@ public class ReservationController {
         reservationService.restoreReservation(id);
     }
 
-// filtrado por fechas con paginacion
+    // filtrado por fechas con paginacion
     @GetMapping("/forDate/{date}")
     public ResponseEntity<?> listForDate(@PathVariable("date") LocalDate startDate,
                                          @PageableDefault(size = 5) Pageable pageable) {
@@ -109,4 +110,5 @@ public class ReservationController {
     }
 
 }
+
 
