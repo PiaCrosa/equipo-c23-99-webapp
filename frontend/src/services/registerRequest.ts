@@ -15,11 +15,11 @@ const registerRequest = async (
 		);
 
     Swal.fire({
-      icon: 'success',
-      title: 'Registro exitoso',
-      text: `Bienvenido, ${response.data.name}!`, // no muestra el nombre, muestra undefined.
-      timer: 3000,
-      showConfirmButton: false,
+		icon: 'success',
+		title: 'Registro exitoso',
+		text: `Bienvenido, ${response.data.name}!`, // no muestra el nombre, muestra undefined.
+		timer: 3000,
+		showConfirmButton: false,
     });
 
 		return response.data;
