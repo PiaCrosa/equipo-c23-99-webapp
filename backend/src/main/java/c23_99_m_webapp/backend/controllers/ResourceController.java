@@ -4,6 +4,7 @@ import c23_99_m_webapp.backend.models.dtos.ResourceCreateDTO;
 import c23_99_m_webapp.backend.models.dtos.ResourceViewDTO;
 import c23_99_m_webapp.backend.models.dtos.ResourceStatusUpdateDTO;
 import c23_99_m_webapp.backend.models.enums.ResourceStatus;
+import c23_99_m_webapp.backend.services.InventoryService;
 import c23_99_m_webapp.backend.services.ResourceService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -13,22 +14,29 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-
 @RestController
 @RequestMapping("/resource")
 @SecurityRequirement(name = "bearer-key")
 public class ResourceController {
 
-    ResourceService resourceService;
-    public ResourceController(ResourceService resourceService){
-        this.resourceService = resourceService;
-    }
+    public final InventoryService inventoryService;
 
+    ResourceService resourceService;
+    public ResourceController(ResourceService resourceService,InventoryService inventoryService){
+        this.resourceService = resourceService;
+        this.inventoryService = inventoryService;
+    }
 
     @GetMapping
     public ResponseEntity<List<ResourceViewDTO>> getResources() {
         List<ResourceViewDTO> resources = resourceService.getResources();
         return ResponseEntity.ok(resources);
+    }
+
+    @PostMapping("/add-resource")
+    public ResponseEntity<ResourceViewDTO> addResourceToInventory(@RequestBody ResourceCreateDTO resourceDTO) {
+        ResourceViewDTO dto = inventoryService.createAndAddResourceToInventory(resourceDTO);
+        return ResponseEntity.created(URI.create("/resource" + dto.id())).body(dto);
     }
 
 //    @PostMapping
@@ -63,6 +71,4 @@ public class ResourceController {
         List<ResourceViewDTO> resources = resourceService.getResourcesByStatus(status);
         return ResponseEntity.ok(resources);
     }
-
-
 }

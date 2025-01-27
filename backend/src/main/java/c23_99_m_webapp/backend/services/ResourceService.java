@@ -15,9 +15,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static c23_99_m_webapp.backend.mappers.ResourceCreateMapper.toDTO;
-import static c23_99_m_webapp.backend.mappers.ResourceCreateMapper.toEntity;
-
 @Service
 public class ResourceService {
 

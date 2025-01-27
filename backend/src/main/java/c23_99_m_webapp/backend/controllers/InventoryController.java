@@ -3,9 +3,9 @@ package c23_99_m_webapp.backend.controllers;
 import c23_99_m_webapp.backend.models.dtos.InventoryDTO;
 import c23_99_m_webapp.backend.services.InventoryService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("/inventory")
@@ -18,7 +18,13 @@ public class InventoryController {
         this.inventoryService = inventoryService;
     }
 
-    @GetMapping
+    @GetMapping("/getInstitution")
+    public ResponseEntity<InventoryDTO> getInventoryByInstitution(){
+        InventoryDTO inventoryDTO = inventoryService.getInventoryByCurrentUser();
+        return ResponseEntity.ok(inventoryDTO);
+    }
+
+    @GetMapping("/getId")
     ResponseEntity<InventoryDTO> getInventoryById(@RequestParam Long id){
         InventoryDTO inventory = inventoryService.getInventoryById(id);
         return ResponseEntity.ok(inventory);

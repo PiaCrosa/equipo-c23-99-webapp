@@ -4,7 +4,6 @@ import c23_99_m_webapp.backend.exceptions.MyException;
 import c23_99_m_webapp.backend.models.Institution;
 import c23_99_m_webapp.backend.models.dtos.*;
 import c23_99_m_webapp.backend.services.InstitutionService;
-import c23_99_m_webapp.backend.services.InventoryService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import c23_99_m_webapp.backend.models.dtos.DataAnswerInstitution;
 import jakarta.validation.Valid;
@@ -16,7 +15,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.Map;
-
 @RestController
 @RequestMapping("/institution")
 @RequiredArgsConstructor
@@ -24,7 +22,6 @@ import java.util.Map;
 public class InstitutionController {
 
     private final InstitutionService institutionService;
-    private final InventoryService inventoryService;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerInstitution(
@@ -33,10 +30,14 @@ public class InstitutionController {
         try {
             Institution institution = institutionService.registerInstitution(dataInstitutionRegistration);
             DataAnswerInstitution dataAnswerInstitution = new DataAnswerInstitution(
+                    institution.getCue(),
                     institution.getName(),
                     institution.getAddress(),
                     institution.getEmail(),
-                    institution.getPhone()
+                    institution.getPhone(),
+                    institution.getEducationalLevel(),
+                    institution.getWebsite()
+
             );
             URI url = uriComponentsBuilder.path("/institution/{cue}").buildAndExpand(institution.getCue()).toUri();
             return ResponseEntity.created(url).body(Map.of(
@@ -79,19 +80,36 @@ public class InstitutionController {
         }
     }
 
-    @GetMapping("/inventory")
-    public ResponseEntity<InventoryDTO> getInventoryByInstitution(){
-        InventoryDTO inventoryDTO = inventoryService.getInventoryByCurrentUser();
-        return ResponseEntity.ok(inventoryDTO);
+    @GetMapping("/getCue/{cue}")
+    public ResponseEntity<?> returnDataInstitutionByCue(@PathVariable String cue) {
+        try {
+            DataAnswerInstitution dataInstitution = institutionService.returnDataInstitutionByCue(cue);
+            return ResponseEntity.ok(Map.of(
+                    "status", "success",
+                    "message", "Institución obtenida con éxito",
+                    "data", dataInstitution
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "status", "error",
+                    "message", "Error interno al obtener la institución"
+            ));
+        }
     }
 
-    @PostMapping("/add-resource")
-    public ResponseEntity<ResourceViewDTO> addResourceToInventory(@RequestBody ResourceCreateDTO resourceDTO) {
-        ResourceViewDTO dto = inventoryService.createAndAddResourceToInventory(resourceDTO);
-        return ResponseEntity.created(URI.create("/resource" + dto.id())).body(dto);
+    @DeleteMapping("/delete/{cue}")
+    public ResponseEntity<?> deleteInstitution(@PathVariable String cue) {
+        try {
+            institutionService.deleteInstitution(cue);
+            return ResponseEntity.ok(Map.of(
+                    "status", "success",
+                    "message", "Institución eliminada con éxito"
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "status", "error",
+                    "message", "Error interno al eliminar la institución"
+            ));
+        }
     }
-
-
-
-
 }

@@ -55,7 +55,7 @@ public class InventoryService {
             throw new ResourceNotFoundException("La institución no tiene un inventario asignado.");
         }
 
-     return InventoryMapper.toDTO(inventory);
+        return InventoryMapper.toDTO(inventory);
     }
 
     public ResourceViewDTO createAndAddResourceToInventory(ResourceCreateDTO resourceDTO){
