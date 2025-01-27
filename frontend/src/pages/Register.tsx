@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -219,7 +218,6 @@ const Register: React.FC = () => {
 						type='text'
 						name='website'
 						placeholder='Sitio web'
-						required = {false}
 						required = {false}
 						className={inputField}
 						onChange={handleChange}
