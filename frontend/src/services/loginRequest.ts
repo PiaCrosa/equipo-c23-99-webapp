@@ -2,6 +2,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import { LoginResponse, UserCredentials } from '../context/user';
 import { getErrorMessage } from '../utils/error';
+import { PORT_SERVER } from '.';
 import '../App.css';
 
 const loginRequest = async (
@@ -9,7 +10,7 @@ const loginRequest = async (
 ): Promise<LoginResponse> => {
 	try {
 		const response = await axios.post<LoginResponse>(
-			'http://localhost:8080/login',
+			`${PORT_SERVER}/login`,
 			loginData,
 		);
 
