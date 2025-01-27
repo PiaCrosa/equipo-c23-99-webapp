@@ -9,6 +9,7 @@ import '../App.css';
 import registerRequest from '../services/registerRequest';
 import { UserRegister } from '../models/UserRegister';
 import { useAuthProvider } from '../context/AuthProvider';
+import Swal from 'sweetalert2';
 
 const registerContainer =
 	'flex items-center justify-center gap-20 bg-zinc-50 px-4 pt-16';
@@ -218,6 +219,7 @@ const Register: React.FC = () => {
 						type='text'
 						name='website'
 						placeholder='Sitio web'
+						required = {false}
 						required = {false}
 						className={inputField}
 						onChange={handleChange}
