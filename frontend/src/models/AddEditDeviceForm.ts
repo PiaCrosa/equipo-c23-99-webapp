@@ -1,7 +1,7 @@
 export interface AddEditDeviceForm {
-  id: number | undefined,
+  id: 0,
   name: string,
   category: string,
   description: string,
-  isAvailable: boolean,
+  isAvailable: 'true' | 'false',
 }

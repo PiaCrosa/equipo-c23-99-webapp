@@ -1,106 +1,72 @@
-import { Controller, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { AddEditDeviceForm } from '../../models/AddEditDeviceForm';
+import { AddEditDeviceTitle } from './AddEditDeviceTitle';
+import { useParams } from 'react-router-dom';
 
+import { AddEditDeviceSubmitButton } from './AddEditDeviceSubmitButton';
+import { useState } from 'react';
+import { Resource } from '../../models/Resource';
+import { AddEditDeviceInputs } from './AddEditDeviceInputs';
+import { ResourceService } from '../../services/resourceService';
+
+const initialDeviceFormValue: AddEditDeviceForm = {
+  id: 0,
+  category: 'IT',
+  description: 'lorem',
+  name: 'Gemran',
+  isAvailable: 'true',
+}
 
 const AddEditDevice = () => {
+  // Initial Hooks
+  const { id } = useParams();
   const {
     register: deviceRegister,
     handleSubmit: handleDeviceSubmit,
-    control: deviceControl,
   } = useForm<AddEditDeviceForm>();
+  const [deviceForm, setDeviceForm] = useState<AddEditDeviceForm>({ ...initialDeviceFormValue });
+  const resourceServices = ResourceService();
 
-  const readDeviceForm = (value: AddEditDeviceForm) => {
-    console.log(value);
+  // Handlers
+
+  // useEFfect
+
+  // Functions
+  const updateLocalDeviceForm = (formValue: AddEditDeviceForm) => {
+    setDeviceForm({ ...formValue });
+  }
+  const prepareResourceToSubmit = (): Resource => {
+    return {
+      inventoryId: deviceForm.id,
+      category: deviceForm.category,
+      description: deviceForm.description,
+      name: deviceForm.name,
+      status: deviceForm.isAvailable == 'true' ? 'AVAILABLE' : 'UNAVAILABLE',
+    }
+  }
+  const submitDeviceFormToServer = async (
+    resource: Resource,
+  ) => {
+    await resourceServices.createResource({ resource });
   }
 
-  const setValueAsBoolean = (value: '0' | '1') => {
-    return value === '1' ? true : false;
+  // Handlers
+  const submitDeviceForm = (value: AddEditDeviceForm) => {
+    updateLocalDeviceForm(value);
+    const resource = prepareResourceToSubmit();
+    submitDeviceFormToServer(resource);
   }
 
   return (
-    <form
-      onSubmit={handleDeviceSubmit(readDeviceForm)}
+    <form className='
+        p-2 text-sky-500
+        sm:px-6 sm:py-4
+      '
+      onSubmit={handleDeviceSubmit(submitDeviceForm)}
     >
-      <div>
-        Editar recurso $Nombre
-      </div>
-      <div>
-        <label>
-          Nombre:
-        </label>
-        <Controller
-          control={deviceControl}
-          name='category'
-          render={({ field: { onChange, onBlur, value } }) => (
-            <input
-              onChange={onChange}
-              onBlur={onBlur}
-              value={value}
-            />
-          )}
-        >
-          
-        </Controller>
-      </div>
-      <div>
-        <label>
-          Categoría:
-        </label>
-        <select
-          {...deviceRegister(
-            'category',
-            { required: true }
-          )}
-        >
-          <option value={1}>1</option>
-          <option value={2}>2</option>
-          <option value={3}>3</option>
-          <option value={4}>4</option>
-        </select>
-      </div>
-      <div>
-        <label>
-          Descripción:
-        </label>
-        <textarea
-          {...deviceRegister(
-            'description',
-            { required: true }
-          )}
-        ></textarea>
-      </div>
-      <div>
-        <label>
-          Disponible:
-        </label>
-        <div>
-          <div>
-            <label>Si</label>
-            <input
-              type='radio'
-              value={1}
-              {...deviceRegister(
-                'isAvailable',
-                { required: true, setValueAs: setValueAsBoolean }
-              )}
-            />
-          </div>
-          <div>
-            <label>No</label>
-            <input
-              type='radio'
-              value={0}
-              {...deviceRegister(
-                'isAvailable',
-                { required: true, setValueAs: setValueAsBoolean }
-              )}
-            />
-          </div>
-        </div>
-      </div>
-      <div>
-        <input type="submit" value='Enviar' />
-      </div>
+      <AddEditDeviceTitle deviceName={id} />
+      <AddEditDeviceInputs register={deviceRegister} deviceForm={deviceForm} />
+      <AddEditDeviceSubmitButton />
     </form>
   )
 }
