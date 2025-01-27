@@ -12,7 +12,7 @@ import { useAuthProvider } from '../context/AuthProvider';
 
 const registerContainer =
 	'flex items-center justify-center gap-20 bg-zinc-50 px-4 pt-16';
-const formElement = 'bg-white p-6 rounded-lg shadow-md w-full max-w-md my-10';
+const formElement = 'bg-white p-6 rounded-lg shadow-md w-full max-w-md my-10 z-10';
 const inputField = 'mb-4 p-1.5 border border-gray-300 rounded w-full';
 const submitButton =
 	'mt-6 bg-sky-500 text-white p-2 rounded w-full hover:bg-sky-400';
@@ -91,7 +91,7 @@ const Register: React.FC = () => {
 						<img
 							src={logo}
 							alt='classkit box logo'
-							className='w-[600px] opacity-[0.05] fixed top-[20vh] left-10'
+							className='w-[600px] opacity-[0.05] fixed top-[20vh] left-10 z-0'
 						/>
 						<p className={leftText}>
 							Bienvenido a Class
@@ -218,7 +218,7 @@ const Register: React.FC = () => {
 						type='text'
 						name='website'
 						placeholder='Sitio web'
-						required = {true}
+						required = {false}
 						className={inputField}
 						onChange={handleChange}
 					/>
