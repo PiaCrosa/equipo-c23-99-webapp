@@ -1,5 +1,5 @@
 import React from 'react';
-import WhiteLogo from '../../../assets/img/white-logo.svg';
+import WhiteLogo from '../../../assets/img/logo-box-white.svg';
 
 
 const NavbarLogoAndTitle = () => {
