@@ -4,6 +4,7 @@ import c23_99_m_webapp.backend.exceptions.MyException;
 import c23_99_m_webapp.backend.models.Institution;
 import c23_99_m_webapp.backend.models.Inventory;
 import c23_99_m_webapp.backend.models.User;
+import c23_99_m_webapp.backend.models.dtos.DataAnswerInstitution;
 import c23_99_m_webapp.backend.models.dtos.DataListInstitution;
 import c23_99_m_webapp.backend.models.dtos.DataRegistrationInstitution;
 import c23_99_m_webapp.backend.models.dtos.DataRegistrationUser;
@@ -35,9 +36,8 @@ public class InstitutionService {
         Institution institution = new Institution(dataInstitutionRegistration);
         Inventory inventory = inventoryService.createInventory();
         institution.setInventory(inventory);
-
         institutionRepository.save(institution);
-
+        
         DataRegistrationUser registration = new DataRegistrationUser(
                 dataInstitutionRegistration.dniAdmin(),
                 dataInstitutionRegistration.full_name_admin(),
@@ -45,25 +45,24 @@ public class InstitutionService {
                 dataInstitutionRegistration.password_admin(),
                 dataInstitutionRegistration.password2_admin(),
                 Role.ADMIN,
-                institution.getCue()
+                dataInstitutionRegistration.cue()
         );
-
         User user;
         try {
             user = userService.registerUser(registration);
-            emailService.getEmailAdmin(
-                    user.getEmail(),
-                    user.getFullName(),
-                    registration.password(),
-                    institution.getName()
-            );
-
-
+            if(user != null) {
+                emailService.getEmailAdmin(
+                        user.getEmail(),
+                        user.getFullName(),
+                        registration.password(),
+                        institution.getName()
+                );
+            }
             institution.setUsers(List.of(user));
         } catch (MyException e) {
+            institutionRepository.delete(institution);
             throw new MyException("Error al registrar el usuario administrador: " + e.getMessage());
         }
-
         return institutionRepository.save(institution);
     }
     @Transactional
@@ -95,4 +94,31 @@ public class InstitutionService {
                 admin.getEmail()
         );
     }
+
+    public DataAnswerInstitution returnDataInstitutionByCue(String cue) {
+        Optional<Institution> institutionOptional = institutionRepository.findByCue(cue);
+        if(institutionOptional.isPresent()){
+            Institution institution = institutionOptional.get();
+            return new DataAnswerInstitution(
+                    institution.getCue(),
+                    institution.getName(),
+                    institution.getAddress(),
+                    institution.getEmail(),
+                    institution.getPhone(),
+                    institution.getEducationalLevel(),
+                    institution.getWebsite()
+            );
+        }
+        throw new IllegalArgumentException("No se encontró una institución con el CUE proporcionado: " + cue);
+    }
+
+    public void deleteInstitution(String cue) {
+        Optional<Institution> institutionOptional = institutionRepository.findByCue(cue);
+        if(institutionOptional.isPresent()){
+            Institution institution = institutionOptional.get();
+            institutionRepository.delete(institution);
+        }
+        throw new IllegalArgumentException("No se encontró una institución con el CUE proporcionado: " + cue);
+    }
 }
+
