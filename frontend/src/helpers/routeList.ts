@@ -8,7 +8,6 @@ import { AddEditDevice } from '../pages/AddEditDevice/AddEditDevice';
 import { SearchDevices } from '../pages/SearchDevices/SearchDevices';
 import { CheckReservations } from '../pages/CheckReservations/CheckReservations';
 import { NewReservation } from '../pages/NewReservation/NewReservation';
-import { MyProfile } from '../pages/MyProfile/MyProfile';
 import { EditAdmin } from '../pages/EditAdmin/EditAdmin';
 import { TermsAndConditions } from '../pages/TermsAndConditions/TermsAndConditions'
 
@@ -97,14 +96,6 @@ const routeList: Route[] = [
 		routeType: 'teacher',
 		isShownInMenu: false,
 		element: NewReservation,
-	},
-
-	{
-		path: '/profile',
-		name: 'Mi Perfil',
-		routeType: 'logged',
-		isShownInMenu: true,
-		element: MyProfile,
 	},
 	{
 		path: '/conditions',

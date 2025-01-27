@@ -22,18 +22,18 @@ const leftTextSimple =
 
 const Register: React.FC = () => {
 	const initialFormData: UserRegister = {
-		cue: '123',
-		name: 'pedro',
-		educational_level: 'PRIMARY',
-		address: 'calle',
-		email: 'pedro@gmail.com',
-		phone: '321321',
-		website: 'https://www.lkjl.com',
-		dniAdmin: '32654789',
-		full_name_admin: 'pedro tal',
-		email_admin: 'pedrotal@gmail.com',
-		password_admin: 'Pedro123#',
-		password2_admin: 'Pedro123#',
+		cue: '',
+		name: '',
+		educational_level: '',
+		address: '',
+		email: '',
+		phone: '',
+		website: '',
+		dniAdmin: '',
+		full_name_admin: '',
+		email_admin: '',
+		password_admin: '',
+		password2_admin: '',
 	};
 
 	const [formData, setFormData] = useState(initialFormData);
@@ -74,7 +74,6 @@ const Register: React.FC = () => {
 		try {
 			await registerRequest(formData);
 			navigate('/login');
-			// navigate('/register');
 		} catch (error) {
 			console.error('Error al registrarse:', error);
 			//alert(error);
@@ -219,7 +218,7 @@ const Register: React.FC = () => {
 						type='text'
 						name='website'
 						placeholder='Sitio web'
-						required = {true}
+						required = {false}
 						className={inputField}
 						onChange={handleChange}
 					/>

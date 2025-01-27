@@ -17,8 +17,9 @@ const registerRequest = async (
     Swal.fire({
 		icon: 'success',
 		title: 'Registro exitoso',
-		text: `Bienvenido, ${response.data.name}!`, // no muestra el nombre, muestra undefined.
 		timer: 3000,
+		text: `Bienvenido, ${userRegisterInFormData.full_name_admin}!`,
+		
 		showConfirmButton: false,
     });
 
