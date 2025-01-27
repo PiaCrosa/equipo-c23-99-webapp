@@ -83,9 +83,14 @@ public class InventoryService {
     }
 
 
-    public Inventory createInventory(){
+    public Inventory createInventory(String nameInstitute){
         Inventory inventory = new Inventory();
         inventory.setResources(new ArrayList<>());
+
+        String nameInventory = String.format("Inventario %s", nameInstitute);
+
+        inventory.setName(nameInventory);
+
 
         inventoryRepository.save(inventory);
 

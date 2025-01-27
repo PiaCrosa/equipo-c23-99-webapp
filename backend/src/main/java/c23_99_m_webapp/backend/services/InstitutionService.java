@@ -34,7 +34,7 @@ public class InstitutionService {
         }
 
         Institution institution = new Institution(dataInstitutionRegistration);
-        Inventory inventory = inventoryService.createInventory();
+        Inventory inventory = inventoryService.createInventory(institution.getName());
         institution.setInventory(inventory);
         institutionRepository.save(institution);
         
