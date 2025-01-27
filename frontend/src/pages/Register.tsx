@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -21,19 +22,19 @@ const leftTextSimple =
 
 const Register: React.FC = () => {
 	const initialFormData: UserRegister = {
-		cue: '123',
-		name: 'pedro',
-		educational_level: 'PRIMARY',
-		address: 'calle',
-		email: 'pedro@gmail.com',
-		phone: '321321',
-		website: 'https://www.lkjl.com',
-		dniAdmin: '32654789',
-		full_name_admin: 'pedro tal',
-		email_admin: 'pedrotal@gmail.com',
-		password_admin: 'Pedro123#',
-		password2_admin: 'Pedro123#',
-	};
+		cue: "",
+		name: "",
+		educational_level: "",
+		address: "",
+		email: "",
+		phone: "",
+		website: "",
+		dniAdmin: "",
+		full_name_admin: "",
+		email_admin: "",
+		password_admin: "",
+		password2_admin: ""
+	}
 
 	const [formData, setFormData] = useState(initialFormData);
 
@@ -61,18 +62,22 @@ const Register: React.FC = () => {
 		const errorMessage = validateForm(formData);
 
 		if (errorMessage) {
-			alert(errorMessage);
+			Swal.fire({
+				icon: 'error',
+				title: 'Error al registrarse:',
+				text: errorMessage,
+				
+				});
 			return;
 		}
 
 		try {
 			await registerRequest(formData);
-			alert('Administrador registrado con éxito');
 			navigate('/login');
-			// navigate('/register');
 		} catch (error) {
 			console.error('Error al registrarse:', error);
-			alert('Hubo un problema con el registro. Inténtalo de nuevo más tarde.');
+			//alert(error);
+			// reemplazar por Swal o creo que no es necesario.
 		}
 	};
 
@@ -115,6 +120,7 @@ const Register: React.FC = () => {
 						type='text'
 						name='full_name_admin'
 						placeholder='Nombre completo'
+						required = {true}
 						className={inputField}
 						onChange={handleChange}
 					/>
@@ -122,6 +128,7 @@ const Register: React.FC = () => {
 						type='text'
 						name='dniAdmin'
 						placeholder='DNI'
+						required = {true}
 						className={inputField}
 						onChange={handleChange}
 					/>
@@ -129,6 +136,7 @@ const Register: React.FC = () => {
 						type='email'
 						name='email_admin'
 						placeholder='Email'
+						required = {true}
 						className={inputField}
 						onChange={handleChange}
 					/>
@@ -136,6 +144,7 @@ const Register: React.FC = () => {
 						type='password'
 						name='password_admin'
 						placeholder='Contraseña'
+						required = {true}
 						className={inputField}
 						onChange={handleChange}
 					/>
@@ -143,6 +152,7 @@ const Register: React.FC = () => {
 						type='password'
 						name='password2_admin'
 						placeholder='Confirmar Contraseña'
+						required = {true}
 						className={inputField}
 						onChange={handleChange}
 					/>
@@ -153,6 +163,7 @@ const Register: React.FC = () => {
 						type='text'
 						name='name'
 						placeholder='Institución'
+						required = {true}
 						className={inputField}
 						onChange={handleChange}
 					/>
@@ -160,6 +171,7 @@ const Register: React.FC = () => {
 						type='text'
 						name='cue'
 						placeholder='CUE'
+						required = {true}
 						className={inputField}
 						onChange={handleChange}
 					/>
@@ -167,6 +179,7 @@ const Register: React.FC = () => {
 						type='email'
 						name='email'
 						placeholder='Email'
+						required = {true}
 						className={inputField}
 						onChange={handleChange}
 					/>
@@ -189,6 +202,7 @@ const Register: React.FC = () => {
 						type='text'
 						name='address'
 						placeholder='Dirección'
+						required = {true}
 						className={inputField}
 						onChange={handleChange}
 					/>
@@ -196,6 +210,7 @@ const Register: React.FC = () => {
 						type='text'
 						name='phone'
 						placeholder='Teléfono'
+						required = {true}
 						className={inputField}
 						onChange={handleChange}
 					/>
@@ -203,6 +218,7 @@ const Register: React.FC = () => {
 						type='text'
 						name='website'
 						placeholder='Sitio web'
+						required = {true}
 						className={inputField}
 						onChange={handleChange}
 					/>
@@ -213,6 +229,7 @@ const Register: React.FC = () => {
 			</div>
 
 			<Footer />
+
 		</div>
 	);
 };
