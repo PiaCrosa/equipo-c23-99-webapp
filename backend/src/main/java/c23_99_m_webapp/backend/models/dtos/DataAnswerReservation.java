@@ -8,12 +8,12 @@ import java.time.LocalDate;
 
 //lo que se deberia mostrar en consola (respuesta)
 public record DataAnswerReservation(
-
-        //User user,
+//GETCURRENT
+        String userName,
         LocalDate date,
         ReservationShiftStatus reservationShiftStatus,
         String selectedTimeSlot,
-        Long resourceid,
+        String resourceName,
         ReservationStatus reservationStatus
 
 ) {

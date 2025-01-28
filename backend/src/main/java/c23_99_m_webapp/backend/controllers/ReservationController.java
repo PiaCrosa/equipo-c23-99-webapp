@@ -1,13 +1,12 @@
 package c23_99_m_webapp.backend.controllers;
 
 import c23_99_m_webapp.backend.exceptions.MyException;
-import c23_99_m_webapp.backend.models.dtos.DataAnswerDateReservation;
 import c23_99_m_webapp.backend.models.dtos.DataAnswerReservation;
 import c23_99_m_webapp.backend.models.dtos.PageResponse;
 import c23_99_m_webapp.backend.models.dtos.ReservationDto;
+import c23_99_m_webapp.backend.models.enums.ReservationShiftStatus;
 import c23_99_m_webapp.backend.models.enums.ReservationStatus;
 import c23_99_m_webapp.backend.services.ReservationService;
-import c23_99_m_webapp.backend.services.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -101,8 +100,8 @@ public class ReservationController {
     public ResponseEntity<?> listByDate(@PathVariable("date") LocalDate startDate,
                                          @PageableDefault(size = 10) Pageable pageable){
         try {
-            Page<DataAnswerDateReservation> reservationDtoPage = reservationService.findByDate(startDate, pageable);
-            PageResponse<DataAnswerDateReservation> response = new PageResponse<>(
+            Page<DataAnswerReservation> reservationDtoPage = reservationService.findByDate(startDate, pageable);
+            PageResponse<DataAnswerReservation> response = new PageResponse<>(
                     reservationDtoPage.getContent(),
                     reservationDtoPage.getTotalPages(),
                     reservationDtoPage.getTotalElements(),
@@ -126,8 +125,29 @@ public class ReservationController {
     public ResponseEntity<?> listByStatusReserve(@PathVariable("status") ReservationStatus status,
                                                  @PageableDefault(size = 10) Pageable pageable){
         try {
-            Page<DataAnswerDateReservation> reservationDtoPage = reservationService.findByStatus(status, pageable);
-            PageResponse<DataAnswerDateReservation> response = new PageResponse<>(
+            Page<DataAnswerReservation> reservationDtoPage = reservationService.findByStatus(status, pageable);
+            PageResponse<DataAnswerReservation> response = new PageResponse<>(
+                    reservationDtoPage.getContent(),
+                    reservationDtoPage.getTotalPages(),
+                    reservationDtoPage.getTotalElements(),
+                    reservationDtoPage.getSize(),
+                    reservationDtoPage.getNumber()
+            );
+            return ResponseEntity.ok(Map.of("status", "success",
+                    "message", "Filtrado realizado con éxito.",
+                    "data", response));
+
+        } catch (MyException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
+        }
+    }
+    @GetMapping("/byShiftStatus/{reservationShiftStatus}")
+    public ResponseEntity<?> getByShiftStatus(@PathVariable("reservationShiftStatus") ReservationShiftStatus reservationShiftStatus, @PageableDefault(size = 10) Pageable pageable){
+        try {
+            Page<DataAnswerReservation> reservationDtoPage = reservationService.findByShiftStatus(reservationShiftStatus, pageable);
+            PageResponse<DataAnswerReservation> response = new PageResponse<>(
                     reservationDtoPage.getContent(),
                     reservationDtoPage.getTotalPages(),
                     reservationDtoPage.getTotalElements(),

@@ -4,10 +4,9 @@ import c23_99_m_webapp.backend.exceptions.MyException;
 import c23_99_m_webapp.backend.models.Reservation;
 import c23_99_m_webapp.backend.models.Resource;
 import c23_99_m_webapp.backend.models.User;
-import c23_99_m_webapp.backend.models.dtos.DataAnswerDateReservation;
 import c23_99_m_webapp.backend.models.dtos.DataAnswerReservation;
-import c23_99_m_webapp.backend.models.dtos.PageResponse;
 import c23_99_m_webapp.backend.models.dtos.ReservationDto;
+import c23_99_m_webapp.backend.models.enums.ReservationShiftStatus;
 import c23_99_m_webapp.backend.models.enums.ReservationStatus;
 import c23_99_m_webapp.backend.models.enums.ResourceStatus;
 import c23_99_m_webapp.backend.repositories.ReservationRepository;
@@ -33,20 +32,13 @@ public class ReservationService {
     ReservationRepository reservationRepository;
 
     @Autowired
-    UserRepository userRepository;
+    UserService userService;
 
     @Autowired
     ResourceRepository resourceRepository;
 
     public DataAnswerReservation createdReservation(ReservationDto reservationDto) throws MyException {
-
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userRepository.findByEmail(userDetails.getUsername());
-
-        if (user == null || !user.getActive()) {
-            throw new MyException("Usuario no encontrado.");
-        }
-
+        User user = userService.getCurrentUser();
         Optional<Resource> resourceOptional = resourceRepository.findById(reservationDto.resourceid());
 
         if (resourceOptional.isEmpty()) {
@@ -63,7 +55,6 @@ public class ReservationService {
         }
 
         Reservation reservation = new Reservation();
-        reservation.setCountElement(reservationDto.countElement());
         reservation.setStartDate(reservationDto.startDate());
         reservation.setReservationShiftStatus(reservationDto.reservationShiftStatus());
         reservation.setSelectedTimeSlot(reservationDto.selectedTimeSlot());
@@ -75,10 +66,11 @@ public class ReservationService {
         reservation = reservationRepository.save(reservation);
 
         DataAnswerReservation data = new DataAnswerReservation(
+                reservation.getUser().getEmail(),
                 reservation.getStartDate(),
                 reservation.getReservationShiftStatus(),
                 reservation.getSelectedTimeSlot(),
-                reservation.getResource().getId(),
+                reservation.getResource().getName(),
                 reservation.getReservationStatus()
         );
         return data;
@@ -105,7 +97,6 @@ public class ReservationService {
     private ReservationDto convertToDto(Reservation reservation){
 
         return new ReservationDto(
-                reservation.getCountElement(),
                 reservation.getStartDate(),
                 reservation.getReservationShiftStatus(),
                 reservation.getSelectedTimeSlot(),
@@ -119,7 +110,6 @@ public class ReservationService {
             throw new MyException("No se encuentra la reserva para actualizar");
         }
         return reservationRepository.findById(id).map(reservation -> {
-            reservation.setCountElement(updatedReservationDto.countElement());
             reservation.setStartDate(updatedReservationDto.startDate());
             reservation.setReservationShiftStatus(updatedReservationDto.reservationShiftStatus());
             reservation.setSelectedTimeSlot(updatedReservationDto.selectedTimeSlot());
@@ -167,15 +157,17 @@ public class ReservationService {
         }
     }
 
-    public Page<DataAnswerDateReservation> findByDate(LocalDate startDate, Pageable pageable) throws MyException{
+    public Page<DataAnswerReservation> findByDate(LocalDate startDate, Pageable pageable) throws MyException{
         try {
             Page<Reservation> reservationPage = reservationRepository.findReservationByDate(startDate, pageable);
             return reservationPage.map(reservation -> {
-                DataAnswerDateReservation data = new DataAnswerDateReservation(
+                DataAnswerReservation data = new DataAnswerReservation(
+                        reservation.getUser().getEmail(),
                         reservation.getStartDate(),
-                        reservation.getReservationStatus(),
-                        reservation.getUser().getUsername(),
-                        reservation.getResource().getName()
+                        reservation.getReservationShiftStatus(),
+                        reservation.getSelectedTimeSlot(),
+                        reservation.getResource().getName(),
+                        reservation.getReservationStatus()
                 );
                 return data;
             });
@@ -184,17 +176,41 @@ public class ReservationService {
         }
     }
 
-    public Page<DataAnswerDateReservation> findByStatus(ReservationStatus status, Pageable pageable) throws MyException{
+    public Page<DataAnswerReservation> findByStatus(ReservationStatus status, Pageable pageable) throws MyException{
+
         try {
             Page<Reservation> reservations = reservationRepository.findReservationByStatus(status, pageable);
             return reservations.map(reservation -> {
-                DataAnswerDateReservation dateReservation = new DataAnswerDateReservation(
+                DataAnswerReservation dateReservation = new DataAnswerReservation(
+                        reservation.getUser().getEmail(),
                         reservation.getStartDate(),
-                        reservation.getReservationStatus(),
-                        reservation.getUser ().getUsername(),
-                        reservation.getResource().getName()
+                        reservation.getReservationShiftStatus(),
+                        reservation.getSelectedTimeSlot(),
+                        reservation.getResource().getName(),
+                        reservation.getReservationStatus()
                 );
                 return dateReservation;
+            });
+        } catch (Exception e) {
+            throw new MyException("No se pudieron recuperar las reservas.");
+        }
+    }
+
+    public Page<DataAnswerReservation> findByShiftStatus(ReservationShiftStatus reservationShiftStatus, Pageable pageable) throws MyException {
+        //realizar validacion de turno (si hay 2 horarios iguales con el mismo recurso)
+        try {
+            Page<Reservation> reservations = reservationRepository.findReservationByShiftStatus(reservationShiftStatus, pageable);
+            return reservations.map(reservation -> {
+
+                DataAnswerReservation dataAnswerReservation = new DataAnswerReservation(
+                        reservation.getUser().getEmail(),
+                        reservation.getStartDate(),
+                        reservation.getReservationShiftStatus(),
+                        reservation.getSelectedTimeSlot(),
+                        reservation.getResource().getName(),
+                        reservation.getReservationStatus()
+                );
+                return dataAnswerReservation;
             });
         } catch (Exception e) {
             throw new MyException("No se pudieron recuperar las reservas.");
