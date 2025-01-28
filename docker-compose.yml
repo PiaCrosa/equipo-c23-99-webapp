@@ -9,6 +9,8 @@ services:
       DATABASE_PASSWORD: root
       JWT_SECRET: 12345
       URL_FRONT: "http://localhost:5173"
+      USERNAME_ENV_EMAIL: classkit23@gmail.com
+      PASSWORD_ENV_EMAIL: cfnkpoefssinvlhe
     restart: always
     depends_on:
       reserva_escuela:
