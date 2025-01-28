@@ -9,16 +9,20 @@ import registerRequest from '../services/registerRequest';
 import { UserRegister } from '../models/UserRegister';
 import { useAuthProvider } from '../context/AuthProvider';
 import Swal from 'sweetalert2';
+import { FaEye, FaEyeSlash } from 'react-icons/fa'
 
-const registerContainer =
-	'flex items-center justify-center gap-20 bg-zinc-50 px-4 pt-16';
+const registerContainer = 'flex flex-col md:flex-row items-center justify-center gap-0 md:gap-10 lg:gap-20 bg-zinc-50 px-4 pt-16';
 const formElement = 'bg-white p-6 rounded-lg shadow-md w-full max-w-md my-10 z-10';
 const inputField = 'mb-4 p-1.5 border border-gray-300 rounded w-full';
-const submitButton =
-	'mt-6 bg-sky-500 text-white p-2 rounded w-full hover:bg-sky-400';
-const leftText = 'text-sky-500 font-sans text-5xl pb-4';
-const leftTextSimple =
-	'text-sky-500 font-sans text-xl pb-4 text-justify leading-relaxed';
+const submitButton = 'mt-6 bg-sky-500 text-white p-2 rounded w-full hover:bg-sky-400';
+const welcomeBoxContainer = 'flex flex-col gap-2 pl-0 md:pl-10';
+const welcomeContainer = 'pt-10 md:pt-0';
+const welcomeTextContainer = 'max-w-[500px]';
+const leftText = 'text-sky-500 text-center md:text-left font-sans text-5xl pb-4';
+const leftTextSimple = 'text-sky-500 font-sans text-md md:text-xl pb-4 px-10 md:px-0 text-justify leading-relaxed';
+const passwordWrapper = 'relative mb-4';
+const inputPassword = 'w-full p-1.5 border border-gray-300 rounded pr-10';
+const eyeIcon = 'absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer';
 
 const Register: React.FC = () => {
 	const initialFormData: UserRegister = {
@@ -37,6 +41,8 @@ const Register: React.FC = () => {
 	}
 
 	const [formData, setFormData] = useState(initialFormData);
+	const [showPassword, setShowPassword] = useState(false);
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
 	const navigate = useNavigate();
 	const { isLoggedIn, user } = useAuthProvider();
@@ -66,7 +72,6 @@ const Register: React.FC = () => {
 				icon: 'error',
 				title: 'Error al registrarse:',
 				text: errorMessage,
-				
 				});
 			return;
 		}
@@ -76,8 +81,6 @@ const Register: React.FC = () => {
 			navigate('/login');
 		} catch (error) {
 			console.error('Error al registrarse:', error);
-			//alert(error);
-			// reemplazar por Swal o creo que no es necesario.
 		}
 	};
 
@@ -86,19 +89,18 @@ const Register: React.FC = () => {
 			<Header />
 
 			<div className={registerContainer}>
-				<div className='flex flex-col gap-2'>
-					<div>
+				<div className={welcomeBoxContainer}>
+					<div className={welcomeContainer}>
 						<img
 							src={logo}
 							alt='classkit box logo'
 							className='w-[600px] opacity-[0.05] fixed top-[20vh] left-10 z-0'
 						/>
 						<p className={leftText}>
-							Bienvenido a Class
-							<span className='text-orange-400 italic'>Kit</span>
+							Bienvenido a Class<span className='text-orange-400 italic'>Kit</span>
 						</p>
 					</div>
-					<div className='max-w-[500px]'>
+					<div className={welcomeTextContainer}>
 						<p className={leftTextSimple}>
 							Optimiza la gestión de los recursos de tu institución en un solo
 							lugar. Regístrate como administrador para comenzar a crear y
@@ -140,22 +142,44 @@ const Register: React.FC = () => {
 						className={inputField}
 						onChange={handleChange}
 					/>
-					<input
-						type='password'
-						name='password_admin'
-						placeholder='Contraseña'
-						required = {true}
-						className={inputField}
-						onChange={handleChange}
-					/>
-					<input
-						type='password'
-						name='password2_admin'
-						placeholder='Confirmar Contraseña'
-						required = {true}
-						className={inputField}
-						onChange={handleChange}
-					/>
+
+					{/* // PASSWORD */}
+					<div className={passwordWrapper}>
+						<input
+							type={showPassword ? 'text' : 'password'}
+							name='password_admin'
+							placeholder='Contraseña'
+							required
+							className={inputPassword}
+							onChange={handleChange}
+						/>
+						<div
+							className={eyeIcon}
+							onClick={() => setShowPassword(!showPassword)}
+						>
+							{showPassword ? <FaEyeSlash /> : <FaEye />}
+						</div>
+					</div>
+
+					{/* PASSWORD CONFIRM */}
+					<div className={passwordWrapper}>
+						<input
+							type={showConfirmPassword ? 'text' : 'password'}
+							name='password2_admin'
+							placeholder='Confirmar Contraseña'
+							required
+							className={inputPassword}
+							onChange={handleChange}
+						/>
+						<div
+							className={eyeIcon}
+							onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+						>
+							{showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+						</div>
+					</div>
+
+					
 					<h2 className='text-2xl font-medium mb-6 text-sky-500'>
 						Datos de Institución
 					</h2>
