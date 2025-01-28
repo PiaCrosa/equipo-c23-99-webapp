@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { PropsAdminHomeData } from '.';
 import { getAdminData } from '../../services/adminRequest';
+import { getInstitutionData } from '../../services/institutionRequest';
 import { useAuthProvider } from '../../context/AuthProvider';
 import { AdminGet } from '../../models/admin/AdminGet';
 
@@ -8,17 +9,29 @@ export const AdminHomeData: React.FC<PropsAdminHomeData> = ({ adminFull }) => {
 	const { user } = useAuthProvider();
 
 	const [admin, setAdmin] = useState<AdminGet | null>(null);
+	const [institution, setInstitution] = useState<any | null>(null);
 
 	useEffect(() => {
-		const getAdmin = async () => {
-			if (user?.name) {
-				const data = await getAdminData(user.name, user.jwtToken);
-				setAdmin(data);
-			}
-		};
+	const fetchData = async () => {
+	  if (user?.name) {
+		// Obtener datos del administrador
+		const adminData = await getAdminData(user.name, user.jwtToken);
+		setAdmin(adminData);
 
-		getAdmin();
+		// Obtener datos de la institución usando el CUE
+		if (adminData?.nameSchool) {
+		  const institutionData = await getInstitutionData(adminData.nameSchool, user.jwtToken);
+		  setInstitution(institutionData);
+		}
+	  }
+	};
+
+	fetchData();
 	}, [user?.name, user?.jwtToken]);
+
+	console.log('Admin:', admin);
+  	console.log('Institution:', institution);
+	
 
 	return (
 		<>
@@ -45,10 +58,11 @@ export const AdminHomeData: React.FC<PropsAdminHomeData> = ({ adminFull }) => {
 					Institución
 				</h2>
 				<div className='text-xl mt-4 ml-8 text-cyan-600'>
-					<p className='pt-2'>CUE: {adminFull.cue}</p>
-					<p className='pt-2'>Nivel Educativo: {adminFull.educational_level}</p>
-					<p className='pt-2'>Direccion: {adminFull.address}</p>
-					<p className='pt-2'>Telefono: {adminFull.phone}</p>
+					<p className='pt-2'>CUE: {institution?.cue}</p>
+					<p className='pt-2'>Institución: {institution?.name}</p>
+					<p className='pt-2'>Nivel Educativo: {institution?.educational_level}</p>
+					<p className='pt-2'>Direccion: {institution.address}</p>
+					<p className='pt-2'>Telefono: {institution.phone}</p>
 					<p className='pt-2'>
 						Sitio Web:
 						<a
