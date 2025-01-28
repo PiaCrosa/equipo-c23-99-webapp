@@ -21,7 +21,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 			const now = new Date().getTime();
 			const timeElapsed = now - parseInt(storedTimestamp);
 
-			if (timeElapsed > 2 * 60 * 60 * 1000 || !user) {
+			if (timeElapsed > 1 * 60 * 60 * 1000 || !user) {
 				setUser(null);
 				setIsLoggedIn(false);
 				localStorage.removeItem('user');
@@ -66,7 +66,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 			confirmButtonText: 'Sí, cerrar sesión',
 			customClass: {
 				popup: 'custom-swal-popup',
-			  },
+			},
 		}).then((result) => {
 			if (result.isConfirmed) {
 				// Lógica para cerrar sesión (lo que ya tienes implementado)
