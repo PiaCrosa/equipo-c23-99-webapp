@@ -41,10 +41,10 @@ const Register: React.FC = () => {
 	const { isLoggedIn, user } = useAuthProvider();
 
 	useEffect(() => {
-		if (isLoggedIn) {
-			navigate(`/${user?.role.toLowerCase()}-dashboard`);
+		if (isLoggedIn && user) {
+			navigate(`/${user.role.toLowerCase()}-dashboard`);
 		}
-	}, [isLoggedIn, navigate, user?.role]);
+	}, [isLoggedIn, navigate, user?.role, user]);
 
 	const handleChange = (
 		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,

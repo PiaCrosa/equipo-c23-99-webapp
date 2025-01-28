@@ -1,1 +1,2 @@
-export const PORT_SERVER = `http://localhost:8080`;
+const env = import.meta.env;
+export const PORT_SERVER = env.VITE_BACKEND_URL;
