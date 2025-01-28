@@ -29,9 +29,8 @@ public class TokenService {
             throw new RuntimeException("Error generating JWT token", exception);
         }
     }
-
-    public String getSubject(String tokenJWT) {
-
+    
+     public String getSubject(String tokenJWT) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(apiSecret);
             return JWT.require(algorithm)
@@ -40,7 +39,7 @@ public class TokenService {
                     .verify(tokenJWT)
                     .getSubject();
         } catch (JWTVerificationException exception) {
-            throw new RuntimeException("Invalid or expired JWT token");
+            throw new RuntimeException("Invalid or expired JWT token", exception);
         }
     }
 

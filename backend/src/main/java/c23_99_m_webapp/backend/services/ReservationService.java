@@ -95,11 +95,11 @@ public class ReservationService {
     }
 
     public Optional<ReservationDto> findReservationById(Long id) throws MyException {
-            if (id == null) {
-                throw new MyException("El id no puede ser nulo.");
-            }
-            return reservationRepository.findById(id)
-                    .map(this::convertToDto);
+        if (id == null) {
+            throw new MyException("El id no puede ser nulo.");
+        }
+        return reservationRepository.findById(id)
+                .map(this::convertToDto);
     }
 
     private ReservationDto convertToDto(Reservation reservation){
@@ -118,16 +118,16 @@ public class ReservationService {
         if (id == null){
             throw new MyException("No se encuentra la reserva para actualizar");
         }
-            return reservationRepository.findById(id).map(reservation -> {
-                reservation.setCountElement(updatedReservationDto.countElement());
-                reservation.setStartDate(updatedReservationDto.startDate());
-                reservation.setReservationShiftStatus(updatedReservationDto.reservationShiftStatus());
-                reservation.setSelectedTimeSlot(updatedReservationDto.selectedTimeSlot());
-                reservation.setReservationStatus(ReservationStatus.CONFIRMED);
+        return reservationRepository.findById(id).map(reservation -> {
+            reservation.setCountElement(updatedReservationDto.countElement());
+            reservation.setStartDate(updatedReservationDto.startDate());
+            reservation.setReservationShiftStatus(updatedReservationDto.reservationShiftStatus());
+            reservation.setSelectedTimeSlot(updatedReservationDto.selectedTimeSlot());
+            reservation.setReservationStatus(ReservationStatus.CONFIRMED);
 
-                Reservation updatedReservation = reservationRepository.save(reservation);
-                return convertToDto(updatedReservation);
-            });
+            Reservation updatedReservation = reservationRepository.save(reservation);
+            return convertToDto(updatedReservation);
+        });
     }
 
     public void deleteReservationById(Long id) throws MyException {

@@ -64,7 +64,7 @@ public class ReservationController {
 
     @GetMapping("/getId/{id}")
     public ResponseEntity<Optional<ReservationDto>> getReservationById(@PathVariable Long id) throws MyException {
-            return ResponseEntity.ok().body(reservationService.findReservationById(id));
+        return ResponseEntity.ok().body(reservationService.findReservationById(id));
     }
 
     @PutMapping("/update/{id}")

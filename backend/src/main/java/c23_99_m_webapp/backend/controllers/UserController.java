@@ -20,6 +20,8 @@ import java.util.Map;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+
+@CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*", allowCredentials = "true")
 @RestController
 @RequestMapping("/user")
 @SecurityRequirement(name = "bearer-key")
@@ -54,7 +56,7 @@ public class UserController {
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<?> listUsers(@PageableDefault(size = 3) Pageable pagination) {
+    public ResponseEntity<?> listUsers(@PageableDefault(size = 9) Pageable pagination) {
         try {
             Page<DataListUsers> users = userService.listUsers(pagination);
             return ResponseEntity.ok(Map.of(
@@ -174,3 +176,4 @@ public class UserController {
         }
     }
 }
+
