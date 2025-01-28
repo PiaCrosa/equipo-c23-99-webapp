@@ -61,15 +61,15 @@ export const AdminHomeData: React.FC<PropsAdminHomeData> = ({ adminFull }) => {
 					<p className='pt-2'>CUE: {institution?.cue}</p>
 					<p className='pt-2'>Institución: {institution?.name}</p>
 					<p className='pt-2'>Nivel Educativo: {institution?.educational_level}</p>
-					<p className='pt-2'>Direccion: {institution.address}</p>
-					<p className='pt-2'>Telefono: {institution.phone}</p>
+					<p className='pt-2'>Direccion: {institution?.address}</p>
+					<p className='pt-2'>Telefono: {institution?.phone}</p>
 					<p className='pt-2'>
 						Sitio Web:
 						<a
-							className='ml-2 text-sky-700 hover:text-blue-700 underline'
+							className='ml-2 text-sky-700 hover:text-blue-700 no-underline'
 							target='_blank'
-							href={adminFull.website}>
-							{adminFull.website}
+							href={institution?.website}>
+							{institution?.website || '-'}
 						</a>
 					</p>
 				</div>
