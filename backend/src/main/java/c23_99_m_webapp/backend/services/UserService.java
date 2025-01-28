@@ -9,6 +9,8 @@ import c23_99_m_webapp.backend.models.enums.Role;
 import c23_99_m_webapp.backend.repositories.InstitutionRepository;
 import c23_99_m_webapp.backend.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,7 +18,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
+import org.springframework.security.core.Authentication;
+import c23_99_m_webapp.backend.validations.ValidationUser;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -24,94 +30,61 @@ public class UserService {
     private final UserRepository userRepository;
     private final InstitutionRepository institutionRepository;
     private final EmailService emailService;
+    private final List<ValidationUser<DataRegistrationUser>> validations;
+    private final List<ValidationUser<DataRegistrationUser.DataUpdateUser>> validationsUpdate;
+
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Transactional
-    public User registerUser(DataRegistrationUser dataUserRegistration) throws MyException {
+    public User registerUser(DataRegistrationUser dataUserRegistration, Institution institution) throws MyException {
         Institution institutionEncontrada = null;
-        System.out.println(dataUserRegistration.institution_cue());
+
+        if (institution.getCue() != null) {
+            institutionEncontrada = institutionRepository
+                    .findByCue(institution.getCue())
+                    .orElseThrow(() -> new MyException("Institución no encontrada con el CUE proporcionado."));
+        }
+
+        User userAutenticado = null;
         try {
-            validPassword(dataUserRegistration.password(), dataUserRegistration.password2());
-
-            if (dataUserRegistration.institution_cue() != null) {
-                institutionEncontrada = institutionRepository
-                        .findByCue(dataUserRegistration.institution_cue())
-                        .orElseThrow(() -> new MyException("Institución no encontrada con el CUE proporcionado."));
-            }
-            validateEmail(dataUserRegistration.email());
-
-            User user = new User(dataUserRegistration, institutionEncontrada);
-
-            userRepository.save(user);
-            if (institutionEncontrada != null & user.getRole().equals(Role.TEACHER)) {
-                emailService.getEmailTeacher(
-                        user.getEmail(),
-                        user.getFullName(),
-                        dataUserRegistration.password(),
-                        institutionEncontrada.getName()
-                );
-            }
-            return user;
-
+            userAutenticado = getCurrentUser();
         } catch (MyException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new MyException("Error al guardar el usuario: " + e.getMessage());
+
         }
+        User user = new User(dataUserRegistration,
+                (userAutenticado != null) ? userAutenticado.getInstitution() : institutionEncontrada);
+
+        for (ValidationUser<DataRegistrationUser> v : validations) {
+            v.validar(dataUserRegistration);
+        }
+        userRepository.save(user);
+
+        if (institutionEncontrada != null && user.getRole().equals(Role.TEACHER)) {
+            emailService.getEmailTeacher(user.getEmail(), user.getFullName(), dataUserRegistration.password(), institutionEncontrada.getName());
+        }
+        return user;
     }
 
-    public void validPassword(String password, String password2) throws MyException {
-        if (!password.equals(password2)) {
-            throw new MyException("Las contraseñas deben coincidir.");
-        }
-    }
 
-    public void validateEmail(String email) throws MyException {
-
-        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
-        if (!email.matches(emailRegex)) {
-            throw new MyException("El formato del email no es válido.");
-        }
-        if (userRepository.existsByEmail(email)) {
-            throw new MyException("El email ya está registrado.");
-        }
-    }
-
-    public Page<DataListUsers> listUsers(Pageable pagination) {
-        return userRepository.findByActiveTrue(pagination).map(DataListUsers::new);
-    }
     @Transactional
     public DataListUsers updateUser(DataRegistrationUser.DataUpdateUser dataUserUpdate) throws MyException {
-
         User user = userRepository.findByDni(dataUserUpdate.dni())
-                .orElseThrow(() -> new MyException("Usuario no encontrado con el DNI proporcionado."));
+                .orElseThrow(() -> new MyException("Usuario no encontrado."));
 
-        validPassword(dataUserUpdate.password(), dataUserUpdate.password2());
-
-        if (!Objects.equals(dataUserUpdate.email(), user.getEmail())) {
-            if (userRepository.existsByEmail(dataUserUpdate.email())) {
-                throw new MyException("El email ya está registrado.");
-            }
-            validateEmail(dataUserUpdate.email());
+        for (ValidationUser<DataRegistrationUser.DataUpdateUser> v : validationsUpdate) {
+            v.validar(dataUserUpdate);
         }
 
-        if (!Objects.equals(dataUserUpdate.email(), user.getEmail())) {
-            emailService.getEmailTeacherUpdate(
-                    user.getEmail(),
-                    user.getFullName(),
-                    user.getPassword(),
-                    user.getInstitution().getName()
-            );
-        }
+        validateEmailUpdate(dataUserUpdate.email(), user.getEmail());
 
         user.updateData(dataUserUpdate);
         userRepository.save(user);
 
-        return new DataListUsers(
-                user.getDni(),
-                user.getFullName(),
-                user.getEmail(),
-                user.getInstitution().getName()
-        );
+        return convertToDataListUsers(user);
+    }
+
+    public Page<DataListUsers> listUsers(Pageable pagination) {
+        return userRepository.findByActiveTrue(pagination).map(DataListUsers::new);
     }
 
     @Transactional
@@ -128,12 +101,12 @@ public class UserService {
 
     public DataListUsers returnDataUserByDni(String dni) {
         User user = userRepository.getReferenceByDni(dni);
-        return new DataListUsers(user.getDni(),user.getFullName(),user.getEmail(),user.getInstitution().getCue());
+        return convertToDataListUsers(user);
     }
 
     public DataListUsers returnDataUserByName(String fullName) {
         User user = userRepository.getReferenceByFullName(fullName);
-        return new DataListUsers(user.getDni(),user.getFullName(),user.getEmail(),user.getInstitution().getCue());
+        return convertToDataListUsers(user);
     }
 
     public void deleteUser(String dni) {
@@ -141,8 +114,23 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public User getCurrentUser(){
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public User getCurrentUser() throws MyException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails userDetails)) {
+            throw new MyException("Usuario no autenticado.");
+        }
+
         return userRepository.findByEmail(userDetails.getUsername());
+    }
+
+    private DataListUsers convertToDataListUsers(User user) {
+        return new DataListUsers(user.getDni(), user.getFullName(), user.getEmail(), user.getInstitution().getCue(),user.getRole());
+    }
+
+    private void validateEmailUpdate(String newEmail, String oldEmail) throws MyException {
+        if (!Objects.equals(newEmail, oldEmail) && userRepository.existsByEmail(newEmail)) {
+            throw new MyException("El email ya está registrado.");
+        }
     }
 }
