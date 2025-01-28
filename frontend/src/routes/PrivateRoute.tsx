@@ -10,7 +10,7 @@ interface ProtectedRouteProps {
 const PrivateRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 	const { user } = useAuthProvider();
 
-	if (!user || user.role !== 'ADMIN') {
+	if (!user) {
 		Swal.fire({
 			icon: 'warning',
 			title: '¡Acceso denegado!',
