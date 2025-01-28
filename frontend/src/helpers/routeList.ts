@@ -9,6 +9,8 @@ import { SearchDevices } from '../pages/SearchDevices/SearchDevices';
 import { CheckReservations } from '../pages/CheckReservations/CheckReservations';
 import { NewReservation } from '../pages/NewReservation/NewReservation';
 import { MyProfile } from '../pages/MyProfile/MyProfile';
+import { EditAdmin } from '../pages/EditAdmin/EditAdmin';
+import { TermsAndConditions } from '../pages/TermsAndConditions/TermsAndConditions'
 
 const routeList: Route[] = [
 	{
@@ -17,6 +19,13 @@ const routeList: Route[] = [
 		routeType: 'admin',
 		isShownInMenu: true,
 		element: AdminDashboard,
+	},
+	{
+		path: '/edit-admin-profile',
+		name: 'Editar Admin',
+		routeType: 'admin',
+		isShownInMenu: false,
+		element: EditAdmin,
 	},
 	{
 		path: '/users',
@@ -102,7 +111,7 @@ const routeList: Route[] = [
 		name: 'Términos y Condiciones',
 		routeType: 'logged',
 		isShownInMenu: true,
-		element: MyProfile,
+		element: TermsAndConditions,
 	},
 ] as const;
 
