@@ -3,6 +3,7 @@ import Swal from 'sweetalert2';
 import { InstitutionUpdate } from '../models/admin/InstitutionUpdate'; // Define el modelo según tu estructura
 import { getErrorMessage } from '../utils/error';
 import { PORT_SERVER } from '.';
+import { InstitutionGet } from '../models/admin/InstitutionGet';
 
 // Función para actualizar la información de una institución
 export const updateInstitution = async (
@@ -47,7 +48,7 @@ export const updateInstitution = async (
 export const getInstitutionData = async (
   cue: string | undefined,
   token: string,
-): Promise<any | null> => {
+): Promise<InstitutionGet | null> => {
   try {
     const response = await axios.get(
       `${PORT_SERVER}/institution/getCue/${cue}`,
