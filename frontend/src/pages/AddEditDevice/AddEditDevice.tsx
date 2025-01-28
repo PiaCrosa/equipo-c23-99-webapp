@@ -7,7 +7,7 @@ import { AddEditDeviceSubmitButton } from './AddEditDeviceSubmitButton';
 import { useState } from 'react';
 import { Resource } from '../../models/Resource';
 import { AddEditDeviceInputs } from './AddEditDeviceInputs';
-import { ResourceService } from '../../services/resourceService';
+import { ResourceService } from '../../services/ResourceService';
 
 const initialDeviceFormValue: AddEditDeviceForm = {
   id: 0,
