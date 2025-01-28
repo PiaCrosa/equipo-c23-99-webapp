@@ -68,7 +68,7 @@ export const validateForm = ({
 
 	if (
 		website.trim() &&
-		!/^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}([\/\w.-]*)*$/i.test(website)
+		!/^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[\w.-]*)*$/i.test(website)
 	) {
 		return 'El sitio web debe tener un formato válido';
 	}
