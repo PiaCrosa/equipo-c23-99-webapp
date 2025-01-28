@@ -62,8 +62,11 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 			icon: 'warning',
 			showCancelButton: true,
 			confirmButtonColor: '#3085d6',
-			cancelButtonColor: '#d33',
+			cancelButtonColor: '#fb923c',
 			confirmButtonText: 'Sí, cerrar sesión',
+			customClass: {
+				popup: 'custom-swal-popup',
+			  },
 		}).then((result) => {
 			if (result.isConfirmed) {
 				// Lógica para cerrar sesión (lo que ya tienes implementado)
