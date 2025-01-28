@@ -7,58 +7,46 @@ import axios from 'axios';
 import { headersWithToken } from '../helpers/headersWithToken';
 
 interface CreateUserProps {
-  user: User,
+	user: User;
 }
 interface GetUserByDniProps {
-  dni: string,
+	dni: string;
 }
 
 const UserService = () => {
-  // Custom Hooks
-  const getCurrentUser = useGetCurrentUser;
+	// Custom Hooks
+	const getCurrentUser = useGetCurrentUser;
 
-  // States
-  const [
-    currentUser,
-    setCurrentUser,
-  ] = useState<LoginResponse | null>(null);
+	// States
+	const [currentUser, setCurrentUser] = useState<LoginResponse | null>(null);
 
-  // Handlers
-  const handleUser = (user: LoginResponse | null) => {
-    if (currentUser?.jwtToken !== user?.jwtToken) {
-      setCurrentUser(user ? user : null)
-    }
-  }
+	// Handlers
+	const handleUser = (user: LoginResponse | null) => {
+		if (currentUser?.jwtToken !== user?.jwtToken) {
+			setCurrentUser(user ? user : null);
+		}
+	};
 
-  // Effects
-  getCurrentUser({ onUpdateUser: handleUser });
+	// Effects
+	getCurrentUser({ onUpdateUser: handleUser });
 
-  return {
-    getUserByDni: async (
-      { dni }: GetUserByDniProps
-    ) => {
-      const url = `${PORT_SERVER}/user/getDni/${dni}`;
-      if (!currentUser) throw new Error('Usuario no vfdvdfvsf');
-      const config = headersWithToken(currentUser.jwtToken);
-      const response = await axios.get(url, config);
-      return response.data.data;
-    },
+	return {
+		getUserByDni: async ({ dni }: GetUserByDniProps) => {
+			const url = `${PORT_SERVER}/user/getDni/${dni}`;
+			if (!currentUser) throw new Error('Usuario no Existente');
+			const config = headersWithToken(currentUser.jwtToken);
+			const response = await axios.get(url, config);
+			return response.data.data;
+		},
 
-    createUser: async (
-      { user }: CreateUserProps
-    ) => {
-      const url = `${PORT_SERVER}/user/register`
-      const data = { ...user }
-      if (!currentUser) throw new Error('Usuario no logueado');
-      const config = headersWithToken(currentUser.jwtToken);
-      await axios.post(url, data, config);
-    },
-  }
+		createUser: async ({ user }: CreateUserProps) => {
+			const url = `${PORT_SERVER}/user/register`;
+			const data = { ...user };
+			if (!currentUser) throw new Error('Usuario no logueado');
+			const config = headersWithToken(currentUser.jwtToken);
+			await axios.post(url, data, config);
+		},
+	};
+};
 
-}
-
-
-
-export {
-  UserService,
-}
+export { UserService };

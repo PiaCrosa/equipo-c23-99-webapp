@@ -49,7 +49,7 @@ const Register: React.FC = () => {
 
 	useEffect(() => {
 		if (isLoggedIn && user) {
-			navigate(`/${user.role.toLowerCase()}-dashboard`);
+			navigate(`/${user?.role.toLowerCase()}-dashboard`);
 		}
 	}, [isLoggedIn, navigate, user?.role, user]);
 
