@@ -6,6 +6,7 @@ import c23_99_m_webapp.backend.models.Resource;
 import c23_99_m_webapp.backend.models.User;
 import c23_99_m_webapp.backend.models.dtos.DataAnswerDateReservation;
 import c23_99_m_webapp.backend.models.dtos.DataAnswerReservation;
+import c23_99_m_webapp.backend.models.dtos.PageResponse;
 import c23_99_m_webapp.backend.models.dtos.ReservationDto;
 import c23_99_m_webapp.backend.models.enums.ReservationStatus;
 import c23_99_m_webapp.backend.models.enums.ResourceStatus;
@@ -134,43 +135,69 @@ public class ReservationService {
         if (!reservationRepository.existsById(id)) {
             throw new MyException("No se encuentra la reserva.");
         }
-
         Reservation reservation = reservationRepository.findById(id).get();
         reservation.setDeleted(true);
         reservationRepository.save(reservation);
     }
 
-    public List<ReservationDto> getDeletedReservations() {
-        List<Reservation> deletedReservations = reservationRepository.findAllDeleted();
-        return deletedReservations.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-    }
+    public List<ReservationDto> getDeletedReservations() throws MyException {
+        try {
+            List<Reservation> deletedReservations = reservationRepository.findAllDeleted();
+            return deletedReservations.stream()
+                    .map(this::convertToDto)
+                    .collect(Collectors.toList());
 
-    public void restoreReservation(Long id){
-        Reservation reservation = reservationRepository.findById(id).orElse(null);
-        assert reservation != null;
-        if (reservation.isDeleted()) {
-            reservation.setDeleted(false);
-            reservationRepository.save(reservation);
+        } catch (RuntimeException e) {
+            throw new MyException("Error al traer la lista de reservas borradas.");
         }
     }
 
-    //filtrado por fechas con paginacion
-    public Page<DataAnswerDateReservation> findByDate(LocalDate startDate, Pageable pageable) {
-        Page<Reservation> reservationPage = reservationRepository.findReservationByDate(startDate, pageable);
+    public void restoreReservation(Long id) throws MyException {
+        try {
+            Reservation reservation = reservationRepository.findById(id).orElse(null);
+            assert reservation != null;
 
-        System.out.println("Total de reservas encontradas: " + reservationPage.getTotalElements());
-        return reservationPage.map(reservation -> {
-            DataAnswerDateReservation data = new DataAnswerDateReservation(
-                    reservation.getStartDate(),
-                    reservation.getReservationStatus(),
-                    reservation.getUser(),
-                    reservation.getResource().getId()
+            if (reservation.isDeleted()) {
+                reservation.setDeleted(false);
+                reservationRepository.save(reservation);
+            }
 
-            );
-            System.out.println("Data content: " + data); //este print no sale
-            return data;
-        });
+        } catch (RuntimeException e) {
+            throw new MyException("Error al restaurar la reserva.");
+        }
+    }
+
+    public Page<DataAnswerDateReservation> findByDate(LocalDate startDate, Pageable pageable) throws MyException{
+        try {
+            Page<Reservation> reservationPage = reservationRepository.findReservationByDate(startDate, pageable);
+            return reservationPage.map(reservation -> {
+                DataAnswerDateReservation data = new DataAnswerDateReservation(
+                        reservation.getStartDate(),
+                        reservation.getReservationStatus(),
+                        reservation.getUser().getUsername(),
+                        reservation.getResource().getName()
+                );
+                return data;
+            });
+        } catch (RuntimeException e) {
+            throw new MyException(e.getMessage());
+        }
+    }
+
+    public Page<DataAnswerDateReservation> findByStatus(ReservationStatus status, Pageable pageable) throws MyException{
+        try {
+            Page<Reservation> reservations = reservationRepository.findReservationByStatus(status, pageable);
+            return reservations.map(reservation -> {
+                DataAnswerDateReservation dateReservation = new DataAnswerDateReservation(
+                        reservation.getStartDate(),
+                        reservation.getReservationStatus(),
+                        reservation.getUser ().getUsername(),
+                        reservation.getResource().getName()
+                );
+                return dateReservation;
+            });
+        } catch (Exception e) {
+            throw new MyException("No se pudieron recuperar las reservas.");
+        }
     }
 }
