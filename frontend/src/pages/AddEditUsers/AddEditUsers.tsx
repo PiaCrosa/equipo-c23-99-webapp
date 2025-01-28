@@ -1,8 +1,97 @@
+import { useForm } from 'react-hook-form'
+import { AddEditUsersForm } from '../../models/AddEditUsersForm';
+import { AddEditUsersTitle } from './AddEditUsersTitle';
+import { useParams } from 'react-router-dom';
+
+import { AddEditUsersSubmitButton } from './AddEditUsersSubmitButton';
+import { useEffect, useState } from 'react';
+import { AddEditUsersInputs } from './AddEditUsersInputs';
+import { User } from '../../models/User';
+import { UserService } from '../../services/UserService';
+import { showFailAlert, showSuccessAlert } from '../../helpers/showGenericAlerts';
+
 const AddEditUsers = () => {
+  // Initial Hooks
+  const { dni } = useParams();
+  const {
+    register: userRegister,
+    handleSubmit: handleUserSubmit,
+  } = useForm<AddEditUsersForm>();
+  const [
+    userForm,
+    setUserForm,
+  ] = useState<AddEditUsersForm>({ ...new AddEditUsersForm() });
+
+
+  // Services
+  const userService = UserService();
+
+
+  // Functions
+  const prepareUserToSubmit = (form: AddEditUsersForm): User => {
+    return {
+      dni: form.dni,
+      email: form.email,
+      full_name: form.name,
+      institution_cue: form.institution_cue,
+      password: form.pass1,
+      password2: form.pass2,
+      role: form.role,
+    }
+  }
+
+  // Handlers
+  const submitUserForm = async (form: AddEditUsersForm) => {
+    try {
+      const user = prepareUserToSubmit(form);
+      await userService.createUser({ user });
+      showSuccessAlert();
+      setUserForm(form);
+    } catch (error) {
+      console.log(error);
+      showFailAlert();
+    }
+  }
+
+
+  // Use effects
+  useEffect(() => {
+    const custom = async () => {
+      const user = await userService.getUserByDni({ dni: dni! });
+      setUserForm({
+        dni: user.dni,
+        email: user.email,
+        institution_cue: user.cue || '',
+        name: user.fullName,
+        pass1: '',
+        pass2: '',
+        role: user.role || 'ADMIN',
+      })
+    }
+
+    if (dni) {
+      console.log('DNI', dni)
+      custom()
+    } else{
+      console.log('No hay dni')
+    }
+  }, [dni, userService]);
+
+
   return (
-    <div>
-      AddEditUsers
-    </div>
+    <form className='
+        p-2 text-sky-500
+        sm:px-6 sm:py-4
+      '
+      onSubmit={handleUserSubmit(submitUserForm)}
+    >
+      <AddEditUsersTitle userName={dni} />
+      <AddEditUsersInputs
+        register={userRegister}
+        usersForm={userForm}
+      />
+      <AddEditUsersSubmitButton />
+    </form>
   )
 }
 
