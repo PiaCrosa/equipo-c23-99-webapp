@@ -46,6 +46,14 @@ const UserService = () => {
 			const config = headersWithToken(currentUser.jwtToken);
 			await axios.post(url, data, config);
 		},
+
+		updateUser: async ({ user }: CreateUserProps) => {
+			const url = `${PORT_SERVER}/user/update`;
+			const data = { ...user };
+			if (!currentUser) throw new Error('Usuario no logueado');
+			const config = headersWithToken(currentUser.jwtToken);
+			await axios.put(url, data, config);
+		},
 	};
 };
 
