@@ -6,7 +6,7 @@ import { EditInstitutionForm } from './EditInstitutionForm';
 
 const EditAdmin: React.FC = () => {
 	// adminData es un objeto de prueba
-	const [admin, setAdmin] = useState(adminData);
+	const [admin] = useState(adminData);
 
 	return (
 		<React.Fragment>

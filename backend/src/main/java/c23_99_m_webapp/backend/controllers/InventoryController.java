@@ -1,5 +1,6 @@
 package c23_99_m_webapp.backend.controllers;
 
+import c23_99_m_webapp.backend.exceptions.MyException;
 import c23_99_m_webapp.backend.models.dtos.InventoryDTO;
 import c23_99_m_webapp.backend.services.InventoryService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -19,7 +20,7 @@ public class InventoryController {
     }
 
     @GetMapping("/getInstitution")
-    public ResponseEntity<InventoryDTO> getInventoryByInstitution(){
+    public ResponseEntity<InventoryDTO> getInventoryByInstitution() throws MyException {
         InventoryDTO inventoryDTO = inventoryService.getInventoryByCurrentUser();
         return ResponseEntity.ok(inventoryDTO);
     }
