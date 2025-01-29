@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useAuthProvider } from '../../context/AuthProvider';
+import { AdminHomeTitle } from '../AdminDashboard/AdminHomeTitle';
+import { TeacherHomeData } from './TeacherHomeData';
+import { CheckReservations } from '../CheckReservations/CheckReservations';
 
 const TeacherDashboard = () => {
 	const { user } = useAuthProvider();
@@ -11,13 +14,9 @@ const TeacherDashboard = () => {
 
 	return (
 		<React.Fragment>
-			<div
-				className='
-        py-4 px-2 text-center text-sky-500
-        sm:py-6
-      '>
-				<span>¡Bienvenido {userName}!</span>
-			</div>
+			<AdminHomeTitle>¡Bienvenido, {userName}!</AdminHomeTitle>
+			<TeacherHomeData />
+			<CheckReservations />
 		</React.Fragment>
 	);
 };
