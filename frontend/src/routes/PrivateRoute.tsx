@@ -12,11 +12,14 @@ const PrivateRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 	const { user } = useAuthProvider();
 	const location = useLocation();
 
+<<<<<<< HEAD
 	// Busca la ruta actual en routeList para determinar su tipo
 	const currentRoute = routeList.find(
 		(route) => route.path === location.pathname,
 	);
 
+=======
+>>>>>>> 8232e11 (re-render bucle fixed)
 	if (!user) {
 		Swal.fire({
 			icon: 'warning',

@@ -46,6 +46,7 @@ const UserService = () => {
 			const config = headersWithToken(currentUser.jwtToken);
 			await axios.post(url, data, config);
 		},
+<<<<<<< HEAD
 
 		updateUser: async ({ user }: CreateUserProps) => {
 			const url = `${PORT_SERVER}/user/update`;
@@ -57,4 +58,9 @@ const UserService = () => {
 	};
 };
 
+=======
+	};
+};
+
+>>>>>>> d8aaf13 (Merge domenico-datos-institucion con german)
 export { UserService };

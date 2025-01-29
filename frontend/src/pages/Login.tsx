@@ -26,7 +26,15 @@ const Login: React.FC = () => {
 
 	useEffect(() => {
 		if (isLoggedIn && user) {
+<<<<<<< HEAD
 			navigate(`/${user?.role.toLowerCase()}-dashboard`);
+=======
+<<<<<<< HEAD
+			navigate(`/${user.role.toLowerCase()}-dashboard`);
+=======
+			navigate(`/${user?.role.toLowerCase()}-dashboard`);
+>>>>>>> 8232e11 (re-render bucle fixed)
+>>>>>>> d8aaf13 (Merge domenico-datos-institucion con german)
 		}
 	}, [isLoggedIn, navigate, user?.role, user]);
 
