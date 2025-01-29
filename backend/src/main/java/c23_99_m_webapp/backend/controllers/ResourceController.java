@@ -1,5 +1,6 @@
 package c23_99_m_webapp.backend.controllers;
 
+import c23_99_m_webapp.backend.exceptions.MyException;
 import c23_99_m_webapp.backend.models.dtos.ResourceCreateDTO;
 import c23_99_m_webapp.backend.models.dtos.ResourceViewDTO;
 import c23_99_m_webapp.backend.models.dtos.ResourceStatusUpdateDTO;
@@ -34,7 +35,7 @@ public class ResourceController {
     }
 
     @PostMapping("/add-resource")
-    public ResponseEntity<ResourceViewDTO> addResourceToInventory(@RequestBody ResourceCreateDTO resourceDTO) {
+    public ResponseEntity<ResourceViewDTO> addResourceToInventory(@RequestBody ResourceCreateDTO resourceDTO) throws MyException {
         ResourceViewDTO dto = inventoryService.createAndAddResourceToInventory(resourceDTO);
         return ResponseEntity.created(URI.create("/resource" + dto.id())).body(dto);
     }

@@ -1,4 +1,4 @@
-export interface MultipleFormControlOption {
+export interface MultipleFormControlOption<T = string> {
   commonName: string,
-  value: string,
+  value: T,
 }

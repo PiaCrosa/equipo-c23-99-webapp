@@ -16,7 +16,7 @@ const LandingPage: React.FC = () => {
 	const navigate = useNavigate();
 	useEffect(() => {
 		if (isLoggedIn && user) {
-			navigate(`/${user.role.toLowerCase()}-dashboard`);
+			navigate(`/${user?.role.toLowerCase()}-dashboard`);
 		}
 	}, [isLoggedIn, navigate, user?.role, user]);
 	return (
