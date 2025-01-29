@@ -16,11 +16,16 @@ import {
 const AddEditUsers = () => {
 	// Initial Hooks
 	const { dni } = useParams();
-	const { register: userRegister, handleSubmit: handleUserSubmit } =
+	const {
+		register: userRegister,
+		handleSubmit: handleUserSubmit,
+		reset,
+	} =
 		useForm<AddEditUsersForm>();
 	const [userForm, setUserForm] = useState<AddEditUsersForm>({
 		...new AddEditUsersForm(),
 	});
+	const [userNameToEdit, setUserNameToEdit] = useState('')
 
 	// Services
 	const userService = UserService();
@@ -28,13 +33,11 @@ const AddEditUsers = () => {
 	// Functions
 	const prepareUserToSubmit = (form: AddEditUsersForm): User => {
 		return {
-			dni: form.dni,
+			dni: dni ? dni : '0',
 			email: form.email,
 			full_name: form.name,
-			institution_cue: form.institution_cue,
 			password: form.pass1,
 			password2: form.pass2,
-			role: form.role,
 		};
 	};
 
@@ -42,7 +45,8 @@ const AddEditUsers = () => {
 	const submitUserForm = async (form: AddEditUsersForm) => {
 		try {
 			const user = prepareUserToSubmit(form);
-			await userService.createUser({ user });
+			if (dni) { await userService.updateUser({ user }); }
+			else { await userService.createUser({ user }); }
 			showSuccessAlert();
 			setUserForm(form);
 		} catch (error) {
@@ -53,13 +57,12 @@ const AddEditUsers = () => {
 
 	// Use effects
 	useEffect(() => {
-		const custom = async () => {
+		const reFillingForm = async () => {
 			const user = await userService.getUserByDni({ dni: dni! });
 			setUserForm((prevForm) => {
 				const newForm = {
 					dni: user.dni,
 					email: user.email,
-					institution_cue: user.cue || '',
 					name: user.fullName,
 					pass1: '',
 					pass2: '',
@@ -69,15 +72,25 @@ const AddEditUsers = () => {
 					? newForm
 					: prevForm;
 			});
+			setUserNameToEdit(prevName => {
+				return String(prevName) !== String(user.fullName)
+					? user.fullName
+					: prevName;
+			})
 		};
 
 		if (dni) {
-			console.log('DNI', dni);
-			custom();
+			reFillingForm();
 		} else {
 			console.log('No hay dni');
 		}
 	}, [dni, userService]);
+
+	useEffect(() => {
+		if (userForm) {
+			reset(userForm);
+		}
+	}, [userForm, reset]);
 
 	return (
 		<form
@@ -85,9 +98,10 @@ const AddEditUsers = () => {
         p-2 text-sky-500
         sm:px-6 sm:py-4
       '
-			onSubmit={handleUserSubmit(submitUserForm)}>
-			<AddEditUsersTitle userName={dni} />
-			<AddEditUsersInputs register={userRegister} usersForm={userForm} />
+			onSubmit={handleUserSubmit(submitUserForm)}
+		>
+			<AddEditUsersTitle userName={userNameToEdit} />
+			<AddEditUsersInputs register={userRegister} />
 			<AddEditUsersSubmitButton />
 		</form>
 	);

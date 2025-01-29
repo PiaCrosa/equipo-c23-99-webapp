@@ -1,6 +1,7 @@
 package c23_99_m_webapp.backend.models.dtos;
 
 
+import c23_99_m_webapp.backend.models.Institution;
 import c23_99_m_webapp.backend.models.enums.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -18,8 +19,7 @@ public record DataRegistrationUser(
         String password,
         @NotBlank
         String password2,
-        Role role,
-        String institution_cue
+        Role role
 ) {
         public static record DataUpdateUser(
                 @NotBlank

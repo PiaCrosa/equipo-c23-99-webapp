@@ -11,7 +11,7 @@ const registerRequest = async (
 	try {
 		const response = await axios.post<RegisterResponse>(
 			`${PORT_SERVER}/institution/register`,
-			{ ...userRegisterInFormData },
+			{ ...userRegisterInFormData }
 		);
 
 		Swal.fire({

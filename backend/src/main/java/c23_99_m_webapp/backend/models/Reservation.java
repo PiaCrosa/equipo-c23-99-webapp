@@ -22,7 +22,6 @@ public class Reservation {
 
     private Integer countElement;
     private LocalDate startDate;
-    //private String startHour;
 
     @Enumerated(EnumType.STRING)
     private ReservationShiftStatus reservationShiftStatus;
@@ -37,6 +36,7 @@ public class Reservation {
     @ManyToOne
     @JoinColumn(name = "resource_id")
     private Resource resource;
+
 
     private boolean deleted = false;
     
