@@ -1,5 +1,6 @@
 package c23_99_m_webapp.backend.services;
 
+import c23_99_m_webapp.backend.exceptions.BadCustomerRequestException;
 import c23_99_m_webapp.backend.exceptions.ResourceNotFoundException;
 import c23_99_m_webapp.backend.exceptions.ResourceUnavailableException;
 import c23_99_m_webapp.backend.mappers.ResourceCreateMapper;
@@ -11,6 +12,7 @@ import c23_99_m_webapp.backend.models.enums.ResourceStatus;
 import c23_99_m_webapp.backend.repositories.ReservationRepository;
 import c23_99_m_webapp.backend.repositories.ResourceRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -72,15 +74,16 @@ public class ResourceService {
         return ResourceViewMapper.toDTO(modifiedResource);
     }
 
-    public void deleteResource(long id) {
+    @Transactional
+    public void deleteResource(long id) throws BadCustomerRequestException{
         Resource resource = resourceRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontro al recurso con id: " + id));
 
         boolean existingResourceReserve = this.reservationRepository.existsByResource(resource);
 
-//        if(existingResourceReserve){
-//            throw new BadCustomerRequestException("No es posible eliminar un recurso con reservas asociadas");
-//        }
+        if(existingResourceReserve){
+            throw new BadCustomerRequestException("No es posible eliminar un recurso con reservas asociadas");
+        }
         this.resourceRepository.deleteById(id);
     }
 
