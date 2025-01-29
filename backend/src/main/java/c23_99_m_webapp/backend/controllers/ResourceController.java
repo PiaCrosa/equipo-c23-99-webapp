@@ -41,6 +41,16 @@ public class ResourceController {
         ));
     }
 
+    @GetMapping(value="{id}")
+    public ResponseEntity<?> getResourcesById(@NotNull @PathVariable Long idResource) {
+        ResourceViewDTO resource = resourceService.getResourceById(idResource);
+        return ResponseEntity.ok(Map.of(
+                "status", "success",
+                "message", "Recurso obtenido con éxito",
+                "data", resource
+        ));
+    }
+
     @PostMapping("/add-resource")
     public ResponseEntity<?> addResourceToInventory(@RequestBody ResourceCreateDTO resourceDTO) {
         ResourceViewDTO dto = inventoryService.createAndAddResourceToInventory(resourceDTO);

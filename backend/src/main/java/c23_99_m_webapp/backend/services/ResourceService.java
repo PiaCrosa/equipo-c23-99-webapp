@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static c23_99_m_webapp.backend.mappers.ResourceCreateMapper.toEntity;
+
 @Service
 public class ResourceService {
 
@@ -35,12 +37,12 @@ public class ResourceService {
 
     }
 
-//    public ResourceViewDTO getResourceById(Long id) {
-//        Resource resource = resourceRepository.findById(id)
-//                .orElseThrow(() -> new ResourceNotFoundException("No se encontró el recurso con Id: " + id));
-//
-//        return ResourceViewMapper.toDTO(resource);
-//    }
+    public ResourceViewDTO getResourceById(Long id) {
+        Resource resource = resourceRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró el recurso con Id: " + id));
+
+        return ResourceViewMapper.toDTO(resource);
+    }
 //
 //    public ResourceViewDTO saveResource(ResourceCreateDTO resourceDTO){
 //        Resource resource = resourceRepository.save(toEntity(resourceDTO));
@@ -49,7 +51,7 @@ public class ResourceService {
 //    }
 
     public Resource saveResourceEntity(ResourceCreateDTO resourceDTO) {
-        Resource resource = ResourceCreateMapper.toEntity(resourceDTO);
+        Resource resource = toEntity(resourceDTO);
         return resourceRepository.save(resource);
     }
 
