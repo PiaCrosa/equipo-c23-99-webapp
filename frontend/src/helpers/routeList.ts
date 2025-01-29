@@ -9,7 +9,7 @@ import { SearchDevices } from '../pages/SearchDevices/SearchDevices';
 import { CheckReservations } from '../pages/CheckReservations/CheckReservations';
 import { NewReservation } from '../pages/NewReservation/NewReservation';
 import { EditAdmin } from '../pages/EditAdmin/EditAdmin';
-import { TermsAndConditions } from '../pages/TermsAndConditions/TermsAndConditions'
+import { TermsAndConditions } from '../pages/TermsAndConditions/TermsAndConditions';
 
 const routeList: Route[] = [
 	{
