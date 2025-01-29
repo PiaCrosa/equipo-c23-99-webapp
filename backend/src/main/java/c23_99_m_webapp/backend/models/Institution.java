@@ -22,22 +22,16 @@ public class Institution {
 
     @Id
     private String cue;
-
     private String name;
-
     @Enumerated(EnumType.STRING)
     private EducationalLevel educationalLevel;
-
     private String address;
     private String email;
     private String phone;
     private String website;
-
     @OneToMany(mappedBy = "institution")
     private List<User> users;
-    
     @OneToOne
-    @JoinColumn(name = "inventory_id", referencedColumnName = "id")
     private Inventory inventory;
 
     public Institution(DataRegistrationInstitution dataInstitutionRegistration) {
@@ -70,7 +64,8 @@ public class Institution {
             this.website = dataUpdateInstitution.website();
         }
     }
-      public User getAdmin() throws MyException {
+
+    public User getAdmin() throws MyException {
         return users.stream()
                 .filter(user -> user.getRole() == Role.ADMIN)
                 .findFirst()

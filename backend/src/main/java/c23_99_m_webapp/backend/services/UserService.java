@@ -65,7 +65,6 @@ public class UserService {
         return user;
     }
 
-
     @Transactional
     public DataListUsers updateUser(DataRegistrationUser.DataUpdateUser dataUserUpdate) throws MyException {
         User user = userRepository.findByDni(dataUserUpdate.dni())
