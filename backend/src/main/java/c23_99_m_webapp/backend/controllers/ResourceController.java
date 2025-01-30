@@ -52,7 +52,7 @@ public class ResourceController {
     }
 
     @PostMapping("/add-resource")
-    public ResponseEntity<?> addResourceToInventory(@RequestBody ResourceCreateDTO resourceDTO) {
+    public ResponseEntity<?> addResourceToInventory(@Valid @RequestBody ResourceCreateDTO resourceDTO) {
         ResourceViewDTO dto = inventoryService.createAndAddResourceToInventory(resourceDTO);
         return ResponseEntity.created(URI.create("/resource" + dto.id())).body(Map.of(
                 "status", "success",

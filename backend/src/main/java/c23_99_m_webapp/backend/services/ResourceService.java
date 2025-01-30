@@ -3,7 +3,6 @@ package c23_99_m_webapp.backend.services;
 import c23_99_m_webapp.backend.exceptions.BadCustomerRequestException;
 import c23_99_m_webapp.backend.exceptions.ResourceNotFoundException;
 import c23_99_m_webapp.backend.exceptions.ResourceUnavailableException;
-import c23_99_m_webapp.backend.mappers.ResourceCreateMapper;
 import c23_99_m_webapp.backend.mappers.ResourceViewMapper;
 import c23_99_m_webapp.backend.models.dtos.ResourceCreateDTO;
 import c23_99_m_webapp.backend.models.dtos.ResourceViewDTO;
@@ -11,6 +10,7 @@ import c23_99_m_webapp.backend.models.Resource;
 import c23_99_m_webapp.backend.models.enums.ResourceStatus;
 import c23_99_m_webapp.backend.repositories.ReservationRepository;
 import c23_99_m_webapp.backend.repositories.ResourceRepository;
+import c23_99_m_webapp.backend.validations.ValidationResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,11 +24,12 @@ public class ResourceService {
 
     private final ResourceRepository resourceRepository;
     private final ReservationRepository reservationRepository;
+    private final List<ValidationResource> validations;
 
-    public ResourceService(ResourceRepository resourceRepository, ReservationRepository reservationRepository){
+    public ResourceService(ResourceRepository resourceRepository, ReservationRepository reservationRepository, List<ValidationResource> validations){
         this.resourceRepository = resourceRepository;
         this.reservationRepository = reservationRepository;
-
+        this.validations = validations;
     }
 
     public List<ResourceViewDTO> getResources() {
@@ -51,6 +52,9 @@ public class ResourceService {
 //    }
 
     public Resource saveResourceEntity(ResourceCreateDTO resourceDTO) {
+        for (ValidationResource v : validations) {
+            v.validate(resourceDTO);
+        }
         Resource resource = toEntity(resourceDTO);
         return resourceRepository.save(resource);
     }
@@ -65,6 +69,9 @@ public class ResourceService {
     public ResourceViewDTO updateResource(long id, ResourceCreateDTO dto) {
         Resource existingResource = resourceRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró el recurso con Id: " + id));
+        for (ValidationResource v : validations) {
+            v.validate(dto);
+        }
 
         existingResource.setName(dto.name());
         existingResource.setDescription(dto.description());
