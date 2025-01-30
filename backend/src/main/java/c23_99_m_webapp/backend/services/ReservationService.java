@@ -12,6 +12,7 @@ import c23_99_m_webapp.backend.models.enums.ResourceStatus;
 import c23_99_m_webapp.backend.repositories.ReservationRepository;
 import c23_99_m_webapp.backend.repositories.ResourceRepository;
 import c23_99_m_webapp.backend.repositories.UserRepository;
+import c23_99_m_webapp.backend.validations.ValidateReservationResourceStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.domain.Page;
@@ -37,22 +38,26 @@ public class ReservationService {
     @Autowired
     ResourceRepository resourceRepository;
 
+    @Autowired
+    ValidateReservationResourceStatus validateReservationResourceStatus;
+
     public DataAnswerReservation createdReservation(ReservationDto reservationDto) throws MyException {
         User user = userService.getCurrentUser();
-        Optional<Resource> resourceOptional = resourceRepository.findById(reservationDto.resourceid());
-
-        if (resourceOptional.isEmpty()) {
-            throw new MyException("No se encuentra el material solicitado");
-        }
-
-        Resource resource = resourceOptional.get();
-
-        if (resource.getStatus() == ResourceStatus.IN_USE){
-            throw new MyException("El material solicitado está en uso.");
-
-        } else if (resource.getStatus() == ResourceStatus.UNDER_REPAIR) {
-            throw  new MyException("El material solicitado se encuentra en reparación.");
-        }
+        Resource resource = validateReservationResourceStatus.validateByResourceStatus(reservationDto);
+//        Optional<Resource> resourceOptional = resourceRepository.findById(reservationDto.resourceid());
+//
+//        if (resourceOptional.isEmpty()) {
+//            throw new MyException("No se encuentra el material solicitado");
+//        }
+//
+//        Resource resource = resourceOptional.get();
+//
+//        if (resource.getStatus() == ResourceStatus.IN_USE){
+//            throw new MyException("El material solicitado está en uso.");
+//
+//        } else if (resource.getStatus() == ResourceStatus.UNDER_REPAIR) {
+//            throw  new MyException("El material solicitado se encuentra en reparación.");
+//        }
 
         Reservation reservation = new Reservation();
         reservation.setStartDate(reservationDto.startDate());
