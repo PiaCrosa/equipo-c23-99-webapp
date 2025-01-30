@@ -20,7 +20,7 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer countElement;
+
     private LocalDate startDate;
 
     @Enumerated(EnumType.STRING)
@@ -41,7 +41,7 @@ public class Reservation {
     private boolean deleted = false;
     
     public Reservation(ReservationDto reservationDto) {
-        this.countElement = reservationDto.countElement();
+
         this.startDate = reservationDto.startDate();
         this.reservationShiftStatus = reservationDto.reservationShiftStatus();
         this.selectedTimeSlot = reservationDto.selectedTimeSlot();

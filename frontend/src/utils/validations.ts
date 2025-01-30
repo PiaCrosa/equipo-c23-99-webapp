@@ -46,8 +46,8 @@ export const validateForm = ({
 		return 'Las contraseñas no coinciden';
 	}
 
-	if (!cue.trim() || !/^\d+$/.test(cue)) {
-		return 'El CUE es obligatorio y debe contener solo números';
+	if (!cue.trim()) {
+		return 'El CUE es obligatorio';
 	}
 
 	if (!name.trim()) {
@@ -66,7 +66,10 @@ export const validateForm = ({
 		return 'El teléfono es obligatorio y debe contener solo números';
 	}
 
-	if (website.trim() && !/^https?:\/\/[^\s$.?#].[^\s]*$/.test(website)) {
+	if (
+		website.trim() &&
+		!/^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[\w.-]*)*$/i.test(website)
+	) {
 		return 'El sitio web debe tener un formato válido';
 	}
 

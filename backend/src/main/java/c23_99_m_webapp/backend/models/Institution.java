@@ -1,7 +1,9 @@
 package c23_99_m_webapp.backend.models;
 
+import c23_99_m_webapp.backend.exceptions.MyException;
 import c23_99_m_webapp.backend.models.dtos.DataRegistrationInstitution;
 import c23_99_m_webapp.backend.models.enums.EducationalLevel;
+import c23_99_m_webapp.backend.models.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,22 +22,16 @@ public class Institution {
 
     @Id
     private String cue;
-
     private String name;
-
     @Enumerated(EnumType.STRING)
     private EducationalLevel educationalLevel;
-
     private String address;
     private String email;
     private String phone;
     private String website;
-
     @OneToMany(mappedBy = "institution")
     private List<User> users;
-    
     @OneToOne
-    @JoinColumn(name = "inventory_id", referencedColumnName = "id")
     private Inventory inventory;
 
     public Institution(DataRegistrationInstitution dataInstitutionRegistration) {
@@ -67,5 +63,12 @@ public class Institution {
         if (dataUpdateInstitution.website() != null) {
             this.website = dataUpdateInstitution.website();
         }
+    }
+
+    public User getAdmin() throws MyException {
+        return users.stream()
+                .filter(user -> user.getRole() == Role.ADMIN)
+                .findFirst()
+                .orElseThrow(() -> new MyException("Administrador no encontrado para esta institución."));
     }
 }

@@ -1,12 +1,13 @@
 package c23_99_m_webapp.backend.controllers;
 
 import c23_99_m_webapp.backend.exceptions.MyException;
-import c23_99_m_webapp.backend.models.dtos.DataAnswerDateReservation;
+import c23_99_m_webapp.backend.models.User;
 import c23_99_m_webapp.backend.models.dtos.DataAnswerReservation;
 import c23_99_m_webapp.backend.models.dtos.PageResponse;
 import c23_99_m_webapp.backend.models.dtos.ReservationDto;
+import c23_99_m_webapp.backend.models.enums.ReservationShiftStatus;
+import c23_99_m_webapp.backend.models.enums.ReservationStatus;
 import c23_99_m_webapp.backend.services.ReservationService;
-import c23_99_m_webapp.backend.services.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-
 @RestController
 @RequestMapping(value = "/reservations")
 @SecurityRequirement(name = "bearer-key")
@@ -32,9 +32,6 @@ public class ReservationController {
 
     @Autowired
     ReservationService reservationService;
-
-    @Autowired
-    UserService userService;
 
     @PostMapping("/create")
     public ResponseEntity<?> createReservation(@Valid @RequestBody ReservationDto reservationDto) {
@@ -47,27 +44,32 @@ public class ReservationController {
                     "Reserva creada con éxito","data",
                     reservationDto1));
 
-        } catch (Exception e){
+        } catch (MyException e){
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("status",
+                    "error", "message",
+                    e.getMessage()));
+        }catch (RuntimeException e){
             return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("status",
                     "error", "message",
-                    "Error al crear la reserva."));
+                    e.getMessage()));
         }
     }
 
-    @GetMapping("/allreservations")
+    @GetMapping("/allReservations")
     public ResponseEntity<List<ReservationDto>> getAllReservations() throws MyException {
 
-        List<ReservationDto> reservationList = reservationService.getReservations();
-        return ResponseEntity.ok().body(reservationList);
+            List<ReservationDto> reservationList = reservationService.getReservations();
+            return ResponseEntity.ok().body(reservationList);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/getId/{id}")
     public ResponseEntity<Optional<ReservationDto>> getReservationById(@PathVariable Long id) throws MyException {
         return ResponseEntity.ok().body(reservationService.findReservationById(id));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Optional<ReservationDto>> updateById(@PathVariable Long id, @RequestBody ReservationDto reservationDto) throws MyException {
+    public ResponseEntity<Optional<ReservationDto>> updateById(@PathVariable Long id,
+                                                               @RequestBody ReservationDto reservationDto) throws MyException {
         return ResponseEntity.status(HttpStatus.OK).body(reservationService.updateById(id, reservationDto));
     }
 
@@ -76,24 +78,57 @@ public class ReservationController {
         reservationService.deleteReservationById(id);
     }
 
-    @GetMapping("/alldeleted")
-    public List<ReservationDto> deleted(){
-        return reservationService.getDeletedReservations();
+    @GetMapping("/allDeleted")
+    public List<ReservationDto> deleted()throws MyException{
+        return ResponseEntity.ok().body(reservationService.getDeletedReservations()).getBody();
     }
 
     @PutMapping("/restore/{id}")
     public void restore(@PathVariable Long id) {
-        reservationService.restoreReservation(id);
+        try {
+            reservationService.restoreReservation(id);
+        }catch (MyException e) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("status", "error",
+                    "message", e.getMessage()));
+        }catch (RuntimeException e){
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("status",
+                    "error", "message",
+                    e.getMessage()));
+        }
     }
 
-    // filtrado por fechas con paginacion
-    @GetMapping("/forDate/{date}")
-    public ResponseEntity<?> listForDate(@PathVariable("date") LocalDate startDate,
-                                         @PageableDefault(size = 5) Pageable pageable) {
+    @GetMapping("/byUser/{dni}")
+    public ResponseEntity<?> reserveByUser(@PathVariable("dni") String dni,
+                                           @PageableDefault(size = 10) Pageable pageable){
+        try{
+            Page<DataAnswerReservation> answerReservationPage = reservationService.findByUserDni(dni, pageable);
+            PageResponse<DataAnswerReservation> response = new PageResponse<>(
+                    answerReservationPage.getContent(),
+                    answerReservationPage.getTotalPages(),
+                    answerReservationPage.getTotalElements(),
+                    answerReservationPage.getSize(),
+                    answerReservationPage.getNumber()
+            );
+            return ResponseEntity.ok(Map.of("status", "success",
+                    "message", "Filtrado realizado con éxito.",
+                    "data", response));
+        } catch (MyException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("status", "error",
+                    "message", e.getMessage()));
+        } catch (RuntimeException e){
+            return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("status",
+                    "error", "message",
+                    e.getMessage()));
+        }
+    }
+
+    @GetMapping("/byDate/{date}")
+    public ResponseEntity<?> listByDate(@PathVariable("date") LocalDate startDate,
+                                         @PageableDefault(size = 10) Pageable pageable){
         try {
-            Page<DataAnswerDateReservation> reservationDtoPage = reservationService.findByDate(startDate, pageable);
-            PageResponse<DataAnswerDateReservation> response = new PageResponse<>(
-                    reservationDtoPage.getContent(), //->aca deberian verse los datos de la reserva
+            Page<DataAnswerReservation> reservationDtoPage = reservationService.findByDate(startDate, pageable);
+            PageResponse<DataAnswerReservation> response = new PageResponse<>(
+                    reservationDtoPage.getContent(),
                     reservationDtoPage.getTotalPages(),
                     reservationDtoPage.getTotalElements(),
                     reservationDtoPage.getSize(),
@@ -103,12 +138,57 @@ public class ReservationController {
             return ResponseEntity.ok(Map.of("status", "success",
                     "message", "Filtrado realizado con éxito.",
                     "data", response));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("status", "error",
-                    "message", "Error interno al obtener la lista de reservas."));
+        } catch (MyException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("status", "error",
+                    "message", e.getMessage()));
+        }catch (RuntimeException e){
+            return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("status",
+                    "error", "message",
+                    e.getMessage()));
         }
     }
+    @GetMapping("/byStatus/{status}")
+    public ResponseEntity<?> listByStatusReserve(@PathVariable("status") ReservationStatus status,
+                                                 @PageableDefault(size = 10) Pageable pageable){
+        try {
+            Page<DataAnswerReservation> reservationDtoPage = reservationService.findByStatus(status, pageable);
+            PageResponse<DataAnswerReservation> response = new PageResponse<>(
+                    reservationDtoPage.getContent(),
+                    reservationDtoPage.getTotalPages(),
+                    reservationDtoPage.getTotalElements(),
+                    reservationDtoPage.getSize(),
+                    reservationDtoPage.getNumber()
+            );
+            return ResponseEntity.ok(Map.of("status", "success",
+                    "message", "Filtrado realizado con éxito.",
+                    "data", response));
 
+        } catch (MyException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
+        }
+    }
+    @GetMapping("/byShiftStatus/{reservationShiftStatus}")
+    public ResponseEntity<?> getByShiftStatus(@PathVariable("reservationShiftStatus") ReservationShiftStatus reservationShiftStatus,
+                                              @PageableDefault(size = 10) Pageable pageable){
+        try {
+            Page<DataAnswerReservation> reservationDtoPage = reservationService.findByShiftStatus(reservationShiftStatus, pageable);
+            PageResponse<DataAnswerReservation> response = new PageResponse<>(
+                    reservationDtoPage.getContent(),
+                    reservationDtoPage.getTotalPages(),
+                    reservationDtoPage.getTotalElements(),
+                    reservationDtoPage.getSize(),
+                    reservationDtoPage.getNumber()
+            );
+            return ResponseEntity.ok(Map.of("status", "success",
+                    "message", "Filtrado realizado con éxito.",
+                    "data", response));
+
+        } catch (MyException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
+        }
+    }
 }
-
-

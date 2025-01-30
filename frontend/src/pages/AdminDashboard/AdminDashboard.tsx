@@ -8,7 +8,7 @@ import { adminData } from '../../helpers/data/admin';
 const AdminDashboard: React.FC = () => {
 	const navigate = useNavigate();
 	// adminData es un objeto de prueba
-	const [AdminInfo, setAdminInfo] = useState(adminData);
+	const [AdminInfo] = useState(adminData);
 
 	return (
 		<React.Fragment>

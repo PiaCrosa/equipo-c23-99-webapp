@@ -84,7 +84,7 @@ public class ResourceService {
     }
 
     @Transactional
-    public void deleteResource(long id) throws BadCustomerRequestException{
+    public void deleteResource(long id){
         Resource resource = resourceRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontro al recurso con id: " + id));
 

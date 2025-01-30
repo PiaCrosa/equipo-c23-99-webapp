@@ -4,7 +4,7 @@ const TermsAndConditions = () => {
 
   const containerStyles = "max-w-[98%] my-[10px] mx-auto p-6 bg-gray-50 rounded-md shadow-md";
   const headerStyles = "text-3xl font-bold text-gray-500 mb-4 text-center p-4";
-  const sectionTitleStyles = "bg-sky-500 text-xl font-semibold text-gray-100 mt-6 mb-2 pl-5 py-2 rounded";
+  const sectionTitleStyles = "text-xl font-semibold text-sky-500 mt-6 mb-2 pl-5 py-2 rounded";
   //const sectionTitleStyles = "bg-gradient-to-r from-sky-500 to-transparent text-xl font-semibold text-gray-100 mt-6 mb-2 pl-5 py-2 rounded";
   const paragraphStyles = "pl-5 text-lg text-gray-600 leading-relaxed mb-4";
   const listStyles = "pl-5 text-lg list-disc list-inside text-gray-600 leading-relaxed mb-4";

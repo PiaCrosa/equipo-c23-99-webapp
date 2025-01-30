@@ -11,16 +11,17 @@ const registerRequest = async (
 	try {
 		const response = await axios.post<RegisterResponse>(
 			`${PORT_SERVER}/institution/register`,
-			{ ...userRegisterInFormData },
+			{ ...userRegisterInFormData }
 		);
 
-		Swal.fire({
-			icon: 'success',
-			title: 'Registro exitoso',
-			text: `Bienvenido, ${response.data.name}!`,
-			timer: 3000,
-			showConfirmButton: false,
-		});
+    Swal.fire({
+		icon: 'success',
+		title: 'Registro exitoso',
+		timer: 3000,
+		text: `Bienvenido, ${userRegisterInFormData.full_name_admin}!`,
+		
+		showConfirmButton: false,
+    });
 
 		return response.data;
 	} catch (error: unknown) {

@@ -1,6 +1,5 @@
 package c23_99_m_webapp.backend.controllers;
 
-import c23_99_m_webapp.backend.models.dtos.DataAnswerInstitution;
 import c23_99_m_webapp.backend.models.dtos.ResourceCreateDTO;
 import c23_99_m_webapp.backend.models.dtos.ResourceViewDTO;
 import c23_99_m_webapp.backend.models.dtos.ResourceStatusUpdateDTO;
