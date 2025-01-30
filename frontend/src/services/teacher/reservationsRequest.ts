@@ -2,6 +2,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import { PORT_SERVER } from '..';
 import { ReservationResponse } from '../../models/teacher/ReservationGetUser';
+import { ReservationResponse } from '../../models/teacher/ReservationGetUser';
 
 export const getReservationsByUser = async (
 	dni: string,
