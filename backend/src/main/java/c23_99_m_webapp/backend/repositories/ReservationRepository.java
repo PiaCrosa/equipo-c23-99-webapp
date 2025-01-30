@@ -4,6 +4,7 @@ package c23_99_m_webapp.backend.repositories;
 import c23_99_m_webapp.backend.models.Reservation;
 import c23_99_m_webapp.backend.models.Resource;
 
+import c23_99_m_webapp.backend.models.User;
 import c23_99_m_webapp.backend.models.enums.ReservationShiftStatus;
 import c23_99_m_webapp.backend.models.enums.ReservationStatus;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,10 @@ import java.util.List;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation,Long> {
+
+    @Query("SELECT r FROM Reservation r WHERE r.user.dni = :dni")
+    Page<Reservation> findReservationByUserDni(@Param("dni") String dni, Pageable pageable);
+
 
     @Query("SELECT r FROM Reservation r WHERE startDate = :startDate")
     Page<Reservation> findReservationByDate(@Param("startDate") LocalDate startDate, Pageable pageable);

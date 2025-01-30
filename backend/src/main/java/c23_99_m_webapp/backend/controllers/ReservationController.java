@@ -1,6 +1,7 @@
 package c23_99_m_webapp.backend.controllers;
 
 import c23_99_m_webapp.backend.exceptions.MyException;
+import c23_99_m_webapp.backend.models.User;
 import c23_99_m_webapp.backend.models.dtos.DataAnswerReservation;
 import c23_99_m_webapp.backend.models.dtos.PageResponse;
 import c23_99_m_webapp.backend.models.dtos.ReservationDto;
@@ -96,6 +97,31 @@ public class ReservationController {
         }
     }
 
+    @GetMapping("/byUser/{dni}")
+    public ResponseEntity<?> reserveByUser(@PathVariable("dni") String dni,
+                                           @PageableDefault(size = 10) Pageable pageable){
+        try{
+            Page<DataAnswerReservation> answerReservationPage = reservationService.findByUserDni(dni, pageable);
+            PageResponse<DataAnswerReservation> response = new PageResponse<>(
+                    answerReservationPage.getContent(),
+                    answerReservationPage.getTotalPages(),
+                    answerReservationPage.getTotalElements(),
+                    answerReservationPage.getSize(),
+                    answerReservationPage.getNumber()
+            );
+            return ResponseEntity.ok(Map.of("status", "success",
+                    "message", "Filtrado realizado con éxito.",
+                    "data", response));
+        } catch (MyException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("status", "error",
+                    "message", e.getMessage()));
+        } catch (RuntimeException e){
+            return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("status",
+                    "error", "message",
+                    e.getMessage()));
+        }
+    }
+
     @GetMapping("/byDate/{date}")
     public ResponseEntity<?> listByDate(@PathVariable("date") LocalDate startDate,
                                          @PageableDefault(size = 10) Pageable pageable){
@@ -144,7 +170,8 @@ public class ReservationController {
         }
     }
     @GetMapping("/byShiftStatus/{reservationShiftStatus}")
-    public ResponseEntity<?> getByShiftStatus(@PathVariable("reservationShiftStatus") ReservationShiftStatus reservationShiftStatus, @PageableDefault(size = 10) Pageable pageable){
+    public ResponseEntity<?> getByShiftStatus(@PathVariable("reservationShiftStatus") ReservationShiftStatus reservationShiftStatus,
+                                              @PageableDefault(size = 10) Pageable pageable){
         try {
             Page<DataAnswerReservation> reservationDtoPage = reservationService.findByShiftStatus(reservationShiftStatus, pageable);
             PageResponse<DataAnswerReservation> response = new PageResponse<>(

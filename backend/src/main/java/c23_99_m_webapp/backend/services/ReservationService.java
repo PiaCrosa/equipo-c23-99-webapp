@@ -8,17 +8,13 @@ import c23_99_m_webapp.backend.models.dtos.DataAnswerReservation;
 import c23_99_m_webapp.backend.models.dtos.ReservationDto;
 import c23_99_m_webapp.backend.models.enums.ReservationShiftStatus;
 import c23_99_m_webapp.backend.models.enums.ReservationStatus;
-import c23_99_m_webapp.backend.models.enums.ResourceStatus;
 import c23_99_m_webapp.backend.repositories.ReservationRepository;
 import c23_99_m_webapp.backend.repositories.ResourceRepository;
-import c23_99_m_webapp.backend.repositories.UserRepository;
 import c23_99_m_webapp.backend.validations.ValidateReservationResourceStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -219,6 +215,27 @@ public class ReservationService {
             });
         } catch (Exception e) {
             throw new MyException("No se pudieron recuperar las reservas.");
+        }
+    }
+
+    public Page<DataAnswerReservation> findByUserDni(String user, Pageable pageable) throws MyException {
+
+        try {
+            Page<Reservation> reservationByUserDni = reservationRepository.findReservationByUserDni(user, pageable);
+            return reservationByUserDni.map(reservation -> {
+
+                DataAnswerReservation dataAnswerReservation = new DataAnswerReservation(
+                        reservation.getUser().getEmail(),
+                        reservation.getStartDate(),
+                        reservation.getReservationShiftStatus(),
+                        reservation.getSelectedTimeSlot(),
+                        reservation.getResource().getName(),
+                        reservation.getReservationStatus()
+                );
+                return dataAnswerReservation;
+            });
+        } catch (Exception e) {
+            throw new MyException("No se pudo realizar la búsqueda.");
         }
     }
 }
