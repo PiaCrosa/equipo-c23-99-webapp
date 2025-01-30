@@ -55,7 +55,7 @@ public class InstitutionService {
             institutionRepository.delete(institution);
             throw e;
         }
-        return institutionRepository.save(institution);
+        return institution;
     }
 
     @Transactional
