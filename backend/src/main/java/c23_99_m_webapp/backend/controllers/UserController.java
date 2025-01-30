@@ -62,7 +62,7 @@ public class UserController {
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<?> listUsers(@PageableDefault(size = 8) Pageable pagination) {
+    public ResponseEntity<?> listUsers(@PageableDefault(size = 9) Pageable pagination) {
         try {
             Page<DataListUsers> users = userService.listUsers(pagination);
             return ResponseEntity.ok(Map.of(
@@ -182,4 +182,3 @@ public class UserController {
         }
     }
 }
-
