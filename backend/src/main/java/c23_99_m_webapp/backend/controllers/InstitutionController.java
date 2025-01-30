@@ -81,7 +81,7 @@ public class InstitutionController {
     }
 
     @GetMapping("/getCue/{cue}")
-    public ResponseEntity<?> returnDataInstitutionByCue(@PathVariable String cue) {
+    public ResponseEntity<?> returnDataInstitutionByCue(@PathVariable String cue) throws MyException {
         try {
             DataAnswerInstitution dataInstitution = institutionService.returnDataInstitutionByCue(cue);
             return ResponseEntity.ok(Map.of(
