@@ -1,8 +1,33 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { PORT_SERVER } from '..';
+import { ReservationResponse } from '../../models/teacher/ReservationGetUser';
 
-export const getReservations = async (token: string): Promise<null> => {
-	console.log(axios, Swal, PORT_SERVER, token);
-	return null;
+export const getReservationsByUser = async (
+	dni: string,
+	page: number = 0,
+	token: string,
+): Promise<ReservationResponse | null> => {
+	try {
+		const response = await axios.get<ReservationResponse>(
+			`${PORT_SERVER}/${dni}`,
+			{
+				params: { page },
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			},
+		);
+
+		return response.data;
+	} catch (error) {
+		console.error('Error al obtener las reservas:', error);
+		Swal.fire({
+			title: 'Error',
+			text: 'No se pudieron obtener las reservas. Intenta nuevamente.',
+			icon: 'error',
+			confirmButtonText: 'Aceptar',
+		});
+		return null;
+	}
 };
