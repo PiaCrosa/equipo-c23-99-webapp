@@ -33,9 +33,10 @@ const AddEditUsers = () => {
 	// Functions
 	const prepareUserToSubmit = (form: AddEditUsersForm): User => {
 		return {
-			dni: dni ? dni : '0',
+			dni: dni ? dni : form.dni,
 			email: form.email,
 			full_name: form.name,
+			role: 'TEACHER',
 			password: form.pass1,
 			password2: form.pass2,
 		};

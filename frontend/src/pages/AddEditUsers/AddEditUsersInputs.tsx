@@ -14,6 +14,11 @@ const AddEditUsersInputs = (
     <>
       <InputControl
         register={register}
+        propertyName='dni'
+        commonName='DNI'
+      />
+      <InputControl
+        register={register}
         propertyName='name'
         commonName='Nombre completo'
       />
