@@ -31,8 +31,6 @@ public class ValidateResourceName implements ValidationResource{
                 throw new DuplicateResourceException("El nombre del recurso ya existe en este inventario");
             }
         }
-
-
     }
 
 }
