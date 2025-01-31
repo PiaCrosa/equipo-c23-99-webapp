@@ -5,6 +5,7 @@ import c23_99_m_webapp.backend.models.Reservation;
 import c23_99_m_webapp.backend.models.Resource;
 import c23_99_m_webapp.backend.models.User;
 import c23_99_m_webapp.backend.models.dtos.DataAnswerReservation;
+import c23_99_m_webapp.backend.models.dtos.DataAnswerReserveByDniUser;
 import c23_99_m_webapp.backend.models.dtos.ReservationDto;
 import c23_99_m_webapp.backend.models.enums.ReservationShiftStatus;
 import c23_99_m_webapp.backend.models.enums.ReservationStatus;
@@ -63,6 +64,7 @@ public class ReservationService {
         reservation.setDeleted(false);
         reservation.setUser(user);
         reservation.setResource(resource);
+
 //actualizar estado del recurso a "IN_USE"
         reservation = reservationRepository.save(reservation);
 
@@ -218,21 +220,23 @@ public class ReservationService {
         }
     }
 
-    public Page<DataAnswerReservation> findByUserDni(String user, Pageable pageable) throws MyException {
+    public Page<DataAnswerReserveByDniUser> findByUserDni(String user, Pageable pageable) throws MyException {
 
         try {
             Page<Reservation> reservationByUserDni = reservationRepository.findReservationByUserDni(user, pageable);
             return reservationByUserDni.map(reservation -> {
 
-                DataAnswerReservation dataAnswerReservation = new DataAnswerReservation(
-                        reservation.getUser().getEmail(),
+                DataAnswerReserveByDniUser dataAnswerReserveByDniUser = new DataAnswerReserveByDniUser(
+
+                        reservation.getId(),
                         reservation.getStartDate(),
                         reservation.getReservationShiftStatus(),
                         reservation.getSelectedTimeSlot(),
+                        reservation.getResource().getId(),
                         reservation.getResource().getName(),
                         reservation.getReservationStatus()
                 );
-                return dataAnswerReservation;
+                return dataAnswerReserveByDniUser;
             });
         } catch (Exception e) {
             throw new MyException("No se pudo realizar la búsqueda.");
