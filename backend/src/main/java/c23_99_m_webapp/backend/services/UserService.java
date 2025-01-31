@@ -47,12 +47,8 @@ public class UserService {
         }
 
         User userAutenticado = null;
-       try {
-            userAutenticado = getCurrentUser();
-        } catch (MyException e) {
-            logger.warn("No se pudo obtener el usuario autenticado, se usará la institución proporcionada.");
-        }
-       
+        userAutenticado = getCurrentUser();
+
         User user = new User(dataUserRegistration,
                 (userAutenticado != null) ? userAutenticado.getInstitution() : institutionEncontrada);
 

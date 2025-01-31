@@ -58,7 +58,7 @@ public class InstitutionController {
         }
     }
 
-    @PutMapping("/update")
+    @PatchMapping("/update")
     public ResponseEntity<?> updateInstitution(@RequestBody @Valid DataRegistrationInstitution.DataUpdateInstitution dataUpdateInstitution) {
         try {
             DataListInstitution institution = institutionService.updateInstitution(dataUpdateInstitution);
