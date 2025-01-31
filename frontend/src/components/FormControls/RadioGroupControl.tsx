@@ -2,6 +2,7 @@ import { FieldValues, Path, UseFormRegister } from 'react-hook-form';
 import { controlClasses } from './controlClasses'
 import { MultipleFormControlOption } from '../../helpers/MultipleFormControlOption';
 import clsx from 'clsx';
+import { useEffect, useState } from 'react';
 
 interface RadioGroupControlProps<T extends FieldValues> {
   propertyName: Path<T>,
@@ -20,6 +21,12 @@ const RadioGroupControl = <T extends FieldValues>(
     labelContainerClasses,
     radioInputContainerClasses,
   } = controlClasses;
+
+  const [selectedValue, setSelectedValue] = useState<string | number>(defaultValue);
+
+  useEffect(() => {
+    setSelectedValue(defaultValue);
+  }, [defaultValue]);
 
   return (
     <div className={controlContainerClasses}>
@@ -50,11 +57,11 @@ const RadioGroupControl = <T extends FieldValues>(
                   className='mt-1'
                   type='radio'
                   value={option.value}
-                  defaultChecked={String(defaultValue) === String(option.value)}
+                  checked={String(selectedValue) === String(option.value)}
                   {...register(
                     propertyName,
-                    { required: true }
                   )}
+                  onChange={() => setSelectedValue(option.value)}
                 />
               </div>
             )

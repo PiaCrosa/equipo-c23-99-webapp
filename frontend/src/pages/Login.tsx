@@ -25,10 +25,10 @@ const Login: React.FC = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (isLoggedIn) {
+		if (isLoggedIn && user) {
 			navigate(`/${user?.role.toLowerCase()}-dashboard`);
 		}
-	}, [isLoggedIn, navigate, user?.role]);
+	}, [isLoggedIn, navigate, user?.role, user]);
 
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
