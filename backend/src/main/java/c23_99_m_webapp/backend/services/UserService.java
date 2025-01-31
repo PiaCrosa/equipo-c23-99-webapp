@@ -47,6 +47,7 @@ public class UserService {
         }
 
         User userAutenticado = null;
+        
         userAutenticado = getCurrentUser();
 
         User user = new User(dataUserRegistration,

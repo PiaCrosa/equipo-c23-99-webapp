@@ -4,6 +4,6 @@ export interface User {
   email: string,
   password: string,
   password2: string,
-  role: 'TEACHER' | 'ADMIN',
-  institution_cue: string,
+  role?: 'TEACHER' | 'ADMIN',
+  institution_cue?: string,
 }

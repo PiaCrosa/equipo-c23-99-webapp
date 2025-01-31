@@ -6,14 +6,13 @@ import { HTMLInputTypeAttribute } from 'react';
 interface InputControlProps<T extends FieldValues> {
   propertyName: Path<T>,
   register: UseFormRegister<T>,
-  defaultValue: string | number,
   commonName: string,
   type?: HTMLInputTypeAttribute 
 }
 
 const InputControl = <T extends FieldValues>(
   {
-    register, propertyName, commonName, defaultValue, type = 'text'
+    register, propertyName, commonName, type = 'text'
   }: InputControlProps<T>
 ) => {
   const {
@@ -29,7 +28,6 @@ const InputControl = <T extends FieldValues>(
         <input
           className={textInputClasses}
           type={type}
-          defaultValue={defaultValue}
           {...register(
             propertyName,
             { required: true }
