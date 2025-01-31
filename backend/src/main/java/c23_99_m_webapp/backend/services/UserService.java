@@ -47,12 +47,9 @@ public class UserService {
         }
 
         User userAutenticado = null;
-//        try {
-            userAutenticado = getCurrentUser();
-//        }
-//        catch (MyException e) {
-//
-//        }
+        
+        userAutenticado = getCurrentUser();
+
         User user = new User(dataUserRegistration,
                 (userAutenticado != null) ? userAutenticado.getInstitution() : institutionEncontrada);
 
