@@ -47,12 +47,12 @@ public class UserService {
         }
 
         User userAutenticado = null;
-//        try {
+        try {
             userAutenticado = getCurrentUser();
-//        }
-//        catch (MyException e) {
-//
-//        }
+        } catch (ResourceNotFoundException e) {
+            logger.warn("No se pudo obtener el usuario autenticado, se usará la institución proporcionada.");
+        }
+
         User user = new User(dataUserRegistration,
                 (userAutenticado != null) ? userAutenticado.getInstitution() : institutionEncontrada);
 
@@ -66,6 +66,7 @@ public class UserService {
         }
         return user;
     }
+    
 
     @Transactional
     public DataListUsers updateUser(DataRegistrationUser.DataUpdateUser dataUserUpdate) throws MyException {

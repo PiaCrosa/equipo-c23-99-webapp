@@ -78,7 +78,7 @@ public class UserController {
         }
     }
 
-    @PutMapping("/update")
+    @PatchMapping("/update")
     public ResponseEntity<?> updateUser(@RequestBody @Valid DataRegistrationUser.DataUpdateUser dataUserUpdate) {
         try {
             DataListUsers user = userService.updateUser(dataUserUpdate);
@@ -100,7 +100,7 @@ public class UserController {
         }
     }
 
-    @PutMapping("/deactivate/{dni}")
+    @PatchMapping("/deactivate/{dni}")
     public ResponseEntity<?> deactivateUser(@PathVariable String dni) {
         try {
             userService.deactivateUser(dni);
@@ -116,7 +116,7 @@ public class UserController {
         }
     }
 
-    @PutMapping("/activate/{dni}")
+    @PatchMapping("/activate/{dni}")
     public ResponseEntity<?> activateUser(@PathVariable String dni) {
         try {
             userService.activateUser(dni);
