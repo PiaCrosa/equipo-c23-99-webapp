@@ -70,7 +70,7 @@ const routeList: Route[] = [
 	},
 
 	{
-		path: '/teacher-dashboard',
+		path: '/teacher-dashboard/:page?',
 		name: 'Home',
 		routeType: 'teacher',
 		isShownInMenu: true,
