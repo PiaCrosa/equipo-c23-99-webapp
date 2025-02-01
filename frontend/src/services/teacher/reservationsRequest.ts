@@ -10,7 +10,7 @@ export const getReservationsByUser = async (
 ): Promise<ReservationResponse | null> => {
 	try {
 		const response = await axios.get<ReservationResponse>(
-			`${PORT_SERVER}/${dni}`,
+			`${PORT_SERVER}/reservations/byUser/${dni}`,
 			{
 				params: { page },
 				headers: {
