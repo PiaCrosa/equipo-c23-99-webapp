@@ -3,6 +3,7 @@ package c23_99_m_webapp.backend.controllers;
 import c23_99_m_webapp.backend.exceptions.MyException;
 import c23_99_m_webapp.backend.models.User;
 import c23_99_m_webapp.backend.models.dtos.DataAnswerReservation;
+import c23_99_m_webapp.backend.models.dtos.DataAnswerReserveByDniUser;
 import c23_99_m_webapp.backend.models.dtos.PageResponse;
 import c23_99_m_webapp.backend.models.dtos.ReservationDto;
 import c23_99_m_webapp.backend.models.enums.ReservationShiftStatus;
@@ -101,8 +102,8 @@ public class ReservationController {
     public ResponseEntity<?> reserveByUser(@PathVariable("dni") String dni,
                                            @PageableDefault(size = 10) Pageable pageable){
         try{
-            Page<DataAnswerReservation> answerReservationPage = reservationService.findByUserDni(dni, pageable);
-            PageResponse<DataAnswerReservation> response = new PageResponse<>(
+            Page<DataAnswerReserveByDniUser> answerReservationPage = reservationService.findByUserDni(dni, pageable);
+            PageResponse<DataAnswerReserveByDniUser> response = new PageResponse<>(
                     answerReservationPage.getContent(),
                     answerReservationPage.getTotalPages(),
                     answerReservationPage.getTotalElements(),

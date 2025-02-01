@@ -5,9 +5,11 @@ import c23_99_m_webapp.backend.models.Reservation;
 import c23_99_m_webapp.backend.models.Resource;
 import c23_99_m_webapp.backend.models.User;
 import c23_99_m_webapp.backend.models.dtos.DataAnswerReservation;
+import c23_99_m_webapp.backend.models.dtos.DataAnswerReserveByDniUser;
 import c23_99_m_webapp.backend.models.dtos.ReservationDto;
 import c23_99_m_webapp.backend.models.enums.ReservationShiftStatus;
 import c23_99_m_webapp.backend.models.enums.ReservationStatus;
+import c23_99_m_webapp.backend.models.enums.ResourceStatus;
 import c23_99_m_webapp.backend.repositories.ReservationRepository;
 import c23_99_m_webapp.backend.repositories.ResourceRepository;
 import c23_99_m_webapp.backend.validations.ValidateReservationResourceStatus;
@@ -32,6 +34,9 @@ public class ReservationService {
     UserService userService;
 
     @Autowired
+    ResourceService resourceService;
+
+    @Autowired
     ResourceRepository resourceRepository;
 
     @Autowired
@@ -40,20 +45,6 @@ public class ReservationService {
     public DataAnswerReservation createdReservation(ReservationDto reservationDto) throws MyException {
         User user = userService.getCurrentUser();
         Resource resource = validateReservationResourceStatus.validateByResourceStatus(reservationDto);
-//        Optional<Resource> resourceOptional = resourceRepository.findById(reservationDto.resourceid());
-//
-//        if (resourceOptional.isEmpty()) {
-//            throw new MyException("No se encuentra el material solicitado");
-//        }
-//
-//        Resource resource = resourceOptional.get();
-//
-//        if (resource.getStatus() == ResourceStatus.IN_USE){
-//            throw new MyException("El material solicitado está en uso.");
-//
-//        } else if (resource.getStatus() == ResourceStatus.UNDER_REPAIR) {
-//            throw  new MyException("El material solicitado se encuentra en reparación.");
-//        }
 
         Reservation reservation = new Reservation();
         reservation.setStartDate(reservationDto.startDate());
@@ -62,8 +53,11 @@ public class ReservationService {
         reservation.setReservationStatus(ReservationStatus.CONFIRMED);
         reservation.setDeleted(false);
         reservation.setUser(user);
+
+        resource.setStatus(ResourceStatus.IN_USE); //seteo el estado del recurso
+        resource = resourceRepository.save(resource);
+
         reservation.setResource(resource);
-//actualizar estado del recurso a "IN_USE"
         reservation = reservationRepository.save(reservation);
 
         DataAnswerReservation data = new DataAnswerReservation(
@@ -75,6 +69,19 @@ public class ReservationService {
                 reservation.getReservationStatus()
         );
         return data;
+    }
+
+    private Resource changeStatusResource(Long id){
+        Resource resource = resourceRepository.findById(id).orElseThrow();
+        resourceService.validateResourceAvailability(resource.getId());
+
+        if (resource.getStatus() == ResourceStatus.IN_USE){
+            resource.setStatus(ResourceStatus.AVAILABLE);
+
+        } else if (resource.getStatus() == ResourceStatus.UNDER_REPAIR) {
+            resource.setStatus(ResourceStatus.AVAILABLE);
+        }
+        return resource;
     }
 
     public List<ReservationDto> getReservations() throws MyException {
@@ -114,8 +121,9 @@ public class ReservationService {
             reservation.setStartDate(updatedReservationDto.startDate());
             reservation.setReservationShiftStatus(updatedReservationDto.reservationShiftStatus());
             reservation.setSelectedTimeSlot(updatedReservationDto.selectedTimeSlot());
-            reservation.setReservationStatus(ReservationStatus.CONFIRMED);
-
+            Resource resource = resourceRepository.findById(updatedReservationDto.resourceid()).orElseThrow();
+            reservation.setResource(resource);
+            resourceRepository.save(resource);
             Reservation updatedReservation = reservationRepository.save(reservation);
             return convertToDto(updatedReservation);
         });
@@ -218,24 +226,33 @@ public class ReservationService {
         }
     }
 
-    public Page<DataAnswerReservation> findByUserDni(String user, Pageable pageable) throws MyException {
+    public Page<DataAnswerReserveByDniUser> findByUserDni(String user, Pageable pageable) throws MyException {
 
         try {
             Page<Reservation> reservationByUserDni = reservationRepository.findReservationByUserDni(user, pageable);
             return reservationByUserDni.map(reservation -> {
 
-                DataAnswerReservation dataAnswerReservation = new DataAnswerReservation(
-                        reservation.getUser().getEmail(),
+                DataAnswerReserveByDniUser dataAnswerReserveByDniUser = new DataAnswerReserveByDniUser(
+
+                        reservation.getId(),
                         reservation.getStartDate(),
                         reservation.getReservationShiftStatus(),
                         reservation.getSelectedTimeSlot(),
+                        reservation.getResource().getId(),
                         reservation.getResource().getName(),
                         reservation.getReservationStatus()
                 );
-                return dataAnswerReservation;
+                return dataAnswerReserveByDniUser;
             });
         } catch (Exception e) {
             throw new MyException("No se pudo realizar la búsqueda.");
         }
     }
 }
+
+//public void updateResourceStatus(Long resourceId, ResourceStatus status) {
+//    Resource resource = resourceRepository.findById(resourceId)
+//            .orElseThrow(() -> new ResourceNotFoundException("Recurso no encontrado con ID: " + resourceId));
+//    resource.setStatus(status);
+//    resourceRepository.save(resource);
+//}
