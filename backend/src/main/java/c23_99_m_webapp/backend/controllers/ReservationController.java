@@ -74,7 +74,6 @@ public class ReservationController {
                                                                @RequestBody ReservationDto reservationDto) throws MyException {
         return ResponseEntity.status(HttpStatus.OK).body(reservationService.updateById(id, reservationDto));
     }
-
     //update para el admin
     @PatchMapping("/updateStatus/{id}")
     public ResponseEntity<?> updateReservationStatus(@PathVariable Long id, @RequestBody ReservationStatus newStatus) {

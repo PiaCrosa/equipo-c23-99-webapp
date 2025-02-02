@@ -20,7 +20,7 @@ import java.util.List;
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation,Long> {
 
-    @Query("SELECT r FROM Reservation r WHERE r.user.dni = :dni")
+    @Query("SELECT r FROM Reservation r WHERE r.user.dni = :dni AND r.deleted = false")
     Page<Reservation> findReservationByUserDni(@Param("dni") String dni, Pageable pageable);
 
 
@@ -36,5 +36,10 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long> {
     @Query("SELECT r FROM Reservation r WHERE r.deleted = true")
     List<Reservation> findAllDeleted();
 
+    @Query("SELECT r FROM Reservation r WHERE r.deleted = false")
+    List<Reservation> findAllActive();
+
     boolean existsByResource(Resource resource);
+
+    boolean existsByResourceIdAndStartDate(Long resourceId, LocalDate startDate);
 }
