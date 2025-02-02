@@ -123,7 +123,6 @@ public class ReservationService {
     }
 
 //update para el admin
-    @Transactional
     public ReservationDto updateReservationStatusByAdmin(Long id, ReservationStatus newStatus) throws MyException {
 
         Reservation reservation = reservationRepository.findById(id).orElseThrow();
@@ -137,8 +136,9 @@ public class ReservationService {
         throw new MyException("No tiene el permiso necesario.");
     }
 
+    //metodo borrado logico
     public void deleteReservationById(Long id) throws MyException {
-
+        //cambiar el estado del recurso a habilitado
         if (!reservationRepository.existsById(id)) {
             throw new MyException("No se encuentra la reserva.");
         }
@@ -255,5 +255,14 @@ public class ReservationService {
         } catch (Exception e) {
             throw new MyException("No se pudo realizar la búsqueda.");
         }
+    }
+
+
+    //borrado fisico
+    public void deleteReserve(Long id) throws MyException {
+        if (!reservationRepository.existsById(id)) {
+            throw new MyException("No se encuentra la reserva.");
+        }
+        reservationRepository.deleteById(id);
     }
 }
