@@ -18,7 +18,7 @@ public class ValidateReservationByUserRole {
         User user = userService.getCurrentUser();
 
         if (user.getRole() == Role.ADMIN) {
-            throw new MyException("No puede realizar reservas siendo adminitrador.");
+            throw new MyException("No puede realizar reservas estando como ADMINISTRADOR.");
         }
         return user;
     }

@@ -68,11 +68,36 @@ public class ReservationController {
         return ResponseEntity.ok().body(reservationService.findReservationById(id));
     }
 
-    @PutMapping("/update/{id}")
+    //update para el usuario
+    @PatchMapping("/update/{id}")
     public ResponseEntity<Optional<ReservationDto>> updateById(@PathVariable Long id,
                                                                @RequestBody ReservationDto reservationDto) throws MyException {
         return ResponseEntity.status(HttpStatus.OK).body(reservationService.updateById(id, reservationDto));
     }
+
+    //update para el admin
+    @PatchMapping("/updateStatus/{id}")
+    public ResponseEntity<?> updateReservationStatus(@PathVariable Long id, @RequestBody ReservationStatus newStatus) {
+        try {
+            ReservationDto updatedReservation = reservationService.updateReservationStatusByAdmin(id, newStatus);
+            return ResponseEntity.ok(Map.of(
+                    "status", "success",
+                    "message", "Estado de la reserva actualizado con éxito",
+                    "data", updatedReservation
+            ));
+        } catch (MyException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
+                    "status", "error",
+                    "message", e.getMessage()
+            ));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "status", "error",
+                    "message", "Error interno del servidor"
+            ));
+        }
+    }
+
 
     @PutMapping("/delete/{id}") //borrado logico
     public void deleteReservation(@PathVariable Long id) throws MyException {

@@ -10,6 +10,7 @@ import c23_99_m_webapp.backend.models.dtos.ReservationDto;
 import c23_99_m_webapp.backend.models.enums.ReservationShiftStatus;
 import c23_99_m_webapp.backend.models.enums.ReservationStatus;
 import c23_99_m_webapp.backend.models.enums.ResourceStatus;
+import c23_99_m_webapp.backend.models.enums.Role;
 import c23_99_m_webapp.backend.repositories.ReservationRepository;
 import c23_99_m_webapp.backend.repositories.ResourceRepository;
 import c23_99_m_webapp.backend.validations.ValidateReservationByUserRole;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -35,14 +37,16 @@ public class ReservationService {
     ResourceRepository resourceRepository;
 
     @Autowired
+    UserService userService;
+
+    @Autowired
     ValidateReservationResourceStatus validateReservationResourceStatus;
 
     @Autowired
     ValidateReservationByUserRole validateReservationByUserRole;
 
     public DataAnswerReservation createdReservation(ReservationDto reservationDto) throws MyException {
-        User user = validateReservationByUserRole.validateByRole(); //buscando y validando usuario
-
+        User user = validateReservationByUserRole.validateByRole();
         Resource resource = validateReservationResourceStatus.validateByResourceStatus(reservationDto);
 
         Reservation reservation = new Reservation();
@@ -53,7 +57,7 @@ public class ReservationService {
         reservation.setDeleted(false);
         reservation.setUser(user);
 
-        resource.setStatus(ResourceStatus.IN_USE); //seteo el estado del recurso
+        resource.setStatus(ResourceStatus.IN_USE);
         resource = resourceRepository.save(resource);
 
         reservation.setResource(resource);
@@ -69,7 +73,6 @@ public class ReservationService {
         );
         return data;
     }
-
 
     public List<ReservationDto> getReservations() throws MyException {
         try {
@@ -99,6 +102,7 @@ public class ReservationService {
         );
     }
 
+//update para el usuario
     public Optional<ReservationDto> updateById(Long id, ReservationDto updatedReservationDto) throws MyException {
 
         if (id == null){
@@ -116,6 +120,21 @@ public class ReservationService {
             Reservation updatedReservation = reservationRepository.save(reservation);
             return convertToDto(updatedReservation);
         });
+    }
+
+//update para el admin
+    @Transactional
+    public ReservationDto updateReservationStatusByAdmin(Long id, ReservationStatus newStatus) throws MyException {
+
+        Reservation reservation = reservationRepository.findById(id).orElseThrow();
+        User user = userService.getCurrentUser();
+
+        if (user.getRole() == Role.ADMIN){
+            reservation.setReservationStatus(newStatus);
+            reservationRepository.save(reservation);
+            return convertToDto(reservation);
+        }
+        throw new MyException("No tiene el permiso necesario.");
     }
 
     public void deleteReservationById(Long id) throws MyException {
