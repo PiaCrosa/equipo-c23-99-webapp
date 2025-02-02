@@ -19,6 +19,7 @@ const AddEditUsers = () => {
 	const {
 		register: userRegister,
 		handleSubmit: handleUserSubmit,
+    formState: { errors },
 		reset,
 	} =
 		useForm<AddEditUsersForm>();
@@ -102,7 +103,7 @@ const AddEditUsers = () => {
 			onSubmit={handleUserSubmit(submitUserForm)}
 		>
 			<AddEditUsersTitle userName={userNameToEdit} />
-			<AddEditUsersInputs register={userRegister} />
+			<AddEditUsersInputs register={userRegister} errors={errors} />
 			<AddEditUsersSubmitButton />
 		</form>
 	);
