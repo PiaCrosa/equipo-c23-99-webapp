@@ -7,9 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 public record ResourceViewDTO(
 
         Long id,
-        @NotBlank
         String name,
-        @NotBlank
         String description,
         ResourceCategory category,
         ResourceStatus status,

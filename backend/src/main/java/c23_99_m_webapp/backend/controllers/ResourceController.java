@@ -1,6 +1,5 @@
 package c23_99_m_webapp.backend.controllers;
 
-import c23_99_m_webapp.backend.exceptions.MyException;
 import c23_99_m_webapp.backend.models.dtos.ResourceCreateDTO;
 import c23_99_m_webapp.backend.models.dtos.ResourceViewDTO;
 import c23_99_m_webapp.backend.models.dtos.ResourceStatusUpdateDTO;
@@ -10,11 +9,14 @@ import c23_99_m_webapp.backend.services.ResourceService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/resource")
 @SecurityRequirement(name = "bearer-key")
@@ -28,16 +30,35 @@ public class ResourceController {
         this.inventoryService = inventoryService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<ResourceViewDTO>> getResources() {
+    @GetMapping("/allResources")
+    public ResponseEntity<?> getResources() {
         List<ResourceViewDTO> resources = resourceService.getResources();
-        return ResponseEntity.ok(resources);
+        return ResponseEntity.ok(Map.of(
+                "status", "success",
+                "message", "Lista de recursos obtenida con éxito",
+                "data", resources
+        ));
+    }
+
+    @GetMapping("/getById/{id}")
+    public ResponseEntity<?> getResourcesById(@NotNull @PathVariable Long id) {
+        ResourceViewDTO resource = resourceService.getResourceById(id);
+        return ResponseEntity.ok(Map.of(
+                "status", "success",
+                "message", "Recurso obtenido con éxito",
+                "data", resource
+        ));
     }
 
     @PostMapping("/add-resource")
-    public ResponseEntity<ResourceViewDTO> addResourceToInventory(@RequestBody ResourceCreateDTO resourceDTO) throws MyException {
+    public ResponseEntity<?> addResourceToInventory(@Valid @RequestBody ResourceCreateDTO resourceDTO) {
         ResourceViewDTO dto = inventoryService.createAndAddResourceToInventory(resourceDTO);
-        return ResponseEntity.created(URI.create("/resource" + dto.id())).body(dto);
+        return ResponseEntity.created(URI.create("/resource" + dto.id())).body(Map.of(
+                "status", "success",
+                "message", "Recurso añadido con éxito",
+                "data", dto
+        ));
+
     }
 
 //    @PostMapping
@@ -46,30 +67,46 @@ public class ResourceController {
 //        return ResponseEntity.created(URI.create("/resource/" + dto.id())).body(dto);
 //    }
 
-    @PutMapping(value="{id}")
-    public ResponseEntity<ResourceViewDTO> updateResource(@NotNull @PathVariable long id, @Valid @RequestBody ResourceCreateDTO dto){
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateResource(@NotNull @PathVariable long id, @Valid @RequestBody ResourceCreateDTO dto){
         ResourceViewDTO dtoModificado = resourceService.updateResource(id, dto);
-        return ResponseEntity.ok(dtoModificado);
+        return ResponseEntity.ok(Map.of(
+                "status", "success",
+                "message", "Recurso actualizado con éxito",
+                "data", dtoModificado
+        ));
     }
 
 
-    @DeleteMapping(value = "{id}")
-    public ResponseEntity<Void> deleteResource(@PathVariable Long id){
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteResource(@PathVariable Long id){
         resourceService.deleteResource(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(Map.of(
+                "status", "success",
+                "message", "Recurso eliminado con éxito"
+        ));
+
     }
 
-    @PatchMapping("/{id}/status")
-    public ResponseEntity<ResourceViewDTO> updateResourceStatus(
+    @PatchMapping("/updateStatus/{id}")
+    public ResponseEntity<?> updateResourceStatus(
             @PathVariable Long id,
             @RequestBody ResourceStatusUpdateDTO statusUpdateDTO) {
-        ResourceViewDTO updatedResource = resourceService.updateResourceStatus(id, statusUpdateDTO.status());
-        return ResponseEntity.ok(updatedResource);
+        ResourceViewDTO updatedResource = resourceService.updateAndReturnResourceStatus(id, statusUpdateDTO.status());
+        return ResponseEntity.ok(Map.of(
+                "status", "success",
+                "message", "Estado de recurso actualizado con éxito",
+                "data", updatedResource
+        ));
     }
 
-    @GetMapping("/by-status")
-    public ResponseEntity<List<ResourceViewDTO>> getResourcesByStatus(@RequestParam ResourceStatus status) {
+    @GetMapping("/getByStatus")
+    public ResponseEntity<?> getResourcesByStatus(@RequestParam ResourceStatus status) {
         List<ResourceViewDTO> resources = resourceService.getResourcesByStatus(status);
-        return ResponseEntity.ok(resources);
+        return ResponseEntity.ok(Map.of(
+                "status", "success",
+                "message", "Lista de recursos por estado obtenida con éxito",
+                "data", resources
+        ));
     }
 }

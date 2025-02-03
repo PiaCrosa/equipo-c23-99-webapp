@@ -35,7 +35,8 @@ public class InstitutionService {
         }
 
         Institution institution = new Institution(dataInstitutionRegistration);
-        institution.setInventory(inventoryService.createInventory());
+
+        institution.setInventory(inventoryService.createInventory(institution.getName()));
         institution = institutionRepository.save(institution);
 
         try {
@@ -55,7 +56,7 @@ public class InstitutionService {
             institutionRepository.delete(institution);
             throw e;
         }
-        return institutionRepository.save(institution);
+        return institution;
     }
 
     @Transactional
