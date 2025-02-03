@@ -10,14 +10,17 @@ import c23_99_m_webapp.backend.models.dtos.ReservationDto;
 import c23_99_m_webapp.backend.models.enums.ReservationShiftStatus;
 import c23_99_m_webapp.backend.models.enums.ReservationStatus;
 import c23_99_m_webapp.backend.models.enums.ResourceStatus;
+import c23_99_m_webapp.backend.models.enums.Role;
 import c23_99_m_webapp.backend.repositories.ReservationRepository;
 import c23_99_m_webapp.backend.repositories.ResourceRepository;
+import c23_99_m_webapp.backend.validations.ValidateReservationByUserRole;
 import c23_99_m_webapp.backend.validations.ValidateReservationResourceStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -31,19 +34,19 @@ public class ReservationService {
     ReservationRepository reservationRepository;
 
     @Autowired
-    UserService userService;
-
-    @Autowired
-    ResourceService resourceService;
-
-    @Autowired
     ResourceRepository resourceRepository;
+
+    @Autowired
+    UserService userService;
 
     @Autowired
     ValidateReservationResourceStatus validateReservationResourceStatus;
 
+    @Autowired
+    ValidateReservationByUserRole validateReservationByUserRole;
+
     public DataAnswerReservation createdReservation(ReservationDto reservationDto) throws MyException {
-        User user = userService.getCurrentUser();
+        User user = validateReservationByUserRole.validateByRole();
         Resource resource = validateReservationResourceStatus.validateByResourceStatus(reservationDto);
 
         Reservation reservation = new Reservation();
@@ -54,7 +57,7 @@ public class ReservationService {
         reservation.setDeleted(false);
         reservation.setUser(user);
 
-        resource.setStatus(ResourceStatus.IN_USE); //seteo el estado del recurso
+        resource.setStatus(ResourceStatus.IN_USE);
         resource = resourceRepository.save(resource);
 
         reservation.setResource(resource);
@@ -69,19 +72,6 @@ public class ReservationService {
                 reservation.getReservationStatus()
         );
         return data;
-    }
-
-    private Resource changeStatusResource(Long id){
-        Resource resource = resourceRepository.findById(id).orElseThrow();
-        resourceService.validateResourceAvailability(resource.getId());
-
-        if (resource.getStatus() == ResourceStatus.IN_USE){
-            resource.setStatus(ResourceStatus.AVAILABLE);
-
-        } else if (resource.getStatus() == ResourceStatus.UNDER_REPAIR) {
-            resource.setStatus(ResourceStatus.AVAILABLE);
-        }
-        return resource;
     }
 
     public List<ReservationDto> getReservations() throws MyException {
@@ -112,6 +102,7 @@ public class ReservationService {
         );
     }
 
+//update para el usuario
     public Optional<ReservationDto> updateById(Long id, ReservationDto updatedReservationDto) throws MyException {
 
         if (id == null){
@@ -121,12 +112,29 @@ public class ReservationService {
             reservation.setStartDate(updatedReservationDto.startDate());
             reservation.setReservationShiftStatus(updatedReservationDto.reservationShiftStatus());
             reservation.setSelectedTimeSlot(updatedReservationDto.selectedTimeSlot());
+
             Resource resource = resourceRepository.findById(updatedReservationDto.resourceid()).orElseThrow();
             reservation.setResource(resource);
             resourceRepository.save(resource);
+
             Reservation updatedReservation = reservationRepository.save(reservation);
             return convertToDto(updatedReservation);
         });
+    }
+
+//update para el admin
+    @Transactional
+    public ReservationDto updateReservationStatusByAdmin(Long id, ReservationStatus newStatus) throws MyException {
+
+        Reservation reservation = reservationRepository.findById(id).orElseThrow();
+        User user = userService.getCurrentUser();
+
+        if (user.getRole() == Role.ADMIN){
+            reservation.setReservationStatus(newStatus);
+            reservationRepository.save(reservation);
+            return convertToDto(reservation);
+        }
+        throw new MyException("No tiene el permiso necesario.");
     }
 
     public void deleteReservationById(Long id) throws MyException {
@@ -249,10 +257,3 @@ public class ReservationService {
         }
     }
 }
-
-//public void updateResourceStatus(Long resourceId, ResourceStatus status) {
-//    Resource resource = resourceRepository.findById(resourceId)
-//            .orElseThrow(() -> new ResourceNotFoundException("Recurso no encontrado con ID: " + resourceId));
-//    resource.setStatus(status);
-//    resourceRepository.save(resource);
-//}
