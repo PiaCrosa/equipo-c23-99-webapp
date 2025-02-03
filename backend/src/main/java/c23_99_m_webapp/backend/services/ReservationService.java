@@ -13,7 +13,7 @@ import c23_99_m_webapp.backend.models.enums.ResourceStatus;
 import c23_99_m_webapp.backend.models.enums.Role;
 import c23_99_m_webapp.backend.repositories.ReservationRepository;
 import c23_99_m_webapp.backend.repositories.ResourceRepository;
-import c23_99_m_webapp.backend.validations.ValidateReservationAuthority;
+import c23_99_m_webapp.backend.validations.ValidateReservationPermissions;
 import c23_99_m_webapp.backend.validations.ValidateReservationByUserRole;
 import c23_99_m_webapp.backend.validations.ValidateReservationResourceStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
@@ -46,7 +44,7 @@ public class ReservationService {
     ValidateReservationByUserRole validateReservationByUserRole;
 
     @Autowired
-    ValidateReservationAuthority validateReservationAuthority;
+    ValidateReservationPermissions validateReservationPermissions;
 
     public DataAnswerReservation createdReservation(ReservationDto reservationDto) throws MyException {
         User user = validateReservationByUserRole.validateByRole();
@@ -104,7 +102,7 @@ public class ReservationService {
         Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow();
 
-        validateReservationAuthority.validateAuthority(reservation); //validacion
+        validateReservationPermissions.validateAuthority(reservation); //validacion
 
         if(reservation.isDeleted() && reservation.getUser().equals(user)){
             throw new MyException("La reserva está eliminada.");
@@ -154,7 +152,7 @@ public class ReservationService {
             reservationRepository.save(reservation);
             return convertToDto(reservation);
         }
-        return convertToDto(validateReservationAuthority.validateAuthority(reservation));
+        return convertToDto(validateReservationPermissions.validateAuthority(reservation));
     }
 
 //metodo borrado logico
@@ -298,7 +296,7 @@ public class ReservationService {
                 resource.setStatus(ResourceStatus.AVAILABLE);
                 resourceRepository.save(resource);
             }
-            validateReservationAuthority.validateAuthority(reservation);
+            validateReservationPermissions.validateAuthority(reservation);
         return reservation;
     }
 }
