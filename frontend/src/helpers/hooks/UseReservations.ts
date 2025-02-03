@@ -1,19 +1,32 @@
 import { useParams } from 'react-router-dom';
 import { useAuthProvider } from '../../context/AuthProvider';
-import { ReservationsData } from '../../pages/CheckReservations/CheckReservations';
-import { getReservationsByUser } from '../../services/teacher/reservationsRequest';
+import {
+	deleteReservationByID,
+	getReservationsByID,
+	getReservationsByUser,
+	updateReservationByID,
+} from '../../services/teacher/reservationsRequest';
 import { useCallback } from 'react';
+import {
+	Reservation,
+	ReservationSimple,
+} from '../../models/teacher/ReservationGetUser';
 
 export const UseReservations = () => {
 	const { user } = useAuthProvider();
-	const { page } = useParams<{ page: string }>();
+	const { page, id } = useParams<{ page: string; id: string }>();
+
+	// validacion general para las reservas por id
+	let idNumber = 0;
+	if (id) {
+		idNumber = parseInt(id);
+	}
 
 	const getReservationTeacher = useCallback(async () => {
 		let pageNumber = 0;
 		if (page) {
 			pageNumber = parseInt(page);
 		}
-		console.log(page);
 		if (user) {
 			const { dni, jwtToken } = user;
 			const reservationsResponse = await getReservationsByUser(
@@ -26,17 +39,51 @@ export const UseReservations = () => {
 		}
 	}, [user, page]);
 
+	const getReservationId = useCallback(async () => {
+		if (user) {
+			const { jwtToken } = user;
+			const reservationsResponse = await getReservationsByID(
+				idNumber,
+				jwtToken,
+			);
+			const reservations = reservationsResponse;
+			return reservations;
+		}
+	}, [user, idNumber]);
+
+	const deleteReservation = useCallback(
+		async (id: number): Promise<boolean> => {
+			if (user) {
+				const { jwtToken } = user;
+				return await deleteReservationByID(id, jwtToken);
+			}
+			return false;
+		},
+		[user],
+	);
+
+	const updateReservation = useCallback(
+		async (currentData: ReservationSimple): Promise<boolean> => {
+			if (user) {
+				const { jwtToken } = user;
+				return await updateReservationByID(idNumber, jwtToken, currentData);
+			}
+			return false;
+		},
+		[user, idNumber],
+	);
+
 	const mergeConsecutiveReservations = useCallback(
-		(reservations: ReservationsData[]): ReservationsData[] => {
-			const grouped: { [key: string]: ReservationsData[] } = {};
+		(reservations: Reservation[]): Reservation[] => {
+			const grouped: { [key: string]: Reservation[] } = {};
 
 			reservations.forEach((reserva) => {
-				const key = `${reserva.userName}-${reserva.date}-${reserva.resourceName}-${reserva.reservationShiftStatus}`;
+				const key = `${reserva.date}-${reserva.resourceName}-${reserva.reservationShiftStatus}`;
 				if (!grouped[key]) grouped[key] = [];
 				grouped[key].push(reserva);
 			});
 
-			const mergedReservations: ReservationsData[] = [];
+			const mergedReservations: Reservation[] = [];
 
 			Object.values(grouped).forEach((group) => {
 				group.sort((a, b) => {
@@ -45,7 +92,7 @@ export const UseReservations = () => {
 					return startA - startB;
 				});
 
-				let currentMerge = { ...group[0] };
+				let currentMerge = { ...group[0], mergedReserves: [group[0]] };
 
 				for (let i = 1; i < group.length; i++) {
 					const prevEnd = parseInt(
@@ -63,15 +110,16 @@ export const UseReservations = () => {
 
 					if (prevEnd === currentStart) {
 						currentMerge.selectedTimeSlot = `${currentMerge.selectedTimeSlot.split('-')[0]}-${currentEnd}`;
+						currentMerge.mergedReserves.push(group[i]);
 					} else {
 						mergedReservations.push(currentMerge);
-						currentMerge = { ...group[i] };
+						currentMerge = { ...group[i], mergedReserves: [group[i]] };
 					}
 				}
 				mergedReservations.push(currentMerge);
 			});
 
-			// formatea los horarios, añade un "0" delante si es un solo digito
+			// Formateo los horarios
 			mergedReservations.forEach((reserva) => {
 				reserva.selectedTimeSlot = reserva.selectedTimeSlot
 					.split('-')
@@ -86,6 +134,9 @@ export const UseReservations = () => {
 
 	return {
 		getReservationTeacher,
+		getReservationId,
 		mergeConsecutiveReservations,
+		deleteReservation,
+		updateReservation,
 	};
 };
