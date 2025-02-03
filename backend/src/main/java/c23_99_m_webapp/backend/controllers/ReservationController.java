@@ -56,14 +56,14 @@ public class ReservationController {
         }
     }
 
-    @GetMapping("/allReservations")
+    @GetMapping("/allReservations") //agregar restriccion de borradas
     public ResponseEntity<List<ReservationDto>> getAllReservations() throws MyException {
 
             List<ReservationDto> reservationList = reservationService.getReservations();
             return ResponseEntity.ok().body(reservationList);
     }
 
-    @GetMapping("/getId/{id}")
+    @GetMapping("/getId/{id}") //agregar restriccion de borradas
     public ResponseEntity<Optional<ReservationDto>> getReservationById(@PathVariable Long id) throws MyException {
         return ResponseEntity.ok().body(reservationService.findReservationById(id));
     }
@@ -74,7 +74,6 @@ public class ReservationController {
                                                                @RequestBody ReservationDto reservationDto) throws MyException {
         return ResponseEntity.status(HttpStatus.OK).body(reservationService.updateById(id, reservationDto));
     }
-
     //update para el admin
     @PatchMapping("/updateStatus/{id}")
     public ResponseEntity<?> updateReservationStatus(@PathVariable Long id, @RequestBody ReservationStatus newStatus) {
@@ -98,6 +97,10 @@ public class ReservationController {
         }
     }
 
+    @DeleteMapping("/deleteReserve/{id}") //borrado completo (fisico)
+    public void delete(@PathVariable Long id) throws MyException {
+        reservationService.deleteReserve(id);
+    }
 
     @PutMapping("/delete/{id}") //borrado logico
     public void deleteReservation(@PathVariable Long id) throws MyException {
@@ -123,7 +126,7 @@ public class ReservationController {
         }
     }
 
-    @GetMapping("/byUser/{dni}")
+    @GetMapping("/byUser/{dni}") //agregar restriccion de borradas
     public ResponseEntity<?> reserveByUser(@PathVariable("dni") String dni,
                                            @PageableDefault(size = 10) Pageable pageable){
         try{

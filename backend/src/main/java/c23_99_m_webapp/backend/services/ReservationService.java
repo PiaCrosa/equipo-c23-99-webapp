@@ -53,6 +53,7 @@ public class ReservationService {
         reservation.setStartDate(reservationDto.startDate());
         reservation.setReservationShiftStatus(reservationDto.reservationShiftStatus());
         reservation.setSelectedTimeSlot(reservationDto.selectedTimeSlot());
+
         reservation.setReservationStatus(ReservationStatus.CONFIRMED);
         reservation.setDeleted(false);
         reservation.setUser(user);
@@ -76,7 +77,7 @@ public class ReservationService {
 
     public List<ReservationDto> getReservations() throws MyException {
         try {
-            return reservationRepository.findAll().stream()
+            return reservationRepository.findAllActive().stream()
                     .map(this::convertToDto)
                     .collect(Collectors.toList());
         } catch (Exception e) {
@@ -85,6 +86,7 @@ public class ReservationService {
     }
 
     public Optional<ReservationDto> findReservationById(Long id) throws MyException {
+        //validar si la reserva fue borrada
         if (id == null) {
             throw new MyException("El id no puede ser nulo.");
         }
@@ -123,7 +125,6 @@ public class ReservationService {
     }
 
 //update para el admin
-    @Transactional
     public ReservationDto updateReservationStatusByAdmin(Long id, ReservationStatus newStatus) throws MyException {
 
         Reservation reservation = reservationRepository.findById(id).orElseThrow();
@@ -137,14 +138,17 @@ public class ReservationService {
         throw new MyException("No tiene el permiso necesario.");
     }
 
+    //metodo borrado logico
     public void deleteReservationById(Long id) throws MyException {
-
         if (!reservationRepository.existsById(id)) {
             throw new MyException("No se encuentra la reserva.");
         }
-        Reservation reservation = reservationRepository.findById(id).get();
+        Reservation reservation = reservationRepository.findById(id).orElseThrow();
         reservation.setDeleted(true);
+        Resource resource = reservation.getResource();
+        resource.setStatus(ResourceStatus.AVAILABLE);
         reservationRepository.save(reservation);
+        resourceRepository.save(resource);
     }
 
     public List<ReservationDto> getDeletedReservations() throws MyException {
@@ -160,13 +164,17 @@ public class ReservationService {
     }
 
     public void restoreReservation(Long id) throws MyException {
+
         try {
             Reservation reservation = reservationRepository.findById(id).orElse(null);
             assert reservation != null;
+            Resource resource = reservation.getResource();
 
-            if (reservation.isDeleted()) {
+            if (reservation.isDeleted() & resource.getStatus() == ResourceStatus.AVAILABLE) {
                 reservation.setDeleted(false);
+                resource.setStatus(ResourceStatus.IN_USE);
                 reservationRepository.save(reservation);
+                resourceRepository.save(resource);
             }
 
         } catch (RuntimeException e) {
@@ -255,5 +263,19 @@ public class ReservationService {
         } catch (Exception e) {
             throw new MyException("No se pudo realizar la búsqueda.");
         }
+    }
+
+
+    //borrado fisico (posibilidad de que solo lo use el admin)
+    public void deleteReserve(Long id) throws MyException {
+        Reservation reservation = reservationRepository.findById(id).get();
+        if (!reservationRepository.existsById(id)) {
+            throw new MyException("No se encuentra la reserva.");
+        }
+        reservationRepository.deleteById(id);
+
+        Resource resource = reservation.getResource();
+        resource.setStatus(ResourceStatus.AVAILABLE);
+        resourceRepository.save(resource);
     }
 }
