@@ -47,7 +47,7 @@ public class TokenService {
     // Obtiene la fecha de expiración usando la zona horaria predeterminada del servidor
     private Instant dateExpiration() {
         ZoneId zone = ZoneId.systemDefault();  // Obtener la zona horaria del sistema
-        return LocalDateTime.now(zone).plusMinutes(30).toInstant(ZoneOffset.ofTotalSeconds(zone.getRules().getOffset(LocalDateTime.now()).getTotalSeconds()));
+        return LocalDateTime.now(zone).plusHours(12).toInstant(ZoneOffset.ofTotalSeconds(zone.getRules().getOffset(LocalDateTime.now()).getTotalSeconds()));
     }
 }
 

@@ -17,7 +17,7 @@ const loginRequest = async (
 		Swal.fire({
 			icon: 'success',
 			title: 'Inicio de sesión exitoso',
-			text: `Bienvenido, ${response.data.name}!`,
+			text: `Bienvenido, ${response.data.name}!`,//fullName
 			timer: 3000,
 			showConfirmButton: false,
 			customClass: {
