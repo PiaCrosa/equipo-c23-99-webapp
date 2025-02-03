@@ -19,9 +19,9 @@ const AddEditUsers = () => {
 	const {
 		register: userRegister,
 		handleSubmit: handleUserSubmit,
+		formState: { errors },
 		reset,
-	} =
-		useForm<AddEditUsersForm>();
+	} = useForm<AddEditUsersForm>();
 	const [userForm, setUserForm] = useState<AddEditUsersForm>({
 		...new AddEditUsersForm(),
 	});
@@ -33,9 +33,10 @@ const AddEditUsers = () => {
 	// Functions
 	const prepareUserToSubmit = (form: AddEditUsersForm): User => {
 		return {
-			dni: dni ? dni : '0',
+			dni: dni ? dni : form.dni,
 			email: form.email,
 			full_name: form.name,
+			role: 'TEACHER',
 			password: form.pass1,
 			password2: form.pass2,
 		};
@@ -101,7 +102,7 @@ const AddEditUsers = () => {
 			onSubmit={handleUserSubmit(submitUserForm)}
 		>
 			<AddEditUsersTitle userName={userNameToEdit} />
-			<AddEditUsersInputs register={userRegister} />
+			<AddEditUsersInputs register={userRegister} errors={errors} />
 			<AddEditUsersSubmitButton />
 		</form>
 	);

@@ -1,9 +1,13 @@
 export interface User {
   dni: string,
-  full_name: string,
   email: string,
+  full_name: string,
+
   password: string,
   password2: string,
-  role?: 'TEACHER' | 'ADMIN',
   institution_cue?: string,
+
+  fullName?: string,
+  role?: 'TEACHER' | 'ADMIN',
+  nameSchool?: string,
 }
