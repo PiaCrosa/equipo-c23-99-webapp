@@ -1,59 +1,95 @@
 import { useForm } from 'react-hook-form';
-import { AddEditDeviceForm } from '../../models/AddEditDeviceForm';
-import { AddEditDeviceTitle } from './AddEditDeviceTitle';
 import { useParams } from 'react-router-dom';
 
-import { AddEditDeviceSubmitButton } from './AddEditDeviceSubmitButton';
-import { useState } from 'react';
-import { Resource } from '../../models/Resource';
+import { useEffect, useState } from 'react';
 import { AddEditDeviceInputs } from './AddEditDeviceInputs';
-import { ResourceService } from '../../services/ResourceService';
-
-const initialDeviceFormValue: AddEditDeviceForm = {
-	id: 0,
-	category: 'IT',
-	description: 'lorem',
-	name: 'Gemran',
-	isAvailable: 'true',
-};
+import {
+	showFailAlert,
+	showSuccessAlert,
+} from '../../helpers/showGenericAlerts';
+import { AddEditDeviceForm } from '../../models/AddEditDeviceForm';
+import { Device } from '../../models/Device';
+import { DeviceService } from '../../services/ResourceService';
+import { AddEditDeviceTitle } from './AddEditDeviceTitle';
+import { AddEditDeviceSubmitButton } from './AddEditDeviceSubmitButton';
 
 const AddEditDevice = () => {
 	// Initial Hooks
 	const { id } = useParams();
-	const { register: deviceRegister, handleSubmit: handleDeviceSubmit } =
-		useForm<AddEditDeviceForm>();
+	const {
+		register: deviceRegister,
+		handleSubmit: handleDeviceSubmit,
+		formState: { errors },
+		reset,
+	} = useForm<AddEditDeviceForm>();
 	const [deviceForm, setDeviceForm] = useState<AddEditDeviceForm>({
-		...initialDeviceFormValue,
+		...new AddEditDeviceForm(),
 	});
-	const resourceServices = ResourceService();
+	const [deviceNameToEdit, setDeviceNameToEdit] = useState('')
 
-	// Handlers
-
-	// useEFfect
+	// Services
+	const deviceService = DeviceService();
 
 	// Functions
-	const updateLocalDeviceForm = (formValue: AddEditDeviceForm) => {
-		setDeviceForm({ ...formValue });
-	};
-	const prepareResourceToSubmit = (): Resource => {
+	const prepareDeviceToSubmit = (form: AddEditDeviceForm): Device => {
 		return {
-			inventoryId: deviceForm.id,
-			category: deviceForm.category,
-			description: deviceForm.description,
-			name: deviceForm.name,
-			status: deviceForm.isAvailable == 'true' ? 'AVAILABLE' : 'UNAVAILABLE',
+			category: form.category,
+			description: form.description,
+			name: form.name,
+			status: form.isAvailable === 'true' ? 'AVAILABLE' : 'UNAVAILABLE',
+			inventoryId: id ? Number(id) : 0,
 		};
-	};
-	const submitDeviceFormToServer = async (resource: Resource) => {
-		await resourceServices.createResource({ resource });
 	};
 
 	// Handlers
-	const submitDeviceForm = (value: AddEditDeviceForm) => {
-		updateLocalDeviceForm(value);
-		const resource = prepareResourceToSubmit();
-		submitDeviceFormToServer(resource);
+	const submitDeviceForm = async (form: AddEditDeviceForm) => {
+		try {
+			const device = prepareDeviceToSubmit(form);
+			if (id) { await deviceService.updateDevice(device); }
+			else { await deviceService.createDevice(device); }
+			showSuccessAlert();
+			setDeviceForm(form);
+		} catch (error) {
+			console.log(error);
+			showFailAlert();
+		}
 	};
+
+	// Use effects
+	useEffect(() => {
+		const reFillingForm = async () => {
+			const device = await deviceService.getDeviceById(Number(id));
+			setDeviceForm((prevForm) => {
+				const newForm: AddEditDeviceForm = {
+					id: Number(id),
+					name: device.name,
+					description: device.description,
+					isAvailable: device.status,
+					category: device.category,
+				};
+				return JSON.stringify(prevForm) !== JSON.stringify(newForm)
+					? newForm
+					: prevForm;
+			});
+			setDeviceNameToEdit(prevName => {
+				return String(prevName) !== String(device.name)
+					? device.name
+					: prevName;
+			})
+		};
+
+		if (id) {
+			reFillingForm();
+		} else {
+			console.log('No hay id');
+		}
+	}, [deviceService, id]);
+
+	useEffect(() => {
+		if (deviceForm) {
+			reset(deviceForm);
+		}
+	}, [deviceForm, reset]);
 
 	return (
 		<form
@@ -61,9 +97,10 @@ const AddEditDevice = () => {
         p-2 text-sky-500
         sm:px-6 sm:py-4
       '
-			onSubmit={handleDeviceSubmit(submitDeviceForm)}>
-			<AddEditDeviceTitle deviceName={id} />
-			<AddEditDeviceInputs register={deviceRegister} deviceForm={deviceForm} />
+			onSubmit={handleDeviceSubmit(submitDeviceForm)}
+		>
+			<AddEditDeviceTitle deviceName={deviceNameToEdit} />
+			<AddEditDeviceInputs register={deviceRegister} errors={errors} />
 			<AddEditDeviceSubmitButton />
 		</form>
 	);

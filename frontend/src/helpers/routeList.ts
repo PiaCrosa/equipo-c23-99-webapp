@@ -10,6 +10,8 @@ import { CheckReservations } from '../pages/CheckReservations/CheckReservations'
 import { NewReservation } from '../pages/NewReservation/NewReservation';
 import { EditAdmin } from '../pages/EditAdmin/EditAdmin';
 import { TermsAndConditions } from '../pages/TermsAndConditions/TermsAndConditions';
+import { EditReservation } from '../pages/EditReservations/EditReservation';
+import { AddNewReservation } from '../pages/AddNewReservation/AddNewReservation';
 
 const routeList: Route[] = [
 	{
@@ -89,6 +91,20 @@ const routeList: Route[] = [
 		routeType: 'teacher',
 		isShownInMenu: true,
 		element: CheckReservations,
+	},
+	{
+		path: '/new-reservations',
+		name: 'Nueva Reserva',
+		routeType: 'teacher',
+		isShownInMenu: true,
+		element: AddNewReservation,
+	},
+	{
+		path: '/edit-reservation/:id?',
+		name: 'Editar Reserva',
+		routeType: 'teacher',
+		isShownInMenu: false,
+		element: EditReservation,
 	},
 	{
 		path: '/add-reservation',

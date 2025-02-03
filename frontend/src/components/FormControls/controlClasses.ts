@@ -17,4 +17,7 @@ export const controlClasses = {
   textInputClasses: `
     py-0.5 px-1 text-lg text-black rounded-md border border-sky-500 w-full
   `,
+  errorContainerClasses: `
+    text-sm text-red-400
+  `,
 } 

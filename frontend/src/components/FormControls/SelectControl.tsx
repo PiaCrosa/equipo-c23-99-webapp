@@ -1,4 +1,4 @@
-import { FieldValues, Path, UseFormRegister } from 'react-hook-form';
+import { FieldErrors, FieldValues, Path, RegisterOptions, UseFormRegister } from 'react-hook-form';
 import { controlClasses } from './controlClasses'
 import { ControlLabelContainer } from './ControlLabelContainer';
 import { MultipleFormControlOption } from '../../helpers/MultipleFormControlOption';
@@ -6,18 +6,20 @@ import { MultipleFormControlOption } from '../../helpers/MultipleFormControlOpti
 interface SelectControlProps<T extends FieldValues> {
   propertyName: Path<T>,
   register: UseFormRegister<T>,
-  defaultValue: string | number,
+  registerOptions: RegisterOptions<T>,
+  errors: FieldErrors<T>,
   commonName: string,
   options: MultipleFormControlOption[],
 }
 
 const SelectControl = <T extends FieldValues>(
-  { register, propertyName, commonName, options, defaultValue }: SelectControlProps<T>
+  { register, propertyName, commonName, options, errors, registerOptions }: SelectControlProps<T>
 ) => {
   const {
     controlContainerClasses,
     textInputContainerClasses,
     textInputClasses,
+    errorContainerClasses,
   } = controlClasses;
 
   return (
@@ -26,11 +28,7 @@ const SelectControl = <T extends FieldValues>(
       <div className={textInputContainerClasses}>
         <select
           className={textInputClasses}
-          defaultValue={defaultValue}
-          {...register(
-            propertyName,
-            { required: true }
-          )}
+          {...register(propertyName, registerOptions)}
         >
           {
             options.map((option) => {
@@ -45,6 +43,14 @@ const SelectControl = <T extends FieldValues>(
             })
           }
         </select>
+        {
+
+          errors[propertyName] ?
+            <div className={errorContainerClasses}>
+              {String(errors[propertyName]?.message) || `Error en ${commonName}`}
+            </div>
+            : <></>
+        }
       </div>
     </div>
   )
