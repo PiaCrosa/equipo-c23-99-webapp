@@ -13,9 +13,10 @@ const PrivateRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 	const location = useLocation();
 
 	// Busca la ruta actual en routeList para determinar su tipo
-	const currentRoute = routeList.find(
-		(route) => route.path === location.pathname,
-	);
+	const currentRoute = routeList.find((route) => {
+		const data = location.pathname.match(route.path);
+		return data;
+	});
 
 	if (!user) {
 		Swal.fire({

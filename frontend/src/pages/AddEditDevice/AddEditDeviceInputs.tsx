@@ -1,21 +1,59 @@
 import { InputControl } from '../../components/FormControls/InputControl';
-import { SelectControl } from '../../components/FormControls/SelectControl';
-import { RadioGroupControl } from '../../components/FormControls/RadioGroupControl';
-import { UseFormRegister } from 'react-hook-form';
+import { FieldErrors, RegisterOptions, UseFormRegister } from 'react-hook-form';
 import { AddEditDeviceForm } from '../../models/AddEditDeviceForm';
+import { RadioGroupControl } from '../../components/FormControls/RadioGroupControl';
+import { SelectControl } from '../../components/FormControls/SelectControl';
 import { deviceCategoriesOptions } from '../../helpers/deviceCategories';
 import { yesNoOptions } from '../../helpers/yesNoOptions';
 
-interface AddEditDeviceInputsProps {
+interface AddEditUsersInputsProps {
   register: UseFormRegister<AddEditDeviceForm>,
-  deviceForm: AddEditDeviceForm,
+  errors: FieldErrors<AddEditDeviceForm>,
 }
 
-const categories = deviceCategoriesOptions;
-const yesNoOptionsOptions = yesNoOptions;
+const nameRegisterOptions: RegisterOptions<AddEditDeviceForm> = {
+  required: {
+    message: 'Nombre necesario',
+    value: true,
+  },
+  minLength: {
+    message: 'Nombre debe tener al menos 4 carácteres',
+    value: 4,
+  },
+  maxLength: {
+    message: 'Nombre debe tener como mucho 25 carácteres',
+    value: 25,
+  },
+}
+const descriptionRegisterOptions: RegisterOptions<AddEditDeviceForm> = {
+  required: {
+    message: 'Descripción necesaria',
+    value: true,
+  },
+  minLength: {
+    message: 'Descripción debe tener al menos 5 carácteres',
+    value: 5,
+  },
+  maxLength: {
+    message: 'Descripción debe tener como mucho 50 carácteres',
+    value: 50,
+  },
+}
+const categoryRegisterOptions: RegisterOptions<AddEditDeviceForm> = {
+  required: {
+    message: 'Categoría necesaria',
+    value: true,
+  },
+}
+const availableRegisterOptions: RegisterOptions<AddEditDeviceForm> = {
+  required: {
+    message: 'Elección necesaria de disponibilidad',
+    value: true,
+  },
+}
 
 const AddEditDeviceInputs = (
-  { register, deviceForm }: AddEditDeviceInputsProps
+  { register, errors }: AddEditUsersInputsProps
 ) => {
   return (
     <>
@@ -23,27 +61,31 @@ const AddEditDeviceInputs = (
         register={register}
         propertyName='name'
         commonName='Nombre'
-        defaultValue={deviceForm.name}
+        registerOptions={nameRegisterOptions}
+        errors={errors}
       />
       <SelectControl
         register={register}
         propertyName='category'
         commonName='Categoría'
-        options={categories}
-        defaultValue={deviceForm.category}
+        registerOptions={categoryRegisterOptions}
+        options={deviceCategoriesOptions}
+        errors={errors}
       />
       <InputControl
         register={register}
         propertyName='description'
         commonName='Descripción'
-        defaultValue={deviceForm.description}
+        registerOptions={descriptionRegisterOptions}
+        errors={errors}
       />
       <RadioGroupControl
         register={register}
         propertyName='isAvailable'
-        commonName='Status'
-        options={yesNoOptionsOptions}
-        defaultValue={deviceForm.isAvailable}
+        commonName='Disponible'
+        errors={errors}
+        registerOptions={availableRegisterOptions}
+        options={yesNoOptions}
       />
     </>
   )
