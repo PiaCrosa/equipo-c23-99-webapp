@@ -3,8 +3,6 @@ package c23_99_m_webapp.backend.repositories;
 
 import c23_99_m_webapp.backend.models.Reservation;
 import c23_99_m_webapp.backend.models.Resource;
-
-import c23_99_m_webapp.backend.models.User;
 import c23_99_m_webapp.backend.models.enums.ReservationShiftStatus;
 import c23_99_m_webapp.backend.models.enums.ReservationStatus;
 import org.springframework.data.domain.Page;
@@ -34,10 +32,10 @@ public interface ReservationRepository extends JpaRepository<Reservation,Long> {
     Page<Reservation> findReservationByShiftStatus(@Param("reservationShiftStatus") ReservationShiftStatus reservationShiftStatus, Pageable pageable);
 
     @Query("SELECT r FROM Reservation r WHERE r.deleted = true")
-    List<Reservation> findAllDeleted();
+    Page<Reservation> findAllDeleted(Pageable pageable);
 
     @Query("SELECT r FROM Reservation r WHERE r.deleted = false")
-    List<Reservation> findAllActive();
+    Page<Reservation> findAllActive(Pageable pageable);
 
     boolean existsByResource(Resource resource);
 

@@ -1,32 +1,28 @@
-import { FieldValues, Path, UseFormRegister } from 'react-hook-form';
+import { FieldErrors, FieldValues, Path, RegisterOptions, UseFormRegister } from 'react-hook-form';
 import { controlClasses } from './controlClasses'
 import { MultipleFormControlOption } from '../../helpers/MultipleFormControlOption';
 import clsx from 'clsx';
-import { useEffect, useState } from 'react';
 
 interface RadioGroupControlProps<T extends FieldValues> {
   propertyName: Path<T>,
   register: UseFormRegister<T>,
-  defaultValue: string | number,
+  registerOptions: RegisterOptions<T>,
+  errors: FieldErrors<T>,
   commonName: string,
   options: MultipleFormControlOption[],
 }
 
 const RadioGroupControl = <T extends FieldValues>(
-  { commonName, options, propertyName, register, defaultValue }: RadioGroupControlProps<T>
+  { commonName, options, propertyName, register, errors, registerOptions }: RadioGroupControlProps<T>
 ) => {
   const {
     controlContainerClasses,
     labelClasses,
     labelContainerClasses,
     radioInputContainerClasses,
+    errorContainerClasses,
   } = controlClasses;
 
-  const [selectedValue, setSelectedValue] = useState<string | number>(defaultValue);
-
-  useEffect(() => {
-    setSelectedValue(defaultValue);
-  }, [defaultValue]);
 
   return (
     <div className={controlContainerClasses}>
@@ -35,37 +31,43 @@ const RadioGroupControl = <T extends FieldValues>(
           {commonName}:
         </label>
       </div>
-      <div className={radioInputContainerClasses}>
-        {
-          options.map((option, index) => {
-            return (
-              <div
-                key={option.value}
-                className={clsx(
-                  'sm:flex sm:flex-1',
-                  index === 0 ? 'sm:pl-2' : '',
-                )}
-              >
-                <label className='
+      <div className='flex-1'>
+        <div className={radioInputContainerClasses}>
+          {
+            options.map((option, index) => {
+              return (
+                <div
+                  key={option.value}
+                  className={clsx(
+                    'sm:flex sm:flex-1',
+                    index === 0 ? 'sm:pl-2' : '',
+                  )}
+                >
+                  <label className='
                     text-lg pr-1
                     sm:self-center
                   '
-                >
-                  {option.commonName}
-                </label>
-                <input
-                  className='mt-1'
-                  type='radio'
-                  value={option.value}
-                  checked={String(selectedValue) === String(option.value)}
-                  {...register(
-                    propertyName,
-                  )}
-                  onChange={() => setSelectedValue(option.value)}
-                />
-              </div>
-            )
-          })
+                  >
+                    {option.commonName}
+                  </label>
+                  <input
+                    className='mt-1'
+                    type='radio'
+                    value={option.value}
+                    {...register(propertyName, registerOptions)}
+                  />
+                </div>
+              )
+            })
+          }
+        </div>
+        {
+
+          errors[propertyName] ?
+            <div className={errorContainerClasses}>
+              {String(errors[propertyName]?.message) || `Error en ${commonName}`}
+            </div>
+            : <></>
         }
       </div>
     </div>
