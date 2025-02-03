@@ -13,6 +13,7 @@ import c23_99_m_webapp.backend.models.enums.ResourceStatus;
 import c23_99_m_webapp.backend.models.enums.Role;
 import c23_99_m_webapp.backend.repositories.ReservationRepository;
 import c23_99_m_webapp.backend.repositories.ResourceRepository;
+import c23_99_m_webapp.backend.validations.ValidateReservationPermissions;
 import c23_99_m_webapp.backend.validations.ValidateReservationByUserRole;
 import c23_99_m_webapp.backend.validations.ValidateReservationResourceStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
@@ -45,6 +43,9 @@ public class ReservationService {
     @Autowired
     ValidateReservationByUserRole validateReservationByUserRole;
 
+    @Autowired
+    ValidateReservationPermissions validateReservationPermissions;
+
     public DataAnswerReservation createdReservation(ReservationDto reservationDto) throws MyException {
         User user = validateReservationByUserRole.validateByRole();
         Resource resource = validateReservationResourceStatus.validateByResourceStatus(reservationDto);
@@ -53,7 +54,6 @@ public class ReservationService {
         reservation.setStartDate(reservationDto.startDate());
         reservation.setReservationShiftStatus(reservationDto.reservationShiftStatus());
         reservation.setSelectedTimeSlot(reservationDto.selectedTimeSlot());
-
         reservation.setReservationStatus(ReservationStatus.CONFIRMED);
         reservation.setDeleted(false);
         reservation.setUser(user);
@@ -75,23 +75,40 @@ public class ReservationService {
         return data;
     }
 
-    public List<ReservationDto> getReservations() throws MyException {
+    public Page<ReservationDto> getReservations(Pageable pageable) throws MyException {
         try {
-            return reservationRepository.findAllActive().stream()
-                    .map(this::convertToDto)
-                    .collect(Collectors.toList());
+            User user = userService.getCurrentUser();
+            Page<ReservationDto> reservations;
+
+            if (user.getRole() == Role.ADMIN) {
+                reservations = reservationRepository.findAllActive(pageable)
+                        .map(this::convertToDto);
+
+            } else if (user.getRole() == Role.TEACHER) {
+                reservations = reservationRepository.findReservationByUserDni(user.getDni(),pageable)
+                        .map(this::convertToDto);
+            } else {
+                reservations = Page.empty();
+            }
+            return reservations;
         } catch (Exception e) {
             throw new MyException("Error al obtener lista.");
         }
     }
 
-    public Optional<ReservationDto> findReservationById(Long id) throws MyException {
-        //validar si la reserva fue borrada
-        if (id == null) {
-            throw new MyException("El id no puede ser nulo.");
+    public ReservationDto findReservationById(Long id) throws MyException {
+
+        User user = userService.getCurrentUser();
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow();
+
+        validateReservationPermissions.validateAuthority(reservation); //validacion
+
+        if(reservation.isDeleted() && reservation.getUser().equals(user)){
+            throw new MyException("La reserva está eliminada.");
         }
-        return reservationRepository.findById(id)
-                .map(this::convertToDto);
+
+        return convertToDto(reservation);
     }
 
     private ReservationDto convertToDto(Reservation reservation){
@@ -135,10 +152,10 @@ public class ReservationService {
             reservationRepository.save(reservation);
             return convertToDto(reservation);
         }
-        throw new MyException("No tiene el permiso necesario.");
+        return convertToDto(validateReservationPermissions.validateAuthority(reservation));
     }
 
-    //metodo borrado logico
+//metodo borrado logico
     public void deleteReservationById(Long id) throws MyException {
         if (!reservationRepository.existsById(id)) {
             throw new MyException("No se encuentra la reserva.");
@@ -151,12 +168,11 @@ public class ReservationService {
         resourceRepository.save(resource);
     }
 
-    public List<ReservationDto> getDeletedReservations() throws MyException {
+    public Page<ReservationDto> getDeletedReservations(Pageable pageable) throws MyException {
         try {
-            List<Reservation> deletedReservations = reservationRepository.findAllDeleted();
-            return deletedReservations.stream()
-                    .map(this::convertToDto)
-                    .collect(Collectors.toList());
+            Page<Reservation> deletedReservations = reservationRepository.findAllDeleted(pageable);
+            return deletedReservations
+                    .map(this::convertToDto);
 
         } catch (RuntimeException e) {
             throw new MyException("Error al traer la lista de reservas borradas.");
@@ -265,17 +281,22 @@ public class ReservationService {
         }
     }
 
+//borrado fisico solo para admin
+    public Reservation deleteReserve(Long id) throws MyException {
+        User user = userService.getCurrentUser();
+        Reservation reservation = reservationRepository.findById(id).orElseThrow();
 
-    //borrado fisico (posibilidad de que solo lo use el admin)
-    public void deleteReserve(Long id) throws MyException {
-        Reservation reservation = reservationRepository.findById(id).get();
-        if (!reservationRepository.existsById(id)) {
-            throw new MyException("No se encuentra la reserva.");
-        }
-        reservationRepository.deleteById(id);
+            if (!reservationRepository.existsById(id)) {
+                throw new MyException("No se encuentra la reserva.");
+                }
 
-        Resource resource = reservation.getResource();
-        resource.setStatus(ResourceStatus.AVAILABLE);
-        resourceRepository.save(resource);
+            if(user.getRole() == Role.ADMIN){
+                reservationRepository.deleteById(id);
+                Resource resource = reservation.getResource();
+                resource.setStatus(ResourceStatus.AVAILABLE);
+                resourceRepository.save(resource);
+            }
+            validateReservationPermissions.validateAuthority(reservation);
+        return reservation;
     }
 }

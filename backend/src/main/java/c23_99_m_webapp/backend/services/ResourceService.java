@@ -4,9 +4,12 @@ import c23_99_m_webapp.backend.exceptions.BadCustomerRequestException;
 import c23_99_m_webapp.backend.exceptions.ResourceNotFoundException;
 import c23_99_m_webapp.backend.exceptions.ResourceUnavailableException;
 import c23_99_m_webapp.backend.mappers.ResourceViewMapper;
+import c23_99_m_webapp.backend.models.Reservation;
+import c23_99_m_webapp.backend.models.dtos.ReservationDto;
 import c23_99_m_webapp.backend.models.dtos.ResourceCreateDTO;
 import c23_99_m_webapp.backend.models.dtos.ResourceViewDTO;
 import c23_99_m_webapp.backend.models.Resource;
+import c23_99_m_webapp.backend.models.enums.ReservationShiftStatus;
 import c23_99_m_webapp.backend.models.enums.ResourceStatus;
 import c23_99_m_webapp.backend.repositories.ReservationRepository;
 import c23_99_m_webapp.backend.repositories.ResourceRepository;
@@ -14,6 +17,7 @@ import c23_99_m_webapp.backend.validations.ValidationResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -113,13 +117,29 @@ public class ResourceService {
         return resourcesByStatus.stream().map(ResourceViewMapper::toDTO).collect(Collectors.toList());
     }
 
-    public void validateResourceAvailability(Long resourceId) {
+    public void validateResourceAvailability(Long resourceId, ReservationDto reservationDto) {
         Resource resource = resourceRepository.findById(resourceId)
                 .orElseThrow(() -> new ResourceNotFoundException("Recurso no encontrado con ID: " + resourceId));
 
-        if (!resource.getStatus().equals(ResourceStatus.AVAILABLE)) {
-            throw new ResourceUnavailableException("El recurso no está disponible para reservar.");
+        LocalDate DTOStarDate = reservationDto.startDate();
+        ReservationShiftStatus DTOShiftStatus = reservationDto.reservationShiftStatus();
+        String DTOTimeSlot = reservationDto.selectedTimeSlot();
+
+        //Trae una lista con todas las reservaciones realizadas según la fecha y el recurso
+        List<Reservation> reservations = reservationRepository.findAllByStartDateAndResource(DTOStarDate, resource);
+
+        if(reservations != null){
+            for (Reservation reservation: reservations) {
+
+                if(reservation.getReservationShiftStatus() == DTOShiftStatus){
+                    if(reservation.getSelectedTimeSlot().equals(DTOTimeSlot)
+                            && !resource.getStatus().equals(ResourceStatus.AVAILABLE) ){
+                        throw new ResourceUnavailableException("El recurso no está disponible para reservar.");
+                    }
+                }
+            }
         }
+
     }
 
     public void updateResourceStatus(Long resourceId, ResourceStatus status) {
