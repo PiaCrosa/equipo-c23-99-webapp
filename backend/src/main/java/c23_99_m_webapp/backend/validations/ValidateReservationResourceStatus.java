@@ -28,11 +28,11 @@ public class ValidateReservationResourceStatus {
         Reservation reservation = new Reservation(reservationDto);
         Resource resource = resourceRepository.findById(reservationDto.resourceid()).orElseThrow();
 
-        boolean isResourceBooked = reservationRepository.existsByResourceIdAndStartDate(resource.getId(), reservation.getStartDate());
-        resourceService.validateResourceAvailability(resource.getId());
-        if (isResourceBooked) {
-            throw new MyException("El recurso ya está reservado para la fecha seleccionada.");
-        }
+//        boolean isResourceBooked = reservationRepository.existsByResourceIdAndStartDate(resource.getId(), reservation.getStartDate());
+        resourceService.validateResourceAvailability(resource.getId(), reservationDto);
+//        if (isResourceBooked) {
+//            throw new MyException("El recurso ya está reservado para la fecha seleccionada.");
+//        }
         return resource;
     }
 }
