@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { UseReservations } from '../../helpers/hooks/UseReservations';
 import { Reservation } from '../../models/teacher/ReservationGetUser';
 import ModalCheckReservations from './ModalCheckReservations';
@@ -16,16 +16,28 @@ const CheckReservations: React.FC = () => {
 	const { getReservationTeacher, mergeConsecutiveReservations } =
 		UseReservations();
 
+	const prevReservationsRef = useRef<Reservation[] | null>(null);
+
 	useEffect(() => {
 		const fetchReservations = async () => {
 			const booking = await getReservationTeacher();
 
-			if (booking) {
-				setDataReservations(mergeConsecutiveReservations(booking));
+			if (
+				booking &&
+				JSON.stringify(booking) !== JSON.stringify(prevReservationsRef.current)
+			) {
+				const mergedReservations = mergeConsecutiveReservations(booking);
+				prevReservationsRef.current = booking;
+				setDataReservations(mergedReservations);
 			}
 		};
 		fetchReservations();
-	}, [getReservationTeacher, mergeConsecutiveReservations]);
+	}, [
+		getReservationTeacher,
+		mergeConsecutiveReservations,
+		dataReservations,
+		indiReservations,
+	]);
 
 	return (
 		<div className='bg-gray-100 shadow-md rounded border border-gray-200 px-8 pt-8 pb-8 mb-4 m-8'>

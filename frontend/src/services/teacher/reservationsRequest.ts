@@ -128,7 +128,7 @@ export const updateReservationByID = async (
 			reservationShiftStatus,
 			resourceid: resourceId,
 		};
-		await axios.put(`${PORT_SERVER}/reservations/update/${id}`, data, {
+		await axios.patch(`${PORT_SERVER}/reservations/update/${id}`, data, {
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
