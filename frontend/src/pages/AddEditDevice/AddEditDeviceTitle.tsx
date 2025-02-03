@@ -10,8 +10,8 @@ const AddEditDeviceTitle = ({ deviceName }: AddEditDeviceTitleProps) => {
     '>
       {
         deviceName
-        ? `Editar ${deviceName}`
-        : 'Agregar nuevo recurso'
+        ? `Editar dispositivo: ${deviceName}`
+        : 'Agregar nuevo dispositivo'
       }
     </div>
   )

@@ -19,10 +19,9 @@ const AddEditUsers = () => {
 	const {
 		register: userRegister,
 		handleSubmit: handleUserSubmit,
-    formState: { errors },
+		formState: { errors },
 		reset,
-	} =
-		useForm<AddEditUsersForm>();
+	} = useForm<AddEditUsersForm>();
 	const [userForm, setUserForm] = useState<AddEditUsersForm>({
 		...new AddEditUsersForm(),
 	});
