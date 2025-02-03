@@ -30,7 +30,7 @@ public class ResourceController {
         this.inventoryService = inventoryService;
     }
 
-    @GetMapping
+    @GetMapping("/allResources")
     public ResponseEntity<?> getResources() {
         List<ResourceViewDTO> resources = resourceService.getResources();
         return ResponseEntity.ok(Map.of(
@@ -40,9 +40,9 @@ public class ResourceController {
         ));
     }
 
-    @GetMapping(value="{id}")
-    public ResponseEntity<?> getResourcesById(@NotNull @PathVariable Long idResource) {
-        ResourceViewDTO resource = resourceService.getResourceById(idResource);
+    @GetMapping("/getById/{id}")
+    public ResponseEntity<?> getResourcesById(@NotNull @PathVariable Long id) {
+        ResourceViewDTO resource = resourceService.getResourceById(id);
         return ResponseEntity.ok(Map.of(
                 "status", "success",
                 "message", "Recurso obtenido con éxito",
@@ -67,7 +67,7 @@ public class ResourceController {
 //        return ResponseEntity.created(URI.create("/resource/" + dto.id())).body(dto);
 //    }
 
-    @PutMapping(value="{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<?> updateResource(@NotNull @PathVariable long id, @Valid @RequestBody ResourceCreateDTO dto){
         ResourceViewDTO dtoModificado = resourceService.updateResource(id, dto);
         return ResponseEntity.ok(Map.of(
@@ -78,7 +78,7 @@ public class ResourceController {
     }
 
 
-    @DeleteMapping(value = "{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteResource(@PathVariable Long id){
         resourceService.deleteResource(id);
         return ResponseEntity.ok(Map.of(
@@ -88,7 +88,7 @@ public class ResourceController {
 
     }
 
-    @PatchMapping("/{id}/status")
+    @PatchMapping("/updateStatus/{id}")
     public ResponseEntity<?> updateResourceStatus(
             @PathVariable Long id,
             @RequestBody ResourceStatusUpdateDTO statusUpdateDTO) {
@@ -100,7 +100,7 @@ public class ResourceController {
         ));
     }
 
-    @GetMapping("/by-status")
+    @GetMapping("/getByStatus")
     public ResponseEntity<?> getResourcesByStatus(@RequestParam ResourceStatus status) {
         List<ResourceViewDTO> resources = resourceService.getResourcesByStatus(status);
         return ResponseEntity.ok(Map.of(

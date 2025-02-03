@@ -34,7 +34,7 @@ public class InventoryController {
         ));
     }
 
-    @GetMapping(value="{id}")
+    @GetMapping("getById/{id}")
     ResponseEntity<?> getInventoryById(@NotNull @PathVariable Long id){
         InventoryDTO inventory = inventoryService.getInventoryById(id);
         return ResponseEntity.ok(Map.of(
