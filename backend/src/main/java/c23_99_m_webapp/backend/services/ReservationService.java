@@ -132,7 +132,7 @@ public class ReservationService {
             reservation.setReservationShiftStatus(updatedReservationDto.reservationShiftStatus());
             reservation.setSelectedTimeSlot(updatedReservationDto.selectedTimeSlot());
 
-            Resource resource = resourceRepository.findById(updatedReservationDto.resourceid()).orElseThrow();
+            Resource resource = resourceRepository.findById(updatedReservationDto.resourceId()).orElseThrow();
             reservation.setResource(resource);
             resourceRepository.save(resource);
 
