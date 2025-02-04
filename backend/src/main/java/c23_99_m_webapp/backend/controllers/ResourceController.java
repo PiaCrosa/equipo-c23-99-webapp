@@ -9,6 +9,9 @@ import c23_99_m_webapp.backend.services.ResourceService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +39,15 @@ public class ResourceController {
         return ResponseEntity.ok(Map.of(
                 "status", "success",
                 "message", "Lista de recursos obtenida con éxito",
+                "data", resources
+        ));
+    }
+    @GetMapping("/allResourcesOfInstitution")
+    public ResponseEntity<?> getPaginatedResources(@PageableDefault(size = 9) Pageable pagination) {
+        Page<ResourceViewDTO> resources = resourceService.getPaginatedResources(pagination);
+        return ResponseEntity.ok(Map.of(
+                "status", "success",
+                "message", "Lista de recursos paginados obtenida con éxito",
                 "data", resources
         ));
     }
