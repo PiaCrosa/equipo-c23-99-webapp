@@ -3,26 +3,23 @@
 import { useEffect, useState } from 'react';
 import { RouteType } from '../RolesType';
 import { ExperimentalUser } from '../../models/ExperimentalUser';
+import { useAuthProvider } from '../../context/AuthProvider';
 
 interface UseGetCurrentUserProps {
 	onUpdateUser: (user: ExperimentalUser) => void;
 }
 
 const UseGetCurrentUser = ({ onUpdateUser }: UseGetCurrentUserProps) => {
-	const [currentRole, setCurrentRole] = useState<RouteType>('teacher');
-	const [currentName, setCurrentName] = useState<string>('German');
+	const { user } = useAuthProvider();
+	const [currentRole, setCurrentRole] = useState<RouteType>(
+		user?.role.toLocaleLowerCase() as RouteType,
+	);
 
 	useEffect(() => {
-		const interval = setInterval(() => {
-			setCurrentRole((prevRole) => (prevRole == 'admin' ? 'teacher' : 'admin'));
-			setCurrentName((prevName) =>
-				prevName == 'admin' ? 'German' : 'DocenteName',
-			);
-			onUpdateUser({ name: currentName, role: currentRole });
-			return null;
-		}, 2000);
-		return () => clearInterval(interval);
-	}, [onUpdateUser, currentRole, currentName]);
+		setCurrentRole(user?.role.toLocaleLowerCase() as RouteType);
+		onUpdateUser({ role: currentRole });
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [currentRole, user]);
 };
 
 export { UseGetCurrentUser };

@@ -16,13 +16,13 @@ const UseGetMenuRoutesForRoleUser = ({
 
 	const [routes, setRoutes] = useState<Route[]>([]);
 	const [user, setUser] = useState<ExperimentalUser>({
-		name: '',
-		role: 'admin',
+		role: 'teacher',
 	});
 
-	const handleUserUpdate = ({ name, role }: ExperimentalUser) => {
-		setUser({ name, role });
+	const handleUserUpdate = ({ role }: ExperimentalUser) => {
+		setUser({ role });
 	};
+
 	const handleMenuUpdate = (newRoutes: Route[]) => {
 		setRoutes(newRoutes);
 	};
