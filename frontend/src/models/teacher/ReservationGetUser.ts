@@ -1,12 +1,12 @@
 export interface Reservation {
-	reserveId: number;
+	reserveId?: number;
 	startDate?: string;
-	date: string;
+	date?: string;
 	reservationShiftStatus: string;
 	selectedTimeSlot: string;
 	resourceId: number;
-	resourceName: string;
-	reservationStatus: string;
+	resourceName?: string;
+	reservationStatus?: string;
 	mergedReserves?: Reservation[];
 }
 export interface ReservationSimple {

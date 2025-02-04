@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { UseReservations } from '../../helpers/hooks/UseReservations';
-import { Reservation } from '../../models/teacher/ReservationGetUser';
+import {
+	Reservation,
+	ReservationSimple,
+} from '../../models/teacher/ReservationGetUser';
 import ModalCheckReservations from './ModalCheckReservations';
 import { Reservations } from './Reservations';
 import { revertDate } from '../../utils/stringReverse';
@@ -20,7 +23,9 @@ const CheckReservations: React.FC = () => {
 	const { getReservationTeacher, mergeConsecutiveReservations } =
 		UseReservations();
 
-	const prevReservationsRef = useRef<Reservation[] | null>(null);
+	const prevReservationsRef = useRef<
+		Reservation[] | ReservationSimple[] | null
+	>(null);
 
 	useEffect(() => {
 		const fetchReservations = async () => {

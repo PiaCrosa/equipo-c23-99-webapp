@@ -97,7 +97,7 @@ export const getReservationsByID = async (
 };
 
 export const deleteReservationByID = async (
-	id: number,
+	id: number | undefined,
 	token: string,
 ): Promise<boolean> => {
 	try {

@@ -71,7 +71,7 @@ export const UseReservations = () => {
 	}, [user, idNumber]);
 
 	const deleteReservation = useCallback(
-		async (id: number): Promise<boolean> => {
+		async (id: number | undefined): Promise<boolean> => {
 			if (user) {
 				const { jwtToken } = user;
 				return await deleteReservationByID(id, jwtToken);
