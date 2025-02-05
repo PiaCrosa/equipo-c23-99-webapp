@@ -71,12 +71,6 @@ public class ResourceService {
 
         return ResourceViewMapper.toDTO(resource);
     }
-//
-//    public ResourceViewDTO saveResource(ResourceCreateDTO resourceDTO){
-//        Resource resource = resourceRepository.save(toEntity(resourceDTO));
-//        return ResourceViewMapper.toDTO(resource);
-//
-//    }
 
     public Resource saveResourceEntity(ResourceCreateDTO resourceDTO) {
         for (ValidationResource v : validations) {

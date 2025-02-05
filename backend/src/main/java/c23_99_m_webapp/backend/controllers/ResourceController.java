@@ -73,12 +73,6 @@ public class ResourceController {
 
     }
 
-//    @PostMapping
-//    public ResponseEntity<ResourceViewDTO> createResource(@Valid @RequestBody ResourceCreateDTO resourceDTO){
-//        ResourceViewDTO dto = resourceService.saveResource(resourceDTO);
-//        return ResponseEntity.created(URI.create("/resource/" + dto.id())).body(dto);
-//    }
-
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateResource(@NotNull @PathVariable long id, @Valid @RequestBody ResourceCreateDTO dto){
         ResourceViewDTO dtoModificado = resourceService.updateResource(id, dto);

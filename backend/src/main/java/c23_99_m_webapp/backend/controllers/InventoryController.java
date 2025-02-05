@@ -44,18 +44,6 @@ public class InventoryController {
         ));
     }
 
-//    @PostMapping("/{id}/resources")
-//    public ResponseEntity<Void> addResourceToInventory(@PathVariable Long id, @RequestBody ResourceDTO resourceDTO) {
-//        inventoryService.addResourceToInventory(id, resourceDTO);
-//        return ResponseEntity.status(HttpStatus.CREATED).build();
-//    }
-
-//    @PostMapping("/{id}/resources")
-//    public ResponseEntity<Void> addResourceToInventory(@PathVariable Long id, @RequestParam Long idResource) {
-//        inventoryService.addResourceToInventoryById(id, idResource);
-//        return ResponseEntity.status(HttpStatus.CREATED).build();
-//    }
-
 
 
 
