@@ -16,6 +16,8 @@ export interface AuthContextType {
 export interface LoginResponse {
 	jwtToken: string;
 	name: string;
-	role: 'TEACHER' | 'USER' | 'ADMIN';
+	role: LoginRole;
 	dni: string;
 }
+
+export type LoginRole = 'TEACHER' | 'USER' | 'ADMIN';

@@ -38,7 +38,7 @@ const Login: React.FC = () => {
 		try {
 			const loginData = { email, password };
 			const { role } = await loginUser(loginData);
-			const urlDashboard = findPathByRouteType(routeList, role.toLowerCase());
+			const urlDashboard = findPathByRouteType(routeList, role);
 			if (urlDashboard) {
 				navigate(urlDashboard);
 			} else {
