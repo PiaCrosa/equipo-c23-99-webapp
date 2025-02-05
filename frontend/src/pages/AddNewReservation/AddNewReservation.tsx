@@ -6,6 +6,7 @@ import {
 	Reservation,
 	ReservationSimple,
 } from '../../models/teacher/ReservationGetUser';
+import Swal from 'sweetalert2';
 
 interface Resource {
 	id: number;
@@ -36,8 +37,8 @@ const AddNewReservation = () => {
 	const { getAllReservationsData, createNewReservation } = UseReservations();
 
 	const getAllDevicesMemoized = useCallback(async () => {
-		const devices = await getAllDevices();
-		const devicesData = devices?.data;
+		const devicesData = await getAllDevices();
+		if (devicesData === undefined) return;
 		if (JSON.stringify(devicesData) !== JSON.stringify(resources)) {
 			setResources(devicesData || []);
 		}
@@ -48,7 +49,30 @@ const AddNewReservation = () => {
 	}, [getAllDevicesMemoized]);
 
 	const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setSelectedDate(e.target.value);
+		const inputValueDate = e.target.value;
+		setSelectedDate(inputValueDate);
+	};
+	const validateDate = () => {
+		const maxDate = new Date();
+		maxDate.setDate(maxDate.getDate() + 30);
+		const formattedMaxDate = maxDate.toISOString().split('T')[0];
+		if (selectedDate && selectedDate < today) {
+			Swal.fire({
+				icon: 'error',
+				title: 'Fecha inválida',
+				text: 'No puedes seleccionar una fecha anterior a hoy.',
+				confirmButtonText: 'Aceptar',
+			});
+			setSelectedDate('');
+		} else if (selectedDate > formattedMaxDate) {
+			Swal.fire({
+				icon: 'error',
+				title: 'Fecha inválida',
+				text: 'No puedes seleccionar una fecha superior a 30 días desde hoy.',
+				confirmButtonText: 'Aceptar',
+			});
+			setSelectedDate('');
+		}
 	};
 
 	const handleResourceChange = (resource: Resource) => {
@@ -141,8 +165,9 @@ const AddNewReservation = () => {
 					min={today}
 					value={selectedDate}
 					onChange={handleDateChange}
+					onBlur={validateDate}
 					placeholder='DD/MM/AAAA'
-					className='mt-2 p-2 border border-gray-300 rounded-md text-xl uppercase'
+					className='mt-2 p-2 border border-gray-300 rounded-md text-2xl uppercase'
 				/>
 			</div>
 
