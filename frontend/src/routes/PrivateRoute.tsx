@@ -9,16 +9,16 @@ interface ProtectedRouteProps {
 }
 
 const PrivateRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-	const { user } = useAuthProvider();
+	const { user, logoutIntentional } = useAuthProvider();
 	const location = useLocation();
 
 	// Busca la ruta actual en routeList para determinar su tipo
 	const currentRoute = routeList.find((route) => {
-		const data = location.pathname.match(route.path);
+		const data = route.path.match(location.pathname.split('/')[1]);
 		return data;
 	});
 
-	if (!user) {
+	if (currentRoute && !user && !logoutIntentional) {
 		Swal.fire({
 			icon: 'warning',
 			title: '¡Acceso denegado!',
@@ -32,7 +32,7 @@ const PrivateRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
 	if (
 		currentRoute &&
-		currentRoute.routeType !== user.role.toLowerCase() &&
+		currentRoute.routeType !== user?.role.toLowerCase() &&
 		currentRoute.routeType !== 'logged'
 	) {
 		Swal.fire({

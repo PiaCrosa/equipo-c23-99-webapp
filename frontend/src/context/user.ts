@@ -10,6 +10,7 @@ export interface AuthContextType {
 	isLoggedIn: boolean;
 	loginUser: (userData: UserCredentials) => Promise<LoginResponse>;
 	logout: () => void;
+	logoutIntentional: boolean | null;
 }
 
 export interface LoginResponse {
