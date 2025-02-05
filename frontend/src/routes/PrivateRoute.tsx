@@ -18,6 +18,7 @@ const PrivateRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 		return data;
 	});
 
+
 	if (!user) {
 		Swal.fire({
 			icon: 'warning',
@@ -32,8 +33,8 @@ const PrivateRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
 	if (
 		currentRoute &&
-		currentRoute.routeType !== user.role.toLowerCase() &&
-		currentRoute.routeType !== 'logged'
+		currentRoute.routeType !== user.role &&
+		currentRoute.routeType !== 'LOGGED'
 	) {
 		Swal.fire({
 			icon: 'error',
