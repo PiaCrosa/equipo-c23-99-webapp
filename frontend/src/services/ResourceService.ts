@@ -68,7 +68,6 @@ const DeviceService = () => {
 			const url = `${PORT_SERVER}/resource/delete/${id}`;
 			if (!currentUser) throw new Error('Usuario no Existente');
 			const config = headersWithToken(currentUser.jwtToken);
-			console.log(config);
 			await axios.delete(url, config);
 		},
 	};
