@@ -5,7 +5,7 @@ import { Users } from '../pages/Users/Users';
 import { Inventory } from '../pages/Inventory/Inventory';
 import { AddEditUsers } from '../pages/AddEditUsers/AddEditUsers';
 import { AddEditDevice } from '../pages/AddEditDevice/AddEditDevice';
-import { SearchDevices } from '../pages/SearchDevices/SearchDevices';
+// import { SearchDevices } from '../pages/SearchDevices/SearchDevices';
 import { CheckReservations } from '../pages/CheckReservations/CheckReservations';
 import { NewReservation } from '../pages/NewReservation/NewReservation';
 import { EditAdmin } from '../pages/EditAdmin/EditAdmin';
@@ -78,18 +78,19 @@ const routeList: Route[] = [
 		isShownInMenu: true,
 		element: TeacherDashboard,
 	},
-	{
-		path: '/search-device',
-		name: 'Ver dispositivos',
-		routeType: 'TEACHER',
-		isShownInMenu: true,
-		element: SearchDevices,
-	},
+	/* no se esta usando por el momento */
+	// {
+	// 	path: '/search-device',
+	// 	name: 'Ver dispositivos',
+	// 	routeType: 'TEACHER',
+	// 	isShownInMenu: true,
+	// 	element: SearchDevices,
+	// },
 	{
 		path: '/check-reservations',
-		name: 'Ver mis reservas',
+		name: 'Mis Reservas',
 		routeType: 'TEACHER',
-		isShownInMenu: false,
+		isShownInMenu: true,
 		element: CheckReservations,
 	},
 	{
