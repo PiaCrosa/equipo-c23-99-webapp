@@ -20,4 +20,4 @@ export interface LoginResponse {
 	dni: string;
 }
 
-export type LoginRole = 'TEACHER' | 'USER' | 'ADMIN';
+export type LoginRole = 'TEACHER' | 'USER' | 'ADMIN' | 'LOGGED';
