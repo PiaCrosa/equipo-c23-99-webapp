@@ -3,31 +3,58 @@ import { Reservation } from '../../models/teacher/ReservationGetUser';
 import { revertDate } from '../../utils/stringReverse';
 import { useNavigate } from 'react-router-dom';
 import { UseReservations } from '../../helpers/hooks/UseReservations';
+import { useEffect, useRef } from 'react';
 
 interface DataReservationProps {
 	dataReservations: Reservation[] | null;
+	modalOpen: boolean;
 	changeModal?: (value: boolean) => void;
 	changeIndiReservations?: (value: Reservation[] | null) => void;
+	setDataReserve: (reserve: Reservation[] | null) => void;
 }
 
 export const Reservations: React.FC<DataReservationProps> = ({
 	dataReservations,
+	modalOpen,
 	changeModal,
 	changeIndiReservations,
+	setDataReserve,
 }) => {
 	const navigate = useNavigate();
 
-	const { deleteReservation } = UseReservations();
+	const {
+		deleteReservation,
+		getReservationTeacher,
+		mergeConsecutiveReservations,
+	} = UseReservations();
 
-	const handleEditReservation = (id: number) => {
+	const handleEditReservation = (id: number | undefined) => {
 		navigate(`/edit-reservation/${id ?? ''}`);
 	};
 
-	const handleDeleteReservation = async (id: number) => {
+	useEffect(() => {
+		if (changeModal && modalOpen) {
+			dataReservations?.map((reserve) => {
+				handleViewReservation(reserve.mergedReserves);
+			});
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [dataReservations]);
+
+	const prevReservationsRef = useRef<Reservation[] | null>(null);
+
+	const handleDeleteReservation = async (id: number | undefined) => {
 		try {
-			console.log(id);
-			await deleteReservation(id);
-			navigate('/teacher-dashboard');
+			const isok = await deleteReservation(id);
+			if (setDataReserve && dataReservations && isok) {
+				const newReservations = await getReservationTeacher();
+				if (newReservations) {
+					const mergedReservations =
+						mergeConsecutiveReservations(newReservations);
+					prevReservationsRef.current = newReservations;
+					setDataReserve(mergedReservations);
+				}
+			}
 		} catch (error) {
 			console.error('Error eliminando la reserva:', error);
 		}
