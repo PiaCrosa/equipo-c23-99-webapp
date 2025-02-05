@@ -1,6 +1,7 @@
 package c23_99_m_webapp.backend.services;
 
 import c23_99_m_webapp.backend.exceptions.MyException;
+import c23_99_m_webapp.backend.exceptions.ResourceNotFoundException;
 import c23_99_m_webapp.backend.models.Institution;
 import c23_99_m_webapp.backend.models.User;
 import c23_99_m_webapp.backend.models.dtos.DataListUsers;
@@ -48,9 +49,10 @@ public class UserService {
         User userAutenticado = null;
         try {
             userAutenticado = getCurrentUser();
-        } catch (MyException e) {
-
+        } catch (ResourceNotFoundException e) {
+            logger.warn("No se pudo obtener el usuario autenticado, se usará la institución proporcionada.");
         }
+
         User user = new User(dataUserRegistration,
                 (userAutenticado != null) ? userAutenticado.getInstitution() : institutionEncontrada);
 
@@ -64,7 +66,7 @@ public class UserService {
         }
         return user;
     }
-
+    
 
     @Transactional
     public DataListUsers updateUser(DataRegistrationUser.DataUpdateUser dataUserUpdate) throws MyException {
@@ -114,11 +116,11 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public User getCurrentUser() throws MyException {
+    public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails userDetails)) {
-            throw new MyException("Usuario no autenticado.");
+            throw new ResourceNotFoundException("Usuario no autenticado.");
         }
 
         return userRepository.findByEmail(userDetails.getUsername());
