@@ -33,7 +33,7 @@ const PrivateRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 	if (
 		currentRoute &&
 		currentRoute.routeType !== user.role &&
-		currentRoute.routeType !== 'LOGGED'
+		currentRoute.routeType !== 'USER'
 	) {
 		Swal.fire({
 			icon: 'error',
