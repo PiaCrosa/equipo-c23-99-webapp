@@ -112,6 +112,9 @@ const AddNewReservation = () => {
 					selectedTimeSlot: selectedTime,
 					resourceId: selectedResource.id,
 				});
+
+				const updatedReservations = await getAllReservationsData();
+				setExistingReservations(updatedReservations);
 				setSelectedDate('');
 				setSelectedResource(null);
 				setSelectedTurn('');
@@ -173,7 +176,7 @@ const AddNewReservation = () => {
 			</div>
 
 			{/* Selector de turno */}
-			{selectedResource && (
+			{selectedResource && selectedDate && (
 				<div className='mb-4'>
 					<label className='block text-2xl my-2 text-bold text-sky-700'>
 						Selecciona un turno
