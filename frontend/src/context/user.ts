@@ -10,6 +10,7 @@ export interface AuthContextType {
 	isLoggedIn: boolean;
 	loginUser: (userData: UserCredentials) => Promise<LoginResponse>;
 	logout: () => void;
+	logoutIntentional: boolean | null;
 }
 
 export interface LoginResponse {
@@ -19,4 +20,4 @@ export interface LoginResponse {
 	dni: string;
 }
 
-export type LoginRole = 'TEACHER' | 'USER' | 'ADMIN';
+export type LoginRole = 'TEACHER' | 'USER' | 'ADMIN' | 'LOGGED';

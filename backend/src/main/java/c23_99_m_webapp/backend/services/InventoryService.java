@@ -16,9 +16,11 @@ import c23_99_m_webapp.backend.repositories.InstitutionRepository;
 import c23_99_m_webapp.backend.repositories.InventoryRepository;
 import c23_99_m_webapp.backend.repositories.ResourceRepository;
 import c23_99_m_webapp.backend.repositories.UserRepository;
+import jakarta.validation.Valid;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 
@@ -42,7 +44,7 @@ public class InventoryService {
         return InventoryMapper.toDTO(inventory);
     }
 
-    public InventoryDTO getInventoryByCurrentUser() throws MyException {
+    public InventoryDTO getInventoryByCurrentUser(){
 
         User user = userService.getCurrentUser();
 
@@ -59,7 +61,7 @@ public class InventoryService {
         return InventoryMapper.toDTO(inventory);
     }
 
-    public ResourceViewDTO createAndAddResourceToInventory(ResourceCreateDTO resourceDTO) throws MyException {
+    public ResourceViewDTO createAndAddResourceToInventory(ResourceCreateDTO resourceDTO){
 
         User user = userService.getCurrentUser();
 
@@ -84,9 +86,14 @@ public class InventoryService {
     }
 
 
-    public Inventory createInventory(){
+    public Inventory createInventory(String nameInstitute){
         Inventory inventory = new Inventory();
         inventory.setResources(new ArrayList<>());
+
+        String nameInventory = String.format("Inventario %s", nameInstitute);
+
+        inventory.setName(nameInventory);
+
 
         inventoryRepository.save(inventory);
 

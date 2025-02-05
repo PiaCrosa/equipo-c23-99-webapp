@@ -9,8 +9,11 @@ interface UseGetMenuRoutesForRoleUserProps {
 }
 
 const emptyUser: LoginResponse = {
-	dni: '0', jwtToken: '', name: '', role: 'USER'
-}
+	dni: '0',
+	jwtToken: '',
+	name: '',
+	role: 'USER',
+};
 
 const UseGetMenuRoutesForRoleUser = ({
 	onUpdateRoutes,
@@ -24,6 +27,7 @@ const UseGetMenuRoutesForRoleUser = ({
 	const handleUserUpdate = (loggedUser: LoginResponse | null) => {
 		setUser(loggedUser);
 	};
+
 	const handleMenuUpdate = (newRoutes: Route[]) => {
 		setRoutes(newRoutes);
 	};
