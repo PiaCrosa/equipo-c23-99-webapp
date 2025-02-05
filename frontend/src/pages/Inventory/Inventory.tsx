@@ -31,7 +31,7 @@ const Inventory = () => {
   // const handleMoreDevices = async () => {
   //   await getDevices();
   // }
-
+ console.log(page, areThereMore)
   const handleDeleteDevice = async (
     id: number
   ) => {
