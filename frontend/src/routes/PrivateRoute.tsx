@@ -26,14 +26,13 @@ const PrivateRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 			confirmButtonText: 'Aceptar',
 		});
 
-		// Redirige al login en caso de no estar logueado
 		return <Navigate to='/login' />;
 	}
 
 	if (
 		currentRoute &&
 		currentRoute.routeType !== user?.role &&
-		currentRoute.routeType !== 'LOGGED'
+		currentRoute.routeType !== 'USER'
 	) {
 		Swal.fire({
 			icon: 'error',

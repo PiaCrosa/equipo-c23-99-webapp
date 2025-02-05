@@ -36,6 +36,7 @@ const NavbarSandwichMenu = ({ onToggleMenu }: NavbarSandwichMenuProps) => {
 	};
 	const onClickRoute = (path: string) => {
 		navigate(path);
+		onToggleMenu(false);
 	};
 
 	return (
