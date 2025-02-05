@@ -37,11 +37,11 @@ const DeviceService = () => {
 				},
 			};
 			const response = await axios.get(url, config);
-			return response.data;
+			return response.data.data;
 		},
 
 		getDeviceById: async (id: number) => {
-			const url = `${PORT_SERVER}/resource/${id}`;
+			const url = `${PORT_SERVER}/resource/getById/${id}`;
 			if (!currentUser) throw new Error('Usuario no logueado');
 			const config = headersWithToken(currentUser.jwtToken);
 			const response = await axios.get(url, config);
@@ -57,7 +57,7 @@ const DeviceService = () => {
 		},
 
 		updateDevice: async (device: Device) => {
-			const url = `${PORT_SERVER}/resource/${device.inventoryId}`;
+			const url = `${PORT_SERVER}/resource/update/${device.id}`;
 			const data = { ...device };
 			if (!currentUser) throw new Error('Usuario no logueado');
 			const config = headersWithToken(currentUser.jwtToken);
@@ -65,9 +65,10 @@ const DeviceService = () => {
 		},
 
 		deleteDeviceById: async (id: number) => {
-			const url = `${PORT_SERVER}/resource/${id}`;
+			const url = `${PORT_SERVER}/resource/delete/${id}`;
 			if (!currentUser) throw new Error('Usuario no Existente');
 			const config = headersWithToken(currentUser.jwtToken);
+			console.log(config)
 			await axios.delete(url, config);
 		},
 	};
