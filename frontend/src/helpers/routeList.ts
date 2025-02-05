@@ -89,7 +89,7 @@ const routeList: Route[] = [
 		path: '/check-reservations',
 		name: 'Ver mis reservas',
 		routeType: 'teacher',
-		isShownInMenu: true,
+		isShownInMenu: false,
 		element: CheckReservations,
 	},
 	{
