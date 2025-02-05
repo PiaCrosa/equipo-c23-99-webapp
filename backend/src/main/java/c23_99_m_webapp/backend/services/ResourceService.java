@@ -91,9 +91,9 @@ public class ResourceService {
     public ResourceViewDTO updateResource(long id, ResourceCreateDTO dto) {
         Resource existingResource = resourceRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró el recurso con Id: " + id));
-        for (ValidationResource v : validations) {
-            v.validate(dto);
-        }
+//        for (ValidationResource v : validations) {
+//            v.validate(dto);
+//        }
 
         existingResource.setName(dto.name());
         existingResource.setDescription(dto.description());
