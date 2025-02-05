@@ -21,14 +21,16 @@ const buttonStyles =
 const Login: React.FC = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-	const { user, loginUser, isLoggedIn } = useAuthProvider();
+	const { user, loginUser, isLoggedIn, logoutIntentional } = useAuthProvider();
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (isLoggedIn && user) {
-			navigate(`/${user?.role.toLowerCase()}-dashboard`);
+		if (!logoutIntentional) {
+			if (isLoggedIn && user) {
+				navigate(`/${user?.role.toLowerCase()}-dashboard`);
+			}
 		}
-	}, [isLoggedIn, navigate, user?.role, user]);
+	}, [isLoggedIn, navigate, user?.role, user, logoutIntentional]);
 
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
