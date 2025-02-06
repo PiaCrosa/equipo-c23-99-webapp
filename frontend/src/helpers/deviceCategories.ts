@@ -7,7 +7,7 @@ export const deviceCategoriesOptions: MultipleFormControlOption<CategoryType>[] 
     value: 'AUDIOVISUALS',
   },
   {
-    commonName: 'Clase',
+    commonName: 'Salón',
     value: 'CLASSROOM',
   },
   {
@@ -15,7 +15,7 @@ export const deviceCategoriesOptions: MultipleFormControlOption<CategoryType>[] 
     value: 'LABORATORY_MATERIALS',
   },
   {
-    commonName: 'Modelos',
+    commonName: 'Maquetas',
     value: 'MODELS',
   },
 ] as const;
