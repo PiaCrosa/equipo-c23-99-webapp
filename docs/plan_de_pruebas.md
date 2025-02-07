@@ -57,5 +57,5 @@ El propósito de este plan es definir la estrategia de pruebas para evaluar la f
 
 ---
 
-## 6. Conclusión  
+## 5. Conclusión  
 Este plan de testing define una estrategia para validar la funcionalidad y estabilidad del MVP mediante pruebas manuales y automatizadas. Se prioriza la evaluación del formulario de registro y la API, con posibilidad de ampliar el alcance si hay una versión desplegada. Los entregables garantizarán una documentación completa para la mejora del sistema.
