@@ -69,6 +69,12 @@ Para conocer con detalle las **historias de usuario**, **criterios de aceptació
 - **Base de Datos**: MySQL.
 
 
+- **Seguridad:** SpringSecurity, JWT (JSON Web Tokens)
+
+  
+- **Documentación:** Swagger/OpenAPI
+
+
 - **Contenedores / Orquestación**: Docker y Docker Compose.
 
 
