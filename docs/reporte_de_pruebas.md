@@ -19,7 +19,7 @@ Este informe resume las actividades de testing realizadas para el MVP, incluyend
 
 Enlaces a los documentos donde se detallan los resultados de las pruebas:
 
-- [**Ejecución de casos de prueba**](https://docs.google.com/spreadsheets/d/19LkWInQ2YXLin8umcnOU1wKRYmZUQCjDfi3dZNQSTlg/edit?usp=sharing) y [**Reporte de errores**](https://docs.google.com/spreadsheets/d/19LkWInQ2YXLin8umcnOU1wKRYmZUQCjDfi3dZNQSTlg/edit?usp=sharing)
+- [**Ejecución de casos de prueba y Reporte de errores**](https://docs.google.com/spreadsheets/d/19LkWInQ2YXLin8umcnOU1wKRYmZUQCjDfi3dZNQSTlg/edit?usp=sharing) (segunda y tercera pestaña)
 - [**Informe de la sesión 1 de testing exploratorio** (registro de usuario administrador)](https://docs.google.com/document/d/1TnsYIl4gT0_byT4BfuSqrY1z46-pVVS5iwWZN1KGZ9w/edit?usp=sharing)
 - [**Informe de la sesión 2 de testing exploratorio** (home y administración de usuarios)](https://docs.google.com/document/d/1004N9fxZebxVJ_4FA732yUqVCPugOvtTskBzw1OFKsE/edit?usp=sharing)
 - [**Informe de la sesión 3 de testing exploratorio** (administración de dispositivos y reservas)](https://docs.google.com/document/d/1jWHR-zngn8-KKFkMLiP7_My8eb0kXtkEIkhczqSiwi4/edit?usp=sharing)
