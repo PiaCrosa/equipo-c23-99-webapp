@@ -13,6 +13,8 @@ def page(request):
         yield page
         browser.close()
 
-@pytest.fixture()
+os.environ["BASE_URL"] = "https://class-kit.vercel.app"
+
+@pytest.fixture(scope="session")
 def base_url():
-    return os.getenv("BASE_URL", "https://class-kit.vercel.app")
+    return os.getenv("BASE_URL")
