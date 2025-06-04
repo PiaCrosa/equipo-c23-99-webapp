@@ -2,10 +2,10 @@ import random
 import string
 
 def generate_random_string(nchars=5):
-    reteurn ''.join(random.choices(string.ascii_letters+string.digits, k=nchars))
+    return ''.join(random.choices(string.ascii_letters+string.digits, k=nchars))
 
 def generate_random_digits(length):
-    return ''.join(random..choices(string.digits, k=length))
+    return ''.join(random.choices(string.digits, k=length))
 
 def generate_valid_data():
     random_part=generate_random_string()
