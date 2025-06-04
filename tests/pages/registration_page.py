@@ -22,7 +22,12 @@ class RegistrationPage:
 
 
     def navigate(self, base_url):
-        self.page.goto(f"{base_url}/register")
+        #self.page.goto(f"{base_url}/register")
+        #Hay un error conocido que no permite agregar /register a la URL para ir al registro, así que para continuar con las pruebas voy al registro a través del botón.
+        self.page.goto(base_url)
+        register_button=self.page.locator("text='Registrarse'")
+        register_button.wait_for()
+        register_button.click()
 
 
     def fill_registration_form(self, name=None, DNI=None, aemail=None, password=None,
